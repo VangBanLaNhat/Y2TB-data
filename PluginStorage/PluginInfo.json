@@ -1,0 +1,157 @@
+[
+  {
+    "file": "Unsend.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Gỡ tin nhắn của Bot",
+    "en": "Remove Bot's messages",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "Help.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Xem các lệnh hiện có ở Bot",
+    "en": "View existing commands in Bot",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "Connected.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Tự đông phê duyệt",
+    "en": "Auto-approval",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "Economy.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Hệ thống tiền tệ",
+    "en": "Monetary system",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "Csim.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Trò chuyện với bạn Sim vui tính (AI)",
+    "en": "Talk with Sim the funny (A.I)",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "XPChat.js",
+    "obb": "XPchat.zip",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Rankcard",
+    "en": "Rankcard",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "AntiUnsend.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Khôi phục tin nhắn khi bị gỡ",
+    "en": "Resend messages when deleted",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "ArrowChat.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Trả lời tự động khi xuất hiện từ mà người dùng có thể cài đặt sẵn",
+    "en": "Auto-reply when a user-preset word appears",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "CEB.js",
+    "obb": "ChemicalEquationBalancer.zip",
+    "username": "HerokeyVN",
+    "author": "UIRI",
+    "vi": "Cân bằng phương trình hóa học",
+    "en": "Balance chemical equations",
+    "ver": "0.1"
+  },
+  {
+    "file": "Eval.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Chạy lệnh Javascrift",
+    "en": "Run Javascript commands",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "Math.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Tính toán những phương trình phức tạp",
+    "en": "Calculating complex equations",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "Pong.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Check độ trễ từ bot đến Facebook",
+    "en": "Check latency from Bot to Facebook",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "QRcode.js",
+    "obb": "QRcode.zip",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Quét và tạo mã QR",
+    "en": "Scan and generate QR code",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "T2Speaks.js",
+    "username": "HerokeyVN",
+    "author": "UIRI",
+    "vi": "Chuyển văn bản thành giọng nói",
+    "en": "Convert Text to Speech",
+    "ver": "0.5.0"
+  },
+  {
+    "file": "Weather.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Dự báo thời tiết",
+    "en": "Weather forecast",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "Wiki.js",
+    "username": "HerokeyVN",
+    "author": "Stowe + BadAimWeeb (f.edit)",
+    "vi": "Tìm kiếm trên Wiki",
+    "en": "Search on Wiki",
+    "ver": "0.1.2"
+  },
+  {
+    "file": "Youtube.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Phát nhạc và tải video từ Youtube",
+    "en": "Play music and download videos from Youtube",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "Ytsearch.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Tìm kiếm trên Youtube",
+    "en": "Search on Youtube",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "test.js",
+    "username": "HerokeyVN",
+    "author": "HyTommy",
+    "vi": "test",
+    "en": "test",
+    "ver": "0.0.1"
+  }
+]

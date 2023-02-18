@@ -1,5 +1,6 @@
-!global.data.arrowchat ? global.data.arrowchat = {}:"";
+
 function init(){
+    !global.data.arrowchat ? global.data.arrowchat = {}:"";
     return{
         "pluginName": "ArrowChat",
         "pluginMain": "ArrowChat.js",

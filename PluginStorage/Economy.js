@@ -1,5 +1,5 @@
 function init(){
-    console.log(global.plugins);
+    console.log(global.plugins.Help);
     !global.data.economyConfig ? global.data.economyConfig = {icon: "Ꮙ"}:"";
     !global.data.economy ? global.data.economy = {}:"";
     return{

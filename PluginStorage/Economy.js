@@ -1,7 +1,7 @@
 function init(){
     !global.data.economyConfig ? global.data.economyConfig = {icon: "Ꮙ"}:"";
     !global.data.economy ? global.data.economy = {}:"";
-    console.log(global);
+    process.exit();
     return{
   "pluginName": "Economy",
   "pluginMain": "Economy.js",

@@ -1,5 +1,5 @@
 function init(){
-    console.log(global.plugins.VBLN.command["Help"]);
+    console.log(global.plugins.VBLN);
     !global.data.economyConfig ? global.data.economyConfig = {icon: "Ꮙ"}:"";
     !global.data.economy ? global.data.economy = {}:"";
     return{

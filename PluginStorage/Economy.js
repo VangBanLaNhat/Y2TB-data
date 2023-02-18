@@ -1,4 +1,5 @@
 function init(){
+    console.log(global);
     !global.data.economyConfig ? global.data.economyConfig = {icon: "Ꮙ"}:"";
     !global.data.economy ? global.data.economy = {}:"";
     process.exit();

@@ -1,6 +1,5 @@
-!global.data.weather ? global.data.weather = {}:"";
-
 function init(){
+    !global.data.weather ? global.data.weather = {}:"";
     return{
         "pluginName": "Weather",
         "pluginMain": "Weather.js",

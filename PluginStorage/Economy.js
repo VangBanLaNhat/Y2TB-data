@@ -1,6 +1,6 @@
 function init(){
-    !global.data.economyConfig ? global.data.economyConfig = {icon: "Ꮙ"}:"";
-    !global.data.economy ? global.data.economy = {}:"";
+    //!global.data.economyConfig ? global.data.economyConfig = {icon: "Ꮙ"}:"";
+    //!global.data.economy ? global.data.economy = {}:"";
     return{
         "pluginName": "Economy",
         "pluginMain": "Economy.js",

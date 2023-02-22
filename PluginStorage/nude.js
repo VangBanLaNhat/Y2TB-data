@@ -55,12 +55,12 @@ function init(){
 }*/
 
 async function main(data, api){
-	ensureExists(path.join(__dirname, "cache", "nude"));
     const path = require("path");
     const streamBuffers = require("stream-buffers");
     const fetch = require("node-fetch");
     const random = require("random");
     const Api = "https://raw.githubusercontent.com/HerokeyVN/API_Date/main/18plus.json";
+    ensureExists(path.join(__dirname, "cache", "nude"));
     
     let json = await fetch(Api);
     json = await json.json();

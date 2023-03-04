@@ -153,5 +153,6 @@ function ensureExists(path, mask) {
 module.exports = {
 	del,
 	main,
+	main2,
 	init
 };

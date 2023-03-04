@@ -46,7 +46,7 @@ async function main(data, api) {
 		})
 		
 		console.log(api_res.data.choices[0]);
-		api.sendMessage(api_res.data.choices[0].text, data.threadID, data.senderID);
+		api.sendMessage(api_res.data.choices[0].text+"", data.threadID, data.senderID);
 	} catch(e){
 		console.error("ChatGPT", e);
 		api.sendMessage(e, data.threadID, data.senderID);

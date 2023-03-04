@@ -58,21 +58,18 @@ async function main(data, api) {
 	const openai = new OpenAIApi(configuration);
 	
 	try{
-		global.data.openai.chatgpt[data.threadID].push({
+		/*global.data.openai.chatgpt[data.threadID].push({
 			"role": "user",
 			"content": data.body
-		});
+		});*/
 		let api_res = await openai.createChatCompletion({
-			model: "gpt-3.5-turbo",
-			messages: [{
-				"role": "user",
-				"content": data.body
-			}]
+			model: "text-davinci-003",
+			prompt: data.body
 		})
 		
-		global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);
+		//global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);
 		//console.log(api_res.data.choices[0].text);
-		api.sendMessage(api_res.data.choices[0].message.content.toString(), data.threadID, data.messageID);
+		api.sendMessage(api_res.data.choices[0].text.toString(), data.threadID, data.messageID);
 	} catch(e){
 		console.error("ChatGPT", e);
 		api.sendMessage(e, data.threadID, data.messageID);

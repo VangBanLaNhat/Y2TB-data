@@ -62,9 +62,9 @@ async function main(data, api) {
 			"role": "user",
 			"content": data.body
 		});
-		let api_res = await openai.createCompletion({
+		let api_res = await openai.createChatCompletion({
 			model: "gpt-3.5-turbo",
-			message: global.data.openai.chatgpt[data.threadID],
+			messages: global.data.openai.chatgpt[data.threadID],
 		})
 		
 		global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);

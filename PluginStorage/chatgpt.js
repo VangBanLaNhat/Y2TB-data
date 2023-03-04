@@ -53,7 +53,7 @@ async function main(data, api) {
 	!global.data.openai.chatgpt[data.threadID] ? global.data.openai.chatgpt[data.threadID] = []:"";
 	const { Configuration, OpenAIApi } = require("openai");
 	const configuration = new Configuration({
-		apiKey: global.data.gpt.tokenID,
+		apiKey: "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",
 	});
 	const openai = new OpenAIApi(configuration);
 	

@@ -62,7 +62,7 @@ async function main(data, api) {
 			"role": "user",
 			"content": data.body
 		});*/
-		let api_res = await openai.createChatCompletion({
+		let api_res = await openai.createCompletion({
 			model: "text-davinci-003",
 			prompt: data.body
 		})

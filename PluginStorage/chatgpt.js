@@ -47,7 +47,7 @@ function init() {
 }
 
 async function main(data, api) {
-	if(data.body = "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
+	if(data.body == "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	!global.data.openai.chatgpt[data.threadID] ? global.data.openai.chatgpt[data.threadID] = []:"";

@@ -45,7 +45,7 @@ async function main(data, api) {
 			max_tokens: 2049 - data.body.length
 		})
 		
-		console.log(api_res.data.choices[0].text);
+		console.log(data.body);
 		api.sendMessage(solver(api_res.data.choices[0].text.toString()), data.threadID, (e)=>{console.log(e)}, data.messageID);
 	} catch(e){
 		console.error("ChatGPT", e);

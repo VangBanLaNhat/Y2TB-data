@@ -42,7 +42,7 @@ async function main(data, api) {
 		let api_res = await openai.createCompletion({
 			model: "text-davinci-003",
 			prompt: data.body,
-			max_tokens: 2049 - text.length
+			max_tokens: 2049 - data.body.length
 		})
 		
 		console.log(api_res);

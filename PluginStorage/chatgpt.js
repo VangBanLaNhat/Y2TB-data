@@ -64,7 +64,8 @@ async function main(data, api) {
 		});*/
 		let api_res = await openai.createCompletion({
 			model: "text-davinci-003",
-			prompt: data.body
+			prompt: data.body,
+			max_tokens: 2049 - data.body.length
 		})
 		
 		//global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);

@@ -46,11 +46,16 @@ async function main(data, api) {
 		})
 		
 		console.log(api_res.data.choices[0].text);
-		api.sendMessage(api_res.data.choices[0].text.toString(), data.threadID, (e)=>{console.log(e)}, data.senderID);
+		api.sendMessage(solver(api_res.data.choices[0].text.toString()), data.threadID, (e)=>{console.log(e)}, data.senderID);
 	} catch(e){
 		console.error("ChatGPT", e);
 		api.sendMessage(e, data.threadID, data.senderID);
 	}
+}
+
+function solver(s){
+	while(s[0] == '\n') s.replace('\n', '');
+	return s;
 }
 
 function ensureExists(path, mask) {

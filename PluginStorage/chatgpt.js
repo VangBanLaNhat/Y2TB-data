@@ -64,7 +64,10 @@ async function main(data, api) {
 		});
 		let api_res = await openai.createChatCompletion({
 			model: "gpt-3.5-turbo",
-			messages: data.body
+			messages: {
+				"role": "user",
+				"content": data.body
+			}
 		})
 		
 		global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);
@@ -80,7 +83,7 @@ function del(data, api){
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	global.data.openai.chatgpt[data.threadID] = [];
-	api.sendMessage("Deleted chat data with ChatGPT in this Thread", 0data.threadID, data.messageID);
+	api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
 }
 
 function ensureExists(path, mask) {

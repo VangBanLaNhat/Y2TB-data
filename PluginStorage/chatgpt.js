@@ -22,6 +22,21 @@ function init() {
 					"en_US": "gpt hi"
 				}
 			},
+			"gptv2": {
+				"help": {
+					"vi_VN": "<msg>",
+					"en_US": "<msg>"
+				},
+				"tag": {
+					"vi_VN": "Chat với ChatGPT",
+					"en_US": "Chat with ChatGPT"
+				},
+				"mainFunc": "main2",
+				"example": {
+					"vi_VN": "gpt hi",
+					"en_US": "gpt hi"
+				}
+			},
 			"gptdel": {
 				"help": {
 					"vi_VN": "",
@@ -77,6 +92,39 @@ async function main(data, api) {
 		api.sendMessage(e, data.threadID, data.messageID);
 	}
 }
+
+async function main2(data, api) {
+	if(data.body == "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
+	!global.data.openai ? global.data.openai = {}:"";
+	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
+	!global.data.openai.chatgpt[data.threadID] ? global.data.openai.chatgpt[data.threadID] = []:"";
+	const { Configuration, OpenAIApi } = require("openai");
+	const configuration = new Configuration({
+		apiKey: "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",
+	});
+	const openai = new OpenAIApi(configuration);
+	
+	try{
+		global.data.openai.chatgpt[data.threadID].push({
+			"role": "user",
+			"content": data.body
+		});
+		console.log(data.body);
+		let api_res = await openai.createChatCompletion({
+			model: "gpt-3.5-turbo",
+			messages: global.data.openai.chatgpt[data.threadID],
+			max_tokens: 2049 - data.body.length
+		})
+		
+		global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);
+		//console.log(api_res.data.choices[0].text);
+		api.sendMessage(api_res.data.choices[0].message.content.toString(), data.threadID, data.messageID);
+	} catch(e){
+		console.error("ChatGPT", e);
+		api.sendMessage(e, data.threadID, data.messageID);
+	}
+}
+
 
 function del(data, api){
 	!global.data.openai ? global.data.openai = {}:"";

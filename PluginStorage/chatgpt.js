@@ -110,8 +110,10 @@ async function main(data, api, ii) {
 	
 	if(!global.data.openai.timeout.chatgpt[data.threadID])
 		global.data.openai.timeout.chatgpt[data.threadID] = setTimeout(function() {
-			global.data.openai.chatgpt[data.threadID] = [];
-			api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
+			if(global.data.openai.timeout.chatgpt[data.threadID]){
+				global.data.openai.chatgpt[data.threadID] = [];
+				api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
+			}
 		}, 1*30*60);
 	
 	try{

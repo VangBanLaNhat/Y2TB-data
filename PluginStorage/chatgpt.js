@@ -99,6 +99,7 @@ async function main(data, api, ii) {
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	!global.data.openai.chatgpt[data.threadID] ? global.data.openai.chatgpt[data.threadID] = []:"";
 	
+	!global.openai ? global.openai = {}:"";
 	!global.openai.timeout ? global.openai.timeout = {}:"";
 	!global.openai.timeout.chatgpt ? global.openai.timeout.chatgpt = {}:"";
 	

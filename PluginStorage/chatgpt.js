@@ -127,7 +127,7 @@ async function main(data, api, ii) {
 			max_tokens: 2049 - data.body.length
 		})
 		
-		if(api_res.data.choices[0].message.content.toString().length <= 20){
+		if(api_res.data.choices[0].message.content.toString().length <= 100){
 			global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);
 		}
 		//console.log(api_res.data.choices[0].text);

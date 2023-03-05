@@ -133,9 +133,13 @@ async function main(data, api, ii) {
 		//console.log(api_res.data.choices[0].text);
 		api.sendMessage(api_res.data.choices[0].message.content.toString(), data.threadID, data.messageID);
 	} catch(e){
-		console.error("ChatGPT", e);
+		
 		ii = !ii?0:ii;
-		if(ii > 2) return api.sendMessage(e, data.threadID, data.messageID);
+		if(ii > 20) {
+			console.error("ChatGPT", e);
+			return api.sendMessage(e, data.threadID, data.messageID);
+		}
+		global.data.openai.chatgpt[data.threadID].shift();
 		global.data.openai.chatgpt[data.threadID].shift();
 		return main(data, api, ii+1);
 	}

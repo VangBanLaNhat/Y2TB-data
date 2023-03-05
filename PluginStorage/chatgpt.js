@@ -110,12 +110,9 @@ async function main(data, api, ii) {
 	
 	if(!global.data.openai.timeout.chatgpt[data.threadID])
 		global.data.openai.timeout.chatgpt[data.threadID] = setTimeout(function() {
-			if(global.data.openai.timeout.chatgpt[data.threadID]){
 				global.data.openai.chatgpt[data.threadID] = [];
-				delete global.data.openai.timeout.chatgpt[data.threadID]
 				api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
-			}
-		}, 1*30*60);
+		}, 1*30*60*1000);
 	
 	try{
 		global.data.openai.chatgpt[data.threadID].push({
@@ -148,7 +145,7 @@ function del(data, api){
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	global.data.openai.chatgpt[data.threadID] = [];
-	delete global.data.openai.timeout.chatgpt[data.threadID];
+	clearTimeout(global.data.openai.timeout.chatgpt[data.threadID]);
 	api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
 }
 

@@ -16,13 +16,13 @@ function init() {
 					"vi_VN": "Chat với ChatGPT",
 					"en_US": "Chat with ChatGPT"
 				},
-				"mainFunc": "main",
+				"mainFunc": "main2",
 				"example": {
 					"vi_VN": "gpt hi",
 					"en_US": "gpt hi"
 				}
 			},
-			"gptv2": {
+			"gptv1": {
 				"help": {
 					"vi_VN": "<msg>",
 					"en_US": "<msg>"
@@ -31,7 +31,7 @@ function init() {
 					"vi_VN": "Chat với ChatGPT",
 					"en_US": "Chat with ChatGPT"
 				},
-				"mainFunc": "main2",
+				"mainFunc": "main",
 				"example": {
 					"vi_VN": "gpt hi",
 					"en_US": "gpt hi"

@@ -99,8 +99,8 @@ async function main(data, api, ii) {
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	!global.data.openai.chatgpt[data.threadID] ? global.data.openai.chatgpt[data.threadID] = []:"";
 	
-	!global.data.openai.timeout ? global.data.openai.timeout = {}:"";
-	!global.data.openai.timeout.chatgpt ? global.data.openai.timeout.chatgpt = {}:"";
+	!global.openai.timeout ? global.openai.timeout = {}:"";
+	!global.openai.timeout.chatgpt ? global.openai.timeout.chatgpt = {}:"";
 	
 	const { Configuration, OpenAIApi } = require("openai");
 	const configuration = new Configuration({
@@ -108,8 +108,8 @@ async function main(data, api, ii) {
 	});
 	const openai = new OpenAIApi(configuration);
 	
-	if(!global.data.openai.timeout.chatgpt[data.threadID])
-		global.data.openai.timeout.chatgpt[data.threadID] = setTimeout(function() {
+	if(!global.openai.timeout.chatgpt[data.threadID])
+		global.openai.timeout.chatgpt[data.threadID] = setTimeout(function() {
 				global.data.openai.chatgpt[data.threadID] = [];
 				api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
 		}, 1*30*60*1000);
@@ -145,7 +145,7 @@ function del(data, api){
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	global.data.openai.chatgpt[data.threadID] = [];
-	clearTimeout(global.data.openai.timeout.chatgpt[data.threadID]);
+	clearTimeout(global.openai.timeout.chatgpt[data.threadID]);
 	api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
 }
 

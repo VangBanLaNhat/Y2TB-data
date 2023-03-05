@@ -127,7 +127,7 @@ async function main(data, api, ii) {
 			max_tokens: 2049 - data.body.length
 		})
 		
-		if(api_res.data.choices[0].message.content.toString().length <= 100){
+		if(api_res.data.choices[0].message.content.toString().length <= 1000){
 			global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);
 		}
 		//console.log(api_res.data.choices[0].text);
@@ -146,7 +146,8 @@ function del(data, api){
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	global.data.openai.chatgpt[data.threadID] = [];
-	clearTimeout(global.openai.timeout.chatgpt[data.threadID]);
+	if(global.openai.timeout.chatgpt[data.threadID])
+		clearTimeout(global.openai.timeout.chatgpt[data.threadID]);
 	api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
 }
 

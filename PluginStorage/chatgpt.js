@@ -150,8 +150,9 @@ function del(data, api){
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	global.data.openai.chatgpt[data.threadID] = [];
-	if(global.openai.timeout.chatgpt[data.threadID])
+	try{
 		clearTimeout(global.openai.timeout.chatgpt[data.threadID]);
+	} catch(_){};
 	api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
 }
 

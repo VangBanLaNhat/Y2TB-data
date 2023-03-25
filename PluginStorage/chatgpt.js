@@ -122,7 +122,7 @@ async function main(data, api, ii) {
 		});
 		//console.log(data.body);
 		let api_res = await openai.createChatCompletion({
-			model: "gpt-4-0314",
+			model: "gpt-3.5-turbo",
 			messages: global.data.openai.chatgpt[data.threadID],
 			max_tokens: 2049 - data.body.length
 		})

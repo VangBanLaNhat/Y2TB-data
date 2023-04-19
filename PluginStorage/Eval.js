@@ -41,6 +41,7 @@ function outeval(data, api){
             }
             if (check) {
                 try{
+console.log(1);
                     var rt = eval(data.body);
                     if(typeof rt == "object"){
                         api.sendMessage(JSON.stringify(rt, null, 4), data.threadID, data.messageID);

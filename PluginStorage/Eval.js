@@ -30,6 +30,7 @@ function init(){
 }
 
 function outeval(data, api){
+console.log(data);
     if(data.type == "message" ||data.type == "message_reply"){
         if(data.body.indexOf(`${global.config.facebook.prefix}eval`) == 0){
             data.body = data.body.replace(`${global.config.facebook.prefix}eval`, "");

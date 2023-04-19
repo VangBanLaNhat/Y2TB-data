@@ -32,7 +32,6 @@ function init(){
 function outeval(data, api){
     if(data.type == "message" ||data.type == "message_reply"){
         if(data.args[0].indexOf(`${global.config.facebook.prefix}eval`) == 0){
-console.log(data);
             data.body = data.body.replace(`${global.config.facebook.prefix}eval`, "");
             var check = false;
             for (var i=0; i<global.config.facebook.admin.length; i++){
@@ -42,7 +41,6 @@ console.log(data);
             }
             if (check) {
                 try{
-console.log(1);
                     var rt = eval(data.body);
                     if(typeof rt == "object"){
                         api.sendMessage(JSON.stringify(rt, null, 4), data.threadID, data.messageID);

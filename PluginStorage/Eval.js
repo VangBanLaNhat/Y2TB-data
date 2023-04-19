@@ -16,7 +16,7 @@ function init(){
                     "vi_VN": "Chạy lệnh Javascrift",
                     "en_US": "Run Javascript commands"
                 },
-                "mainFunc": "outeval",
+                "mainFunc": "temp",
                 "example": {
                     "vi_VN": "eval new Date()",
                     "en_US": "eval new Date()"
@@ -28,6 +28,8 @@ function init(){
         "version": "0.0.1"
     }
 }
+
+function temp(){}
 
 function outeval(data, api){
     if(data.type == "message" ||data.type == "message_reply"){
@@ -62,5 +64,6 @@ function outeval(data, api){
 
 module.exports = {
     outeval,
+    temp,
     init
 };

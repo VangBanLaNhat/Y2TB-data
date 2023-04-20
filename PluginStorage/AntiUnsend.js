@@ -154,7 +154,8 @@ async function send(data, api){
     
     var lang = global.lang.AntiUnsend.send[global.config.bot_info.lang];
     var msgid = data.messageID;
-    var dt = global.aus[msgid];
+    var dt = JSON.parse(JSON.stringify(global.aus[msgid]));
+    delete global.aus[data.messageID];
     var uinfo = await api.getUserInfo(data.senderID);
     var nameuser = uinfo[data.senderID].name;
     lang = lang.replace("{0}", nameuser);
@@ -171,6 +172,7 @@ async function send(data, api){
         if (global.config.bot_info.lang == "vi_VN") lang = lang.replace("{2}", `-Tệp:\n${list}`)
         else lang = lang.replace("{2}", `-File:\n${list}`)
     } else {lang = lang.replace("{2}", ``)};
+    
     api.sendMessage(lang , data.threadID);
 }
 

@@ -75,7 +75,7 @@ function init(){
             "en_US": "Search on Youtube"
         },
         "commandList": {
-            "ytsearch": {
+            "yts": {
                 "help": {
                     "vi_VN": "<Từ khóa>",
                     "en_US": "<Key word>"

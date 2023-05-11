@@ -117,6 +117,7 @@ function init(){
 
 function onload(info){
     const config = 60;
+	console.log(global.data);
     global.data.autorestart == undefined ? global.data.autorestart = config:"";
     //console.log(global.lang)
     let lang = info.langMap;

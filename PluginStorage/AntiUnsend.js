@@ -105,8 +105,7 @@ async function start(data, api){
 
             rt = lang.on[l].replace("{0}", "Admin group")
         }
-    }
-    if (global.config.facebook.admin.indexOf(data.senderID) != -1 && rt == lang.noad[l]) {
+    } else if (global.config.facebook.admin.indexOf(data.senderID) != -1 && rt == lang.noad[l]) {
         if (global.data.antiunsend[data.threadID]) {
             global.data.antiunsend[data.threadID] = false;
             rt = lang.off[l].replace("{0}", "Admin BotChat")

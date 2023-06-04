@@ -65,7 +65,7 @@ function init() {
 }
 
 async function mainv1(data, api, adv) {
-console.log(adv);
+console.log(adv.config.apiKey);
 	if(data.body == "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
@@ -97,7 +97,7 @@ console.log(adv);
 	}
 }
 
-async function main(data, api, adv) {
+async function main(data, api, adv, ii) {
 	if(data.body == "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
@@ -145,7 +145,7 @@ async function main(data, api, adv) {
 		}
 		global.data.openai.chatgpt[data.threadID].shift();
 		global.data.openai.chatgpt[data.threadID].shift();
-		return main(data, api, ii+1);
+		return main(data, api, adv, ii+1);
 	}
 }
 

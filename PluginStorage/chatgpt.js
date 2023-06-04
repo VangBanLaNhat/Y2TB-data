@@ -56,19 +56,23 @@ function init() {
 		"nodeDepends": {
 			"openai": ""
 		},
+  "config": {
+    "apiKey": "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"
+  },
 		"author": "HerokeyVN",
 		"version": "0.0.1"
 	}
 }
 
-async function mainv1(data, api) {
+async function mainv1(data, api, adv) {
+console.log(adv);
 	if(data.body == "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	!global.data.openai.chatgpt[data.threadID] ? global.data.openai.chatgpt[data.threadID] = []:"";
 	const { Configuration, OpenAIApi } = require("openai");
 	const configuration = new Configuration({
-		apiKey: "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",
+		apiKey: adv.config.apiKey,
 	});
 	const openai = new OpenAIApi(configuration);
 	
@@ -93,7 +97,7 @@ async function mainv1(data, api) {
 	}
 }
 
-async function main(data, api, ii) {
+async function main(data, api, adv) {
 	if(data.body == "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
@@ -105,7 +109,7 @@ async function main(data, api, ii) {
 	
 	const { Configuration, OpenAIApi } = require("openai");
 	const configuration = new Configuration({
-		apiKey: "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",
+		apiKey: adv.config.apiKey,
 	});
 	const openai = new OpenAIApi(configuration);
 	

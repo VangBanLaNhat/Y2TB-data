@@ -56,23 +56,45 @@ function init() {
 		"nodeDepends": {
 			"openai": ""
 		},
-  "config": {
-    "apiKey": "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"
-  },
+		"langMap":{
+            "nokey":{
+                "desc": "No apiKey!",
+                "vi_VN": "Không có apiKey!",
+                "en_US": "No apiKey!",
+                "args": {}
+            },
+            "noinput":{
+                "desc": "No input!",
+                "vi_VN": "Vui lòng nhập đầu vào!",
+                "en_US": "Please enter the input!",
+                "args": {}
+            },
+            "deldata":{
+                "desc": "Delete data",
+                "vi_VN": "Đã xóa dữ liệu trò chuyện với ChatGPT tại nhóm này",
+                "en_US": "Deleted chat data with ChatGPT in this Thread",
+                "args": {}
+            },
+        },
+		"config": {
+		    "apiKey": ""
+		},
 		"author": "HerokeyVN",
 		"version": "0.0.1"
 	}
 }
 
 async function mainv1(data, api, adv) {
-	console.log(adv.config.apiKey);
-	if(data.body == "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
+	//console.log(adv.config.apiKey);
+	let {config, rlang} = adv;
+	if(config.apiKey == "" || !config.apiKey) return api.sendMessage(rlang("nokey"), data.threadID, data.messageID);
+	if(data.body == "") return api.sendMessage(rlang("noinput"), data.threadID, data.messageID);
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	!global.data.openai.chatgpt[data.threadID] ? global.data.openai.chatgpt[data.threadID] = []:"";
 	const { Configuration, OpenAIApi } = require("openai");
 	const configuration = new Configuration({
-		apiKey: adv.config.apiKey,
+		apiKey: config.apiKey,
 	});
 	const openai = new OpenAIApi(configuration);
 	
@@ -100,7 +122,9 @@ async function mainv1(data, api, adv) {
 }
 
 async function main(data, api, adv, ii) {
-	if(data.body == "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
+	let {config, rlang} = adv;
+	if(config.apiKey == "" || !config.apiKey) return api.sendMessage(rlang("nokey"), data.threadID, data.messageID);
+	if(data.body == "") return api.sendMessage(rlang("noinput"), data.threadID, data.messageID);
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	!global.data.openai.chatgpt[data.threadID] ? global.data.openai.chatgpt[data.threadID] = []:"";
@@ -111,7 +135,7 @@ async function main(data, api, adv, ii) {
 	
 	const { Configuration, OpenAIApi } = require("openai");
 	const configuration = new Configuration({
-		apiKey: adv.config.apiKey,
+		apiKey: config.apiKey,
 	});
 	const openai = new OpenAIApi(configuration);
 	
@@ -157,14 +181,15 @@ async function main(data, api, adv, ii) {
 }
 
 
-function del(data, api){
+function del(data, api, adv){
+	let {rlang} = adv;
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	global.data.openai.chatgpt[data.threadID] = [];
 	try{
 		clearTimeout(global.openai.timeout.chatgpt[data.threadID]);
 	} catch(_){};
-	api.sendMessage("Deleted chat data with ChatGPT in this Thread", data.threadID, data.messageID);
+	api.sendMessage(rlang("deldata"), data.threadID, data.messageID);
 }
 
 function ensureExists(path, mask) {

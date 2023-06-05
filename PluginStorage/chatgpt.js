@@ -57,7 +57,7 @@ function init() {
 			"openai": ""
 		},
   "config": {
-    "apiKey": "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"
+    "apiKey": "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"
   },
 		"author": "HerokeyVN",
 		"version": "0.0.1"
@@ -65,7 +65,7 @@ function init() {
 }
 
 async function mainv1(data, api, adv) {
-console.log(adv.config.apiKey);
+	console.log(adv.config.apiKey);
 	if(data.body == "") return api.sendMessage("Please enter the input!", data.threadID, data.messageID);
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
@@ -85,15 +85,17 @@ console.log(adv.config.apiKey);
 		let api_res = await openai.createCompletion({
 			model: "text-davinci-003",
 			prompt: data.body,
-			max_tokens: 2049 - data.body.length
+			temperature: 0.7
+			//max_tokens: 2049
 		})
 		
 		//global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);
 		//console.log(api_res.data.choices[0].text);
 		api.sendMessage(api_res.data.choices[0].text.toString(), data.threadID, data.messageID);
 	} catch(e){
-		console.error("ChatGPT", e);
-		api.sendMessage(e, data.threadID, data.messageID);
+		console.error("ChatGPT", e.response);
+		
+		return api.sendMessage(e.response.data.error.message, data.threadID, data.messageID);
 	}
 }
 
@@ -137,6 +139,11 @@ async function main(data, api, adv, ii) {
 		//console.log(api_res.data.choices[0].text);
 		api.sendMessage(api_res.data.choices[0].message.content.toString(), data.threadID, data.messageID);
 	} catch(e){
+		if(e.response.status == 429 || e.response.status == 401 ||e.response.status == 404){
+			console.error("ChatGPT", e.response);
+		
+			return api.sendMessage(e.response.data.error.message, data.threadID, data.messageID);
+		}
 		
 		ii = !ii?0:ii;
 		if(ii > 20) {

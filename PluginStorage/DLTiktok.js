@@ -26,7 +26,7 @@ function init() {
         "author": "Yuuki",
         "version": "0.0.1",
         "nodeDepends": {
-            "tiktok-video-downloader": ""
+            "@tobyg74/tiktok-api-dl": ""
         },
         "langMap":{
             "nolink":{
@@ -37,7 +37,7 @@ function init() {
             },
             "done":{
                 "desc": "Done",
-                "vi_VN": ["Successfully!! \n Tên tài khoản Tiktok: ", " \n Username: ", " \n Số lượt xem: ", " \n Số lượt thích: ", " \n Số comments: ", " \n Số lượt chia sẻ: ", " \n Cảm ơn bạn đã sử dụng bot của tớ!"],
+                "vi_VN": ["Successfully!!\n Title: ", " \n Tên tài khoản Tiktok: ", " \n Username: ", " \n Số lượt xem: ", " \n Số lượt thích: ", " \n Số comments: ", " \n Số lượt chia sẻ: "," \n Số lượt tải xuống: ", " \n Số lượt yêu thích: " ," \n Cảm ơn bạn đã sử dụng bot của tớ!"],
                 "en_US": ["Successfully!! \n Tiktok account name: ", " \n Username: ", " \n Views: ", " \n Likes: ", " \n Comments: ", " \n Shares: ", " \n Thank you for using my bot!"],
                 "args": {}
             }
@@ -45,8 +45,9 @@ function init() {
     }
 }
 async function main(data, api) {
+    const { TiktokDL } = require("@tobyg74/tiktok-api-dl")
+
     try {
-        const ttdl = require("tiktok-video-downloader");
         const axios = require('axios');
         const fs = require('fs-extra');
         const path = require('path');
@@ -56,18 +57,22 @@ async function main(data, api) {
     	let code = global.config.bot_info.lang;
     	
         if (!link) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
-        const result = await ttdl.getInfo(link);
-        console.log(result);
-        var name = result.author.name;
-        var username = result.author.username;
-        var views = result.video.views;
-        var loves = result.video.loves;
-        var comments = result.video.comments;
-        var shares = result.video.shares
-        if(!result.video.url.no_wm) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
+        const res = await TiktokDL(link);
+        console.log(res);
+        var nameidea = res.result.description;
+        var name = res.result.author.nickname;
+        var username = res.result.author.username;
+        var views = res.result.statistics.playCount;
+        var loves = res.result.statistics.likeCount;
+        var comments = res.result.statistics.commentCount;
+        var shares = res.result.statistics.shareCount;
+        var favorite = res.result.statistics.favoriteCount;
+        var downloadC = res.result.statistics.downloadCount;
+        console.log(nameidea);
+        if(!res.result.video[1]) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
         const response = await axios({
             method: 'get',
-            url: result.video.url.no_wm,
+            url: res.result.video[1],
             responseType: 'stream'
         });
         
@@ -78,7 +83,7 @@ async function main(data, api) {
         stream.on("finish", () => {
         	let done = lang.done[code];
             api.sendMessage(({
-                body: done[0]+name+done[1]+username+done[2]+views+done[3]+loves+done[4]+comments+done[5]+shares+done[6],
+                body: done[0]+nameidea+done[1]+name+done[2]+username+done[3]+views+done[4]+loves+done[5]+comments+done[6]+shares+done[7]+downloadC+done[8]+favorite,
                 attachment: fs.createReadStream(dir)
             }), data.threadID, ()=>fs.unlinkSync(dir), data.messageID);
         });

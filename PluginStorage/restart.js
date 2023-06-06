@@ -162,11 +162,11 @@ function restart(data, api, adv){
     process.exit(7378278);
 }
 
-function login(api){
+function login(api, adv){
 	if(!global.data.restart) return;
 	
-	let lang = global.lang["Restart"];
-    	let code = global.config.bot_info.lang;
+	
+    	let {rlang, replaceMap} = adv;
     
 	if(!global.temp.loadPlugin.stderr){
 		console.log(lang.restarted[code]);
@@ -179,7 +179,7 @@ function login(api){
 	for(let i of global.temp.loadPlugin.stderr)
 		str += "\n\""+i.plugin+"\": "+i.error;
 	
-	api.sendMessage(lang.restartedErr[code].replaceAll("{0}", str), global.data.restart.threadID, global.data.restart.messageID);
+	api.sendMessage(replaceMap(rlang(restartedErr), {"{0}": str}), global.data.restart.threadID, global.data.restart.messageID);
 	delete global.data.restart;
 }
 

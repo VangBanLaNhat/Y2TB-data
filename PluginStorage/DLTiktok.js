@@ -24,7 +24,7 @@ function init() {
             }
         },
         "author": "Yuuki",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "nodeDepends": {
             "@tobyg74/tiktok-api-dl": ""
         },

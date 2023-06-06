@@ -131,27 +131,28 @@ function onload(info){
     console.warn(info.pluginName, lang.timeout[code].replaceAll("{0}", global.data.autorestart).replaceAll("{1}", global.config.facebook.prefix+cmd+" "+info.commandList[cmd].help[code]));
 }
 
-function main(data, api){
-	let lang = global.lang["Restart"];
-    let code = global.config.bot_info.lang;
+function main(data, api, adv){
+    let {rlang, replaceMap} = adv;
     
-    if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(lang.noPermission[code], data.threadID, data.messageID);
+    if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang(noPermission), data.threadID, data.messageID);
     
     let time = Number(data.args[1]);
-    if(time != 0 && time < 5) return api.sendMessage(lang.settingErr[code], data.threadID, data.messageID);
+    if(time != 0 && time < 5) return api.sendMessage(rlang(settingErr), data.threadID, data.messageID);
     
     global.data.autorestart = time;
     
-    if(time == 0) return api.sendMessage(lang.off[code], data.threadID, data.messageID);
+    if(time == 0) return api.sendMessage(rlang(off), data.threadID, data.messageID);
     
-    api.sendMessage(lang.setting[code].replaceAll("{0}", time), data.threadID, data.messageID);
+    let map = {
+        "{0}": time
+    }
+    api.sendMessage(replaceMap(rlang(setting), map), data.threadID, data.messageID);
 }
 
-function restart(data, api){
-	let lang = global.lang["Restart"];
-    let code = global.config.bot_info.lang;
+function restart(data, api, adv){
+    let {rlang} = adv;
     
-    if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(lang.noPermission[code], data.threadID, data.messageID);
+    if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang(noPermission), data.threadID, data.messageID);
     global.data.restart = {
     	threadID: data.threadID,
     	senderID: data.senderID,
@@ -165,7 +166,7 @@ function login(api){
 	if(!global.data.restart) return;
 	
 	let lang = global.lang["Restart"];
-    let code = global.config.bot_info.lang;
+    	let code = global.config.bot_info.lang;
     
 	if(!global.temp.loadPlugin.stderr){
 		console.log(lang.restarted[code]);

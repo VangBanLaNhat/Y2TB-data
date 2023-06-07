@@ -179,6 +179,7 @@ function login(api, adv){
 	for(let i of global.temp.loadPlugin.stderr)
 		str += "\n\""+i.plugin+"\": "+i.error;
 	
+    console.log(replaceMap(rlang(restartedErr), {"{0}": str}));
 	api.sendMessage(replaceMap(rlang(restartedErr), {"{0}": str}), global.data.restart.threadID, global.data.restart.messageID);
 	delete global.data.restart;
 }

@@ -134,25 +134,25 @@ function onload(info){
 function main(data, api, adv){
     let {rlang, replaceMap} = adv;
     
-    if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang(noPermission), data.threadID, data.messageID);
+    if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang("noPermission"), data.threadID, data.messageID);
     
     let time = Number(data.args[1]);
-    if(time != 0 && time < 5) return api.sendMessage(rlang(settingErr), data.threadID, data.messageID);
+    if(time != 0 && time < 5) return api.sendMessage(rlang("settingErr"), data.threadID, data.messageID);
     
     global.data.autorestart = time;
     
-    if(time == 0) return api.sendMessage(rlang(off), data.threadID, data.messageID);
+    if(time == 0) return api.sendMessage(rlang("off"), data.threadID, data.messageID);
     
     let map = {
         "{0}": time
     }
-    api.sendMessage(replaceMap(rlang(setting), map), data.threadID, data.messageID);
+    api.sendMessage(replaceMap(rlang("setting"), map), data.threadID, data.messageID);
 }
 
 function restart(data, api, adv){
     let {rlang} = adv;
     
-    if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang(noPermission), data.threadID, data.messageID);
+    if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang("noPermission"), data.threadID, data.messageID);
     global.data.restart = {
     	threadID: data.threadID,
     	senderID: data.senderID,
@@ -169,8 +169,8 @@ function login(api, adv){
     let {rlang, replaceMap} = adv;
     
 	if(!global.temp.loadPlugin.stderr){
-		console.log(rlang(restarted));
-		api.sendMessage(rlang(restarted), global.data.restart.threadID, global.data.restart.messageID);
+		console.log(rlang("restarted"));
+		api.sendMessage(rlang("restarted"), global.data.restart.threadID, global.data.restart.messageID);
 		return delete global.data.restart;
 	}
 	
@@ -180,7 +180,7 @@ function login(api, adv){
 		str += "\n\""+i.plugin+"\": "+i.error;
 	
     //console.log(replaceMap(rlang(restartedErr), {"{0}": str}));
-	api.sendMessage(replaceMap(rlang(restartedErr), {"{0}": str}), global.data.restart.threadID, global.data.restart.messageID);
+	api.sendMessage(replaceMap(rlang("restartedErr"), {"{0}": str}), global.data.restart.threadID, global.data.restart.messageID);
 	delete global.data.restart;
 }
 

@@ -35,17 +35,18 @@ function init() {
                 "en_US": "Please enter the Tiktok video link!",
                 "args": {}
             },
-            "done":{
+            "Done":{
                 "desc": "Done",
-                "vi_VN": ["🌸 Hoàn tất!\n💥 Title: ", "\n🍀 Tên tài khoản Tiktok: ", "\n💦 Username: ", "\n👀 Số lượt xem: ", "\n❤ Số lượt thích: ", "\n💬 Số lượt bình luận: ", "\n↪️Số lượt chia sẻ: ","\n⬇️ Số lượt tải xuống: ", "\n💗 Số lượt yêu thích: ","\nCảm ơn cậu đã sử dụng bot của tớ!"],
-                "en_US": ["Successfully!! \n Tiktok account name: ", " \n Username: ", " \n Views: ", " \n Likes: ", " \n Comments: ", " \n Shares: ", " \n Thank you for using my bot!"],
+                "vi_VN": ["🌸 Hoàn tất!\n💥 Title: {nameidea}\n🍀 Tên tài khoản Tiktok: {name}\n💦 Username: {username}\n👀 Số lượt xem: {views}\n❤ Số lượt thích: {loves}\n💬 Số lượt bình luận: {comments}\n↪️Số lượt chia sẻ: {shares}\n⬇️ Số lượt tải xuống: {downloadC}\n💗 Số lượt yêu thích: {favorite}\nCảm ơn cậu đã sử dụng bot của tớ!"],
+                "en_US": ["Done!\nTitle: {nameidea}\nTiktok Account Name: {name}\nUsername: {username}\nViews: {views}\nLikes: {loves}\nComments: {comments}\nShares: {shares}\nDownloads: {downloadC}\nLikes: {favorite}\nThanks for using my bot!"],
                 "args": {}
             }
         }
     }
 }
-async function main(data, api) {
-    const { TiktokDL } = require("@tobyg74/tiktok-api-dl")
+async function main(data, api, adv) {
+    const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
+    const {rlang, replaceMap} = adv;
 
     try {
         const axios = require('axios');
@@ -58,7 +59,7 @@ async function main(data, api) {
     	
         if (!link) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
         const res = await TiktokDL(link);
-        console.log(res);
+        //console.log(res);
         if(res.status == "error") return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
         var nameidea = res.result.description;
         var name = res.result.author.nickname;
@@ -69,7 +70,7 @@ async function main(data, api) {
         var shares = res.result.statistics.shareCount;
         var favorite = res.result.statistics.favoriteCount;
         var downloadC = res.result.statistics.downloadCount;
-        console.log(nameidea);
+        //console.log(nameidea);
         const response = await axios({
             method: 'get',
             url: res.result.video[1],
@@ -80,10 +81,22 @@ async function main(data, api) {
         ensureExists(path.join(__dirname, "temp", "cache", "tiktok"))
 
         let stream = response.data.pipe(fs.createWriteStream(dir));
+        let map = {
+        	"{nameidea}": nameidea,
+        	"{name}": name,
+        	"{username}": username,
+        	"{views}": views,
+        	"{loves}": loves,
+        	"{comments}": comments,
+        	"{shares}": shares,
+        	"{downloadC}": downloadC,
+        	"{favorite}": favorite
+        }
         stream.on("finish", () => {
-        	let done = lang.done[code];
+        	//console.log(rlang("Done"))
             api.sendMessage(({
-                body: done[0]+nameidea+done[1]+name+done[2]+username+done[3]+views+done[4]+loves+done[5]+comments+done[6]+shares+done[7]+downloadC+done[8]+favorite,
+            	
+                body: replaceMap(rlang("Done"), map),
                 attachment: fs.createReadStream(dir)
             }), data.threadID, ()=>fs.unlinkSync(dir), data.messageID);
         });

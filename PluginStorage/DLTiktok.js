@@ -24,7 +24,7 @@ function init() {
             }
         },
         "author": "Yuuki",
-        "version": "0.0.2",
+        "version": "0.0.1",
         "nodeDepends": {
             "@tobyg74/tiktok-api-dl": ""
         },
@@ -37,7 +37,7 @@ function init() {
             },
             "done":{
                 "desc": "Done",
-                "vi_VN": ["Successfully!!\n Title: ", " \n Tên tài khoản Tiktok: ", " \n Username: ", " \n Số lượt xem: ", " \n Số lượt thích: ", " \n Số comments: ", " \n Số lượt chia sẻ: "," \n Số lượt tải xuống: ", " \n Số lượt yêu thích: " ," \n Cảm ơn bạn đã sử dụng bot của tớ!"],
+                "vi_VN": ["🌸 Hoàn tất!\n💥 Title: ", "\n🍀 Tên tài khoản Tiktok: ", "\n💦 Username: ", "\n👀 Số lượt xem: ", "\n❤ Số lượt thích: ", "\n💬 Số lượt bình luận: ", "\n↪️Số lượt chia sẻ: ","\n⬇️ Số lượt tải xuống: ", "\n💗 Số lượt yêu thích: ","\nCảm ơn cậu đã sử dụng bot của tớ!"],
                 "en_US": ["Successfully!! \n Tiktok account name: ", " \n Username: ", " \n Views: ", " \n Likes: ", " \n Comments: ", " \n Shares: ", " \n Thank you for using my bot!"],
                 "args": {}
             }
@@ -59,6 +59,7 @@ async function main(data, api) {
         if (!link) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
         const res = await TiktokDL(link);
         console.log(res);
+        if(res.status == "error") return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
         var nameidea = res.result.description;
         var name = res.result.author.nickname;
         var username = res.result.author.username;
@@ -69,7 +70,6 @@ async function main(data, api) {
         var favorite = res.result.statistics.favoriteCount;
         var downloadC = res.result.statistics.downloadCount;
         console.log(nameidea);
-        if(!res.result.video[1]) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
         const response = await axios({
             method: 'get',
             url: res.result.video[1],

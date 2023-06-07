@@ -166,11 +166,11 @@ function login(api, adv){
 	if(!global.data.restart) return;
 	
 	
-    	let {rlang, replaceMap} = adv;
+    let {rlang, replaceMap} = adv;
     
 	if(!global.temp.loadPlugin.stderr){
-		console.log(lang.restarted[code]);
-		api.sendMessage(lang.restarted[code], global.data.restart.threadID, global.data.restart.messageID);
+		console.log(rlang(restarted));
+		api.sendMessage(rlang(restarted), global.data.restart.threadID, global.data.restart.messageID);
 		return delete global.data.restart;
 	}
 	
@@ -179,7 +179,7 @@ function login(api, adv){
 	for(let i of global.temp.loadPlugin.stderr)
 		str += "\n\""+i.plugin+"\": "+i.error;
 	
-    console.log(replaceMap(rlang(restartedErr), {"{0}": str}));
+    //console.log(replaceMap(rlang(restartedErr), {"{0}": str}));
 	api.sendMessage(replaceMap(rlang(restartedErr), {"{0}": str}), global.data.restart.threadID, global.data.restart.messageID);
 	delete global.data.restart;
 }

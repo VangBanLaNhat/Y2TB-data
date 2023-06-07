@@ -73,10 +73,10 @@ async function main(data, api, adv) {
 
     if (data.senderID != global.config.facebook.admin) { return api.sendMessage(rlang("noPermision"), data.threadID, data.messageID) }
     if (abc == true) {
-        global.config.plug.autodown = false; return api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
+        config.autodown = false; return api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
     };
     if (abc == false) {
-        global.config.plug.autodown = true; return api.sendMessage(rlang("turnOn"), data.threadID, data.messageID)
+        config.autodown = true; return api.sendMessage(rlang("turnOn"), data.threadID, data.messageID)
     }
 
 }

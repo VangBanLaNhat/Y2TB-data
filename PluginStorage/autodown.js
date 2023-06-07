@@ -26,7 +26,7 @@ function init(){
         "langMap": {
             "done":{
                 "desc": "Done",
-                "vi_VN": ["🌸 Hoàn tất!\n💥 Title: ", "\n🍀 Tên tài khoản Tiktok: ", "\n💦 Username: ", "\n👀 Số lượt xem: ", "\n❤ Số lượt thích: ", "\n💬 Số lượt bình luận: ", "\n↪️Số lượt chia sẻ: ","\n⬇️ Số lượt tải xuống: ", "\n💗 Số lượt yêu thích: ","\nCảm ơn cậu đã sử dụng bot của tớ!"],
+                "vi_VN": ["🌸 Hoàn tất!\n💥 Title: ", "\n🍀 Tên tài khoản Tiktok: ", "\n💦 Username: ", "\n👀 Số lượt xem: ", "\n❤ Số lượt thích: ", "\n💬 Số lượt bình luận: ", "\n↪️ Số lượt chia sẻ: ","\n⬇️ Số lượt tải xuống: ", "\n💗 Số lượt yêu thích: ","\nCảm ơn cậu đã sử dụng bot của tớ!"],
                 "en_US": ["Successfully!! \n Tiktok account name: ", " \n Username: ", " \n Views: ", " \n Likes: ", " \n Comments: ", " \n Shares: ", " \n Thank you for using my bot!"],
                 "args": {}
             },

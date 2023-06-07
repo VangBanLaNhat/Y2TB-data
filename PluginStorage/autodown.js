@@ -71,7 +71,7 @@ async function main(data, api, adv) {
 
     let abc = config.autodown;
 
-    if (data.senderID != global.config.facebook.admin) { return api.sendMessage(rlang("noPermision"), data.threadID, data.messageID) }
+    if (global.config.facebook.admin.indexOf(data.senderID) != -1) return api.sendMessage(rlang("noPermision"), data.threadID, data.messageID);
     if (abc == true) {
         config.autodown = false; return api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
     };

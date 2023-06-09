@@ -77,8 +77,8 @@ async function main(data, api, adv) {
             responseType: 'stream'
         });
         
-        let dir = path.join(__dirname, "temp", "cache", "tiktok", data.messageID+".mp4")
-        ensureExists(path.join(__dirname, "temp", "cache", "tiktok"))
+        let dir = path.join(__dirname, "cache", "tiktok", data.messageID+".mp4")
+        ensureExists(path.join(__dirname, "cache", "tiktok"))
 
         let stream = response.data.pipe(fs.createWriteStream(dir));
         let map = {

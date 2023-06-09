@@ -119,8 +119,8 @@ async function bruh(data, api, adv) {
                 responseType: 'stream'
             });
             let time = Date.parse(new Date());
-            let dir = path.join(__dirname, "temp", "cache", "tiktok", time + ".mp4")
-            ensureExists(path.join(__dirname, "temp", "cache", "tiktok"))
+            let dir = path.join(__dirname, "cache", "tiktok", time + ".mp4")
+            ensureExists(path.join(__dirname, "cache", "tiktok"))
 
             let stream = response.data.pipe(fs.createWriteStream(dir));
             let map = {

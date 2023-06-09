@@ -1,5 +1,21 @@
 [
   {
+    "file": "autodown.js",
+    "username": "Yuuki",
+    "author": "Yuuki",
+    "vi": "Tự động tải xuống video khi phát hiện link!",
+    "en": "Automatically download videos when the link is detected!",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "DLTiktok.js",
+    "username": "Yuuki",
+    "author": "Yuuki",
+    "vi": "Tải video Tiktok từ link!",
+    "en": "Download Tiktok videos from the link!",
+    "ver": "0.0.1"
+  },
+  {
     "file": "Unsend.js",
     "username": "HerokeyVN",
     "author": "HerokeyVN",
@@ -13,6 +29,14 @@
     "author": "HerokeyVN",
     "vi": "Xem các lệnh hiện có ở Bot",
     "en": "View existing commands in Bot",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "restart.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Khởi động lại",
+    "en": "Restart",
     "ver": "0.0.1"
   },
   {
@@ -155,11 +179,19 @@
     "ver": "0.0.1"
   },
   {
-    "file": "test.js",
+    "file": "nude.js",
     "username": "HerokeyVN",
-    "author": "HyTommy",
-    "vi": "test",
-    "en": "test",
+    "author": "HerokeyVN",
+    "vi": "Cho bạn ngẫu nhiên 1 tấm ảnh 18+",
+    "en": "Randomly give you 1 photo 18+",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "chatgpt.js",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Chat với ChatGPT",
+    "en": "Chat with ChatGPT",
     "ver": "0.0.1"
   }
 ]

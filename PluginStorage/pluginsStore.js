@@ -116,7 +116,7 @@ async function store(data, api, {rlang, replaceMap, iso639}) {
 }
 
 function chathook(data, api, adv){
-	if(data.type != "message_reply") return;
+	if(data.type != "message_reply" || !global.temp.plstore || !global.temp.plstore.chathook) return;
 	if(data.messageReply.messageID != global.temp.plstore.chathook.messageID) return;
 	
 	const axios = require("axios");

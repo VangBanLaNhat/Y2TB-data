@@ -82,11 +82,11 @@ function init(){
     }
 }
 
-async function start(data, api){
+async function start(data, api, adv){
     var lang = global.lang.AntiUnsend;
     var l = global.config.bot_info.lang;
     try{
-        var grinfo = await api.getThreadInfo(data.threadID);
+        var grinfo = await adv.getThreadInfo(data.threadID);
         var listadgr = [];
         for (var i=0; i<grinfo.adminIDs.length; i++){
             listadgr.push(grinfo.adminIDs[i].id);
@@ -118,7 +118,7 @@ async function start(data, api){
     api.sendMessage(rt , data.threadID, data.messageID);
 }
 
-function uns(data, api){
+function uns(data, api, adv){
     !global.aus ? global.aus = {}:"";
     !global.data.antiunsend ? global.data.antiunsend = {}:"";
     global.data.antiunsend[data.threadID] == undefined ? global.data.antiunsend[data.threadID] = true:"";
@@ -134,7 +134,7 @@ function uns(data, api){
     }
 }
 
-function read(data, api){
+function read(data){
     var atmurl = [];
     if (data.attachments.length > 0){
         for (var i=0; i<data.attachments.length; i++){
@@ -148,14 +148,14 @@ function read(data, api){
 
 }
 
-async function send(data, api){
+async function send(data, api, adv){
     var shot = require('tinyurl');
     
     var lang = global.lang.AntiUnsend.send[global.config.bot_info.lang];
     var msgid = data.messageID;
     var dt = JSON.parse(JSON.stringify(global.aus[msgid]));
     delete global.aus[data.messageID];
-    var uinfo = await api.getUserInfo(data.senderID);
+    var uinfo = await adv.getUserInfo(data.senderID);
     var nameuser = uinfo[data.senderID].name;
     lang = lang.replace("{0}", nameuser);
     if (dt.body != "") {

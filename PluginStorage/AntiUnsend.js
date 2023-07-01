@@ -129,7 +129,7 @@ function uns(data, api, adv){
             break;
         case "message_unsend":
             
-            if(global.data.antiunsend[data.threadID] && global.aus[data.messageID] != undefined) send(data, api);
+            if(global.data.antiunsend[data.threadID] && global.aus[data.messageID] != undefined) send(data, api, adv);
             break
     }
 }

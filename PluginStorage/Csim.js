@@ -1,4 +1,4 @@
-async function csim(data, api){
+async function csim(data, api, adv){
     const fetch = require("node-fetch");
     const path = require("path");
     !global.data.csim?global.data.csim = {}:"";
@@ -14,11 +14,19 @@ async function csim(data, api){
         api.sendMessage(global.lang.Csim.simOff[global.config.bot_info.lang] , data.threadID, data.messageID);
     }
     else{
-      //https://api-sv2.simsimi.net/v2/?text=${msg}&lc=${global.config.bot_info.lang.split("_")[0]}&cf=false
-        var datajs = await fetch(encodeURI(`https://api-sv2.simsimi.net/v2/?text=${msg}&lc=${global.config.bot_info.lang.split("_")[1].toLowerCase()}&cf=false`));
+        let lang = global.config.bot_info.lang.split("_")[1].toLowerCase() == "vn" ? "vn" : global.config.bot_info.lang.split("_")[0];
+        var datajs = await fetch("https://api.simsimi.vn/v2/simtalk", {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            method: "POST",
+            body: `text=${msg}&lc=${lang}&key=${adv.config.api_key_premium}`
+        })
         var json = await datajs.json();
-        var s = json.success != "Sim doesn't know what you are talking about. Please teach me" ? json.success : msg;
-        s = s != "I don't know what you're saying. Please teach me" ? s : msg;
+
+        var s = json.message != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời." ? json.message : msg;
+        s = s != "I do not know how to answer. Teach me the answer." ? s : msg;
+        
         var rt = global.lang.Csim.simReturn[global.config.bot_info.lang].replace("{0}", s);
         if (s != undefined) {
             api.sendMessage(rt , data.threadID, data.messageID);
@@ -26,16 +34,25 @@ async function csim(data, api){
     }
 }
 
-async function chathook(data, api){
+async function chathook(data, api, adv){
     !global.data.csim?global.data.csim = {}:"";
     if(data.type == "message" && global.data.csim[data.threadID] && data.body != `${global.config.facebook.prefix}csim off`){
         const fetch = require("node-fetch");
-    
+        
+        let lang = global.config.bot_info.lang.split("_")[1].toLowerCase() == "vn" ? "vn" : global.config.bot_info.lang.split("_")[0];
         var msg = data.body
-        var datajs = await fetch(encodeURI(`https://api-sv2.simsimi.net/v2/?text=${msg}&lc=${global.config.bot_info.lang.split("_")[1].toLowerCase()}&cf=false`));
+        var datajs = await fetch("https://api.simsimi.vn/v2/simtalk", {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            method: "POST",
+            body: `text=${msg}&lc=${lang}&key=${adv.config.api_key_premium}`
+        })
         var json = await datajs.json();
-        var s = json.success != "Sim doesn't know what you are talking about. Please teach me" ? json.success : msg;
-        s = s != "I don't know what you're saying. Please teach me" ? s : msg;
+
+        var s = json.message != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời." ? json.message : msg;
+        s = s != "I do not know how to answer. Teach me the answer." ? s : msg;
+
         var rt = global.lang.Csim.simReturn[global.config.bot_info.lang].replace("{0}", s);
         if (s != undefined) {
             api.sendMessage(rt , data.threadID, data.messageID);
@@ -99,8 +116,11 @@ function init(){
                 }
             }
         },
+        "config": {
+            "api_key_premium": ""
+        },
         "author": "HerokeyVN",
-        "version": "0.0.1"
+        "version": "0.0.2"
     }
 }
 

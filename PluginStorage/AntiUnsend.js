@@ -156,7 +156,7 @@ async function send(data, api, adv){
     var dt = JSON.parse(JSON.stringify(global.aus[msgid]));
     delete global.aus[data.messageID];
     var uinfo = await adv.getUserInfo(data.senderID);
-    var nameuser = uinfo[data.senderID].name;
+    var nameuser = uinfo.name;
     lang = lang.replace("{0}", nameuser);
     if (dt.body != "") {
         if (global.config.bot_info.lang == "vi_VN") lang = lang.replace("{1}", `-Nội dung: ${dt.body}\n`)

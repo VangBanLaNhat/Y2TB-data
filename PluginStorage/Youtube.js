@@ -4,7 +4,7 @@ function init() {
     ensureExists(path.join(__dirname, "cache", "ytmp4"));
     ensureExists(path.join(__dirname, "cache", "ytmp3"));
     return {
-        "pluginName": "YTmp34",
+        "pluginName": "YouTube",
         "pluginMain": "YouTube.js",
         "desc": {
             "vi_VN": "Lệnh Youtube",

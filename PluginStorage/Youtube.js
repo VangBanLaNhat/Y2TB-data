@@ -210,7 +210,7 @@ async function ytmp3(data, api, { rlang, replaceMap }) {
             }).on('end', () => {
                 if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)
                 else api.sendMessage({
-                    body: "Success: " + info.player_response.videoDetails.title,
+                    body: replaceMap(rlang("done"), map),
                     attachment: fs.createReadStream(dirr)
                 }, data.threadID, () => fs.unlinkSync(dirr), data.messageID)
             });

@@ -175,7 +175,7 @@ async function ytmp4(data, api, { rlang, replaceMap }) {
     }
 }
 
-async function ytmp3(data, api) {
+async function ytmp3(data, api, { rlang, replaceMap }) {
     if (data.args[1] != undefined) {
         var ytdl = require('ytdl-core');
         var ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;

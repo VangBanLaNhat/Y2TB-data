@@ -41,6 +41,21 @@ function init() {
                     "en_US": "ytmp3 https://www.youtube.com/watch?v=kTJczUoc26U"
                 }
             },
+            "ytauto": {
+                "help": {
+                    "vi_VN": "<auto || mp3 || mp4 || off>",
+                    "en_US": "<auto || mp3 || mp4 || off>"
+                },
+                "tag": {
+                    "vi_VN": "Tự động tải về video/audio từ YouTube",
+                    "en_US": "Automatically download video/audio from YouTube"
+                },
+                "mainFunc": "ytauto",
+                "example": {
+                    "vi_VN": "ytauto auto",
+                    "en_US": "ytauto auto"
+                }
+            },
             "yts": {
                 "help": {
                     "vi_VN": "<Từ khóa>",
@@ -147,11 +162,49 @@ function init() {
                 "vi_VN": "ID không hợp lệ",
                 "en_US": "Invalid ID",
                 "args": {}
-            }
+            },
+            "adh": {
+                "desc": "Help auto download",
+                "vi_VN": "Giá trị không hợp lệ! Dùng: {prefix}ytauto <auto || mp3 || mp4 || off>",
+                "en_US": "Valid value! Use: {prefix}ytauto <auto || mp3 || mp4 || off>",
+                "args": {
+                    "{prefix}": {
+                        "vi_VN": "prefix",
+                        "en_US": "prefix"
+                    }
+                }
+            },
+            "autoOn": {
+                "desc": "Turn YouTube Auto Download",
+                "vi_VN": "Đã bật YouTube Auto Download tại thread này. Sẽ tự động tải xuống dưới dạng {type}",
+                "en_US": "Turn on YouTube Auto Download at this thread. Will automatically download as {type}",
+                "args": {
+                    "{type}": {
+                        "vi_VN": "Định dạng",
+                        "en_US": "Type"
+                    }
+                }
+            },
+            "autoOff": {
+                "desc": "Turn off YouTube Auto Download",
+                "vi_VN": "Đã tắt YouTube Auto Download tại thread này.",
+                "en_US": "Turn off YouTube Auto Download at this thread.",
+                "args": {}
+            },
+            "noPer":{
+        		"desc": "No permission",
+                "vi_VN": "Không đủ quyền!",
+                "en_US": "No permission!",
+                "args": {}
+        	},
+        },
+        "config": {
+            note: 'auto_download: "auto" (Recomend), "mp3", "mp4", "off"',
+            auto_download: "auto"
         },
         "chathook": "chathook",
         "author": "HerokeyVN",
-        "version": "1.1.0"
+        "version": "1.5.0"
     }
 }
 
@@ -159,7 +212,7 @@ async function ytmp4(data, api, adv) {
     let { rlang, replaceMap } = adv;
     if (data.args[1] == undefined) return api.sendMessage(rlang("noMSG"), data.threadID, data.messageID);
 
-    if (data.args.length == 2 && data.args[1].indexOf("www.youtube.com") != -1) return downmp4(data, api, adv, data.args[1]);
+    if (data.args.length == 2 && (i.indexOf("youtube.com") != -1 || i.indexOf("youtu.be") != -1)) return downmp4(data, api, adv, data.args[1]);
 
     //search
 
@@ -205,7 +258,7 @@ ${x.url}
     });
     var img = (await Promise.all(img)).map(x => x.data);
     var dataep = {
-        body: replaceMap(rlang("ytrs"), { "{0}": res }),
+        body: "‍‍‍‍‍‍‍‍‍‍"+replaceMap(rlang("ytrs"), { "{0}": res }),
         attachment: img
     }
     api.sendMessage(dataep, data.threadID, (e, a) => {
@@ -220,7 +273,7 @@ async function ytmp3(data, api, adv) {
     let { rlang, replaceMap } = adv;
     if (data.args[1] == undefined) return api.sendMessage(rlang("noMSG"), data.threadID, data.messageID);
 
-    if (data.args.length == 2 && data.args[1].indexOf("www.youtube.com") != -1) return downmp3(data, api, adv, data.args[1]);
+    if (data.args.length == 2 && (i.indexOf("youtube.com") != -1 || i.indexOf("youtu.be") != -1)) return downmp3(data, api, adv, data.args[1]);
 
     //search
 
@@ -266,7 +319,7 @@ ${x.url}
     });
     var img = (await Promise.all(img)).map(x => x.data);
     var dataep = {
-        body: replaceMap(rlang("ytrs"), { "{0}": res }),
+        body: "‍‍‍‍‍‍‍‍‍‍"+replaceMap(rlang("ytrs"), { "{0}": res }),
         attachment: img
     }
     api.sendMessage(dataep, data.threadID, (e, a) => {
@@ -277,12 +330,58 @@ ${x.url}
     }, data.messageID);
 }
 
-function chathook(data, api, adv) {
+async function ytauto(data, api, {rlang, replaceMap, getThreadInfo}) {
+    if(global.config.facebook.admin.indexOf(data.senderID) == -1) {
+        let adminL = (await getThreadInfo(data.threadID)).adminIDs;
+        let check = false;
+        for(let i of adminL) if(i.id == data.senderID) {
+            check = true; break;
+        } 
+        if(!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID);
+    }
+    let type = data.args[1];
+    if(type != "auto" && type != "mp3" && type != "mp4" && type != "off") return api.sendMessage(replaceMap(rlang("adh"), {"{prefix}": global.config.facebook.prefix}), data.threadID, data.messageID);
+
+    global.data.youtube.autodown[data.threadID] = type;
+
+    if(type == "off") return api.sendMessage(rlang("autoOff"), data.threadID, data.messageID);
+
+    api.sendMessage(replaceMap(rlang("autoOn"), {"{type}": type}), data.threadID, data.messageID);
+}
+
+async function chathook(data, api, adv) {
     !global.temp.youtube ? global.temp.youtube = {} : "";
+    !global.data.youtube ? global.data.youtube = {} : "";
     !global.temp.youtube.ytmp3 ? global.temp.youtube.ytmp3 = {} : "";
     !global.temp.youtube.ytmp3[data.threadID] ? global.temp.youtube.ytmp3[data.threadID] = {} : "";
     !global.temp.youtube.ytmp4 ? global.temp.youtube.ytmp4 = {} : "";
     !global.temp.youtube.ytmp4[data.threadID] ? global.temp.youtube.ytmp4[data.threadID] = {} : "";
+    !global.data.youtube.autodown ? global.data.youtube.autodown = {} : "";
+    !global.data.youtube.autodown[data.threadID] ? global.data.youtube.autodown[data.threadID] = adv.config.auto_download : "";
+
+    if((data.type == "message" || data.type == "message_reply") && global.data.youtube.autodown[data.threadID] != "off" && data.body.indexOf("‍‍‍‍‍‍‍‍‍‍") != 0 && data.body.indexOf(global.config.facebook.prefix) != 0) {
+        let args = data.body.split(" ");
+        let ytdl = require('ytdl-core');
+
+        for(let i of args) {
+            if(i.indexOf("youtube.com") != -1 || i.indexOf("youtu.be") != -1){
+                try {
+                    var id = ytdl.getVideoID(i);
+                    console.log(id);
+                } catch (_){continue;}
+
+                if(global.data.youtube.autodown[data.threadID] == "auto"){
+                    try{
+                        var info = await ytdl.getInfo(i);
+                    } catch(e){continue;}
+
+                    return Number(info.player_response.videoDetails.lengthSeconds) / 60 > 2 ? downmp3(data, api, adv, i):downmp4(data, api, adv, i);
+                }
+                
+                return global.data.youtube.autodown[data.threadID] == "mp3" ? downmp3(data, api, adv, i):global.data.youtube.autodown[data.threadID] == "mp4" ? downmp4(data, api, adv, i):"";
+            }
+        }
+    }
     
     if (data.type != "message_reply" || !global.temp.youtube || (!global.temp.youtube.ytmp3 && !global.temp.youtube.ytmp4)) return;
     if (!global.temp.youtube.ytmp3[data.threadID] && !global.temp.youtube.ytmp4[data.threadID]) return;
@@ -297,7 +396,7 @@ function chathook(data, api, adv) {
 
         downmp3(data, api, adv, global.temp.youtube.ytmp3[data.threadID][data.senderID].list[nb]);
         delete global.temp.youtube.ytmp3[data.threadID][data.senderID];
-    }
+    } 
     if (global.temp.youtube.ytmp4[data.threadID][data.senderID] && data.messageReply.messageID == global.temp.youtube.ytmp4[data.threadID][data.senderID].MID) {
         let { rlang, replaceMap } = adv;
         let nb = Math.trunc(Number(data.body));
@@ -420,7 +519,7 @@ ${x.url}
         });
         var img = (await Promise.all(img)).map(x => x.data);
         var dataep = {
-            body: replaceMap(rlang("srs"), { "{0}": res }),
+            body: "‍‍‍‍‍‍‍‍‍‍"+replaceMap(rlang("srs"), { "{0}": res }),
             attachment: img
         }
         api.sendMessage(dataep, data.threadID, data.messageID);
@@ -452,6 +551,7 @@ module.exports = {
     ytmp4,
     ytmp3,
     chathook,
+    ytauto,
     init,
     search
 };

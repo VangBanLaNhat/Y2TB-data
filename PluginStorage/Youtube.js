@@ -212,7 +212,7 @@ async function ytmp4(data, api, adv) {
     let { rlang, replaceMap } = adv;
     if (data.args[1] == undefined) return api.sendMessage(rlang("noMSG"), data.threadID, data.messageID);
 
-    if (data.args.length == 2 && (i.indexOf("youtube.com") != -1 || i.indexOf("youtu.be") != -1)) return downmp4(data, api, adv, data.args[1]);
+    if (data.args.length == 2 && (data.args[1].indexOf("youtube.com") != -1 || data.args[1].indexOf("youtu.be") != -1)) return downmp4(data, api, adv, data.args[1]);
 
     //search
 
@@ -273,7 +273,7 @@ async function ytmp3(data, api, adv) {
     let { rlang, replaceMap } = adv;
     if (data.args[1] == undefined) return api.sendMessage(rlang("noMSG"), data.threadID, data.messageID);
 
-    if (data.args.length == 2 && (i.indexOf("youtube.com") != -1 || i.indexOf("youtu.be") != -1)) return downmp3(data, api, adv, data.args[1]);
+    if (data.args.length == 2 && (data.args[1].indexOf("youtube.com") != -1 || data.args[1].indexOf("youtu.be") != -1)) return downmp3(data, api, adv, data.args[1]);
 
     //search
 

@@ -81,9 +81,9 @@ async function main(data, api, adv) {
     }
 
     if (global.data.autodown[data.threadID]) {
-        global.data.autodown[data.threadID] = false; return api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
+        global.data.autodown[data.threadID] = false; api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
     } else {
-        global.data.autodown[data.threadID] = true; return api.sendMessage(rlang("turnOn"), data.threadID, data.messageID)
+        global.data.autodown[data.threadID] = true; api.sendMessage(rlang("turnOn"), data.threadID, data.messageID)
     }
 
 }

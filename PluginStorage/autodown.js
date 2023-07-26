@@ -67,28 +67,40 @@ function init() {
 }
 
 async function main(data, api, adv) {
-    let { rlang, config } = adv;
+    let { rlang, config, getThreadInfo } = adv;
 
-    let abc = config.autodown;
+    //if (global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang("noPermision"), data.threadID, data.messageID);
 
-    if (global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang("noPermision"), data.threadID, data.messageID);
-    if (abc == true) {
-        config.autodown = false; return api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
-    };
-    if (abc == false) {
-        config.autodown = true; return api.sendMessage(rlang("turnOn"), data.threadID, data.messageID)
+    if(global.config.facebook.admin.indexOf(data.senderID) == -1) {
+        let adminL = (await getThreadInfo(data.threadID)).adminIDs;
+        let check = false;
+        for(let i of adminL) if(i.id == data.senderID) {
+            check = true; break;
+        } 
+        if(!check) return api.sendMessage(rlang("noPermision"), data.threadID, data.messageID);
+    }
+
+    if (global.data.autodown[data.threadID]) {
+        global.data.autodown[data.threadID] = false; return api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
+    } else {
+        global.data.autodown[data.threadID] = true; return api.sendMessage(rlang("turnOn"), data.threadID, data.messageID)
     }
 
 }
 async function bruh(data, api, adv) {
     if (data.type != "message") return;
 
+    let { rlang, config, replaceMap } = adv;
+
+    !global.data.autodown ? global.data.autodown = {}:'';
+    !global.data.autodown[data.threadID] ? global.data.autodown[data.threadID] = config.autodown:'';
+
+    if(!global.data.autodown[data.threadID]) return;
+
     const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
     const axios = require('axios');
     const fs = require('fs-extra');
     const path = require('path');
-
-    let { rlang, config, replaceMap } = adv;
 
     regEx_tiktok = /(^https:\/\/)((vm|vt|www|v)\.)?(tiktok|douyin)\.com\//
     if (config.autodown == false) return;

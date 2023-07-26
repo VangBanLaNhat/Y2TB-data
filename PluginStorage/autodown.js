@@ -80,7 +80,7 @@ async function main(data, api, adv) {
         if(!check) return api.sendMessage(rlang("noPermision"), data.threadID, data.messageID);
     }
 
-    if (global.data.autodown[data.threadID] == true) {
+    if (global.data.autodown[data.threadID]) {
         global.data.autodown[data.threadID] = false; api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
     } else {
         global.data.autodown[data.threadID] = true; api.sendMessage(rlang("turnOn"), data.threadID, data.messageID)
@@ -93,7 +93,7 @@ async function bruh(data, api, adv) {
     let { rlang, config, replaceMap } = adv;
 
     !global.data.autodown ? global.data.autodown = {}:'';
-    !global.data.autodown[data.threadID] ? global.data.autodown[data.threadID] = config.autodown:'';
+    global.data.autodown[data.threadID] == undefined ? global.data.autodown[data.threadID] = config.autodown:'';
 
     if(!global.data.autodown[data.threadID]) return;
 

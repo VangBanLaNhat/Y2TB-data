@@ -93,9 +93,11 @@ async function bruh(data, api, adv) {
     let { rlang, config, replaceMap } = adv;
 
     !global.data.autodown ? global.data.autodown = {}:'';
-    global.data.autodown[data.threadID] === undefined ? global.data.autodown[data.threadID] = config.autodown:'';
+    global.data.autodown[data.threadID] == undefined ? global.data.autodown[data.threadID] = config.autodown:'';
+    
 
     if(!global.data.autodown[data.threadID]) return;
+    if (data.body.indexOf(global.config.facebook.prefix) == 0) return;
 
     const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
     const axios = require('axios');
@@ -103,7 +105,7 @@ async function bruh(data, api, adv) {
     const path = require('path');
 
     regEx_tiktok = /(^https:\/\/)((vm|vt|www|v)\.)?(tiktok|douyin)\.com\//
-    if (data.args[0] == global.config.facebook.prefix+"tik") return;
+    
     //api.sendMessage(data.args[0], data.threadID, data.messageID);
     for (let cc of data.args) {
         let brah = new RegExp(regEx_tiktok).test(cc);

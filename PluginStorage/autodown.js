@@ -80,7 +80,7 @@ async function main(data, api, adv) {
         if(!check) return api.sendMessage(rlang("noPermision"), data.threadID, data.messageID);
     }
 
-    if (global.data.autodown[data.threadID]) {
+    if (global.data.autodown[data.threadID] == false) {
         global.data.autodown[data.threadID] = false; api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
     } else {
         global.data.autodown[data.threadID] = true; api.sendMessage(rlang("turnOn"), data.threadID, data.messageID)

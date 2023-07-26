@@ -115,7 +115,11 @@ async function bruh(data, api, adv) {
 
         let brah = new RegExp(regEx_tiktok).test(cc);
         if (brah == true) {
-            const res = await TiktokDL(cc);
+            try {
+                const res = await TiktokDL(cc);
+            } catch (e) {
+                return console.warn("Auto Download", e);
+            }
             var nameidea = res.result.description;
             var name = res.result.author.nickname;
             var username = res.result.author.username;

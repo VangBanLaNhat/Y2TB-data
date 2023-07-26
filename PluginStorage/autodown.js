@@ -116,7 +116,7 @@ async function bruh(data, api, adv) {
         let brah = new RegExp(regEx_tiktok).test(cc);
         if (brah == true) {
             try {
-                const res = await TiktokDL(cc);
+                var res = await TiktokDL(cc);
             } catch (e) {
                 return console.warn("Auto Download", e);
             }

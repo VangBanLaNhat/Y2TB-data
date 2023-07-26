@@ -42,10 +42,10 @@ function init() {
                 "en_US": "Autodown has been successfully turned off!",
                 "args": {}
             },
-            "urlTrue": {
+            "urlTruee": {
                 "desc": "UrlTrue",
-                "vi_VN": ["❄ Đã phát hiện thấy URL TikTok: {link}\nTiến hành tự động tải xuống! 💦"],
-                "en_US": ["Detected TikTok URL: {link}\nStart downloading automatically!"],
+                "vi_VN": "❄ Đã phát hiện thấy URL TikTok: {link}\nTiến hành tự động tải xuống! 💦",
+                "en_US": "Detected TikTok URL: {link}\nStart downloading automatically!",
                 "args": {}
             },
             "noPermision": {

@@ -60,8 +60,8 @@ function init() {
             "autodown": true
         },
         "chathook": "bruh",
-        "author": "Yuuki",
-        "version": "0.0.1",
+        "author": "Yuuki, HerokeyVN",
+        "version": "0.1.0",
         "nodeDepends": {
             "@tobyg74/tiktok-api-dl": ""
         }

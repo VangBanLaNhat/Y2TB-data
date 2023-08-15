@@ -134,6 +134,7 @@ async function bruh(data, api, adv) {
             }
 
             // console.log(res.result);
+            if(!res.result) continue;
 
             if (res.result.type == "image") {
                 await imageType(data, api, adv, res);

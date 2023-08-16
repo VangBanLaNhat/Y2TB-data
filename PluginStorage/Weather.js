@@ -125,7 +125,7 @@ function init(){
          var lc = global.config.bot_info.lang 
   
          var axios = require("axios"); 
-         var link = `https://api.openweathermap.org/data/2.5/weather?lat=${data.attachments[0].latitude}&lon=${data.attachments[0].longitude}&lang=${global.config.bot_info.lang.split("_")[0]}&units=metric&appid=${config.apiKey_openWeatherMap}`; 
+         var link = `https://api.openweathermap.org/data/2.5/weather?lat=${data.attachments[0].target.coordinate.latitude}&lon=${data.attachments[0].target.coordinate.longitude}&lang=${global.config.bot_info.lang.split("_")[0]}&units=metric&appid=${config.apiKey_openWeatherMap}`; 
          try{ 
            var fdt = (await axios(link)).data 
          }catch(e){ 

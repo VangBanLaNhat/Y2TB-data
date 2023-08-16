@@ -119,7 +119,7 @@ function init(){
  } 
   
  async function rslc(data, api, adv){ 
-     if(data.type == "message" && data.attachments[0]) if(data.attachments[0].type == "share") if(global.data.weather[data.threadID][data.senderID]){ 
+     if(data.type == "message" && data.attachments[0]) if(data.attachments[0].type == "share" && data.attachments[0].target && data.attachments[0].target.coordinate) if(global.data.weather && global.data.weather[data.threadID] && global.data.weather[data.threadID][data.senderID]){ 
      	const {config} = adv;
          var lang = global.lang.Weather; 
          var lc = global.config.bot_info.lang 

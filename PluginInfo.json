@@ -1,4 +1,12 @@
 [
+  { 
+     "file": "Facebook.js", 
+     "username": "HerokeyVN", 
+     "author": "HerokeyVN", 
+     "vi": "Tải xuống video Facebook!", 
+     "en": "Download video from Facebook!", 
+     "ver": "0.0.1" 
+   },
   {
     "file": "autodown.js",
     "username": "Yuuki",

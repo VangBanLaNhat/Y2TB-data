@@ -40,7 +40,7 @@ function init() {
         },
         "chathook": "bruh",
         "author": "Yuuki",
-        "version": "0.0.1",
+        "version": "0.1.0",
         "nodeDepends": {
             "@tobyg74/tiktok-api-dl": "1.0.4"
         },

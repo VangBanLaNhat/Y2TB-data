@@ -8,20 +8,12 @@
      "ver": "0.0.1" 
    },
   {
-    "file": "autodown.js",
-    "username": "Yuuki",
-    "author": "Yuuki",
-    "vi": "Tự động tải xuống video khi phát hiện link!",
-    "en": "Automatically download videos when the link is detected!",
-    "ver": "0.0.1"
-  },
-  {
     "file": "DLTiktok.js",
     "username": "Yuuki",
     "author": "Yuuki",
     "vi": "Tải video Tiktok từ link!",
     "en": "Download Tiktok videos from the link!",
-    "ver": "0.0.1"
+    "ver": "0.1.0"
   },
   {
     "file": "Unsend.js",

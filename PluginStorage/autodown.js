@@ -63,7 +63,7 @@ function init() {
         "author": "Yuuki, HerokeyVN",
         "version": "0.1.0",
         "nodeDepends": {
-            "@tobyg74/tiktok-api-dl": ""
+            "@tobyg74/tiktok-api-dl": "1.0.4"
         }
     }
 }

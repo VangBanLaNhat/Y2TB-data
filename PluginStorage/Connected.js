@@ -130,8 +130,10 @@ function pending(data, api, adv){
 function send(data, api, adv){
 	let {rlang, replaceMap} = adv;
     let listStr = "";
-    for(let i in global.temp.threadPending.list)
+    for(let i in global.temp.threadPending.list){
+        console.log(global.temp.threadPending.list[i]);
         listStr += "\n"+(i+1)+". "+global.temp.threadPending.list[i].threadName
+    }
     
     let map = {
         "{list}": listStr

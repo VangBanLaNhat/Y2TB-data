@@ -1,5 +1,13 @@
 [
   { 
+     "file": "Pinterest.js", 
+     "username": "HerokeyVN", 
+     "author": "HerokeyVN", 
+     "vi": "Tải media từ Pinterest", 
+     "en": "Download Media from Pinterest", 
+     "ver": "0.0.1" 
+   },
+  { 
      "file": "Facebook.js", 
      "username": "HerokeyVN", 
      "author": "HerokeyVN", 

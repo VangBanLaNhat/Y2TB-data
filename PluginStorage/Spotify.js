@@ -82,14 +82,14 @@ function init() {
             },
             "albumOn": {
                 "desc": "Turn on Spotify album Download",
-                "vi_VN": "Đã bật tải xuống album tại thread này.",
-                "en_US": "Download the album download at this thread.",
+                "vi_VN": "Đã bật tải xuống Album/Playlist tại thread này.",
+                "en_US": "Download the Album/Playlist download at this thread.",
                 "args": {},
             },
             "albumOff": {
                 "desc": "Turn off Spotify album Download",
-                "vi_VN": "Đã tắt tải xuống album tại thread này.",
-                "en_US": "Turn off the album download at this thread.",
+                "vi_VN": "Đã tắt tải xuống Album/Playlist tại thread này.",
+                "en_US": "Turn off the Album/Playlist download at this thread.",
                 "args": {}
             },
             "noPer": {
@@ -100,8 +100,8 @@ function init() {
             },
             "noAlbum": {
                 "desc": "Do not download the entire album",
-                "vi_VN": "Chế độ tải Album đã bị tắt ở nhóm này. Vui lòng dùng '{prefix}spotifyalbum' để bật chế độ này.",
-                "en_US": "The album download mode has been turned off in this group. Please use '{Prefix}spotifyalbum' to turn on this mode.",
+                "vi_VN": "Chế độ tải Album/Playlist đã bị tắt ở nhóm này. Vui lòng dùng '{prefix}spotifyalbum' để bật chế độ này.",
+                "en_US": "The Album/Playlist download mode has been turned off in this group. Please use '{prefix}spotifyalbum' to turn on this mode.",
                 "args": {}
             },
             "illegal": {
@@ -145,7 +145,7 @@ async function main(data, api, adv, chk, isAlbum) {
     var ytid;
 
     if (info.type == "music.song") ytid = await getID(info.title, info.artist);
-    else if (info.type == "music.album") {
+    else if (info.type == "music.album" || info.type == "music.playlist") {
         if (!global.data.spotify.album[data.threadID]) {
             if (!chk) api.sendMessage(adv.replaceMap(adv.rlang("noAlbum"), {
                 "{prefix}": global.config.facebook.prefix

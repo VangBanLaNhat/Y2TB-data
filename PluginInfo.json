@@ -1,5 +1,13 @@
 [
   { 
+     "file": "Spotify.js", 
+     "username": "HerokeyVN", 
+     "author": "HerokeyVN", 
+     "vi": "Tải nhạc từ Spotify", 
+     "en": "Download music from Spotify", 
+     "ver": "0.0.1" 
+   },
+  { 
      "file": "Pinterest.js", 
      "username": "HerokeyVN", 
      "author": "HerokeyVN", 

@@ -18,8 +18,8 @@ function init() {
                 },
                 "mainFunc": "main",
                 "example": {
-                    "vi_VN": "spotifydl https://www.pinterest.com/pin/563018696644092/",
-                    "en_US": "spotifydl https://www.pinterest.com/pin/563018696644092/"
+                    "vi_VN": "spotifydl https://open.spotify.com/track/0r0fd0daJVSsIxCWbVdtc4",
+                    "en_US": "spotifydl https://open.spotify.com/track/0r0fd0daJVSsIxCWbVdtc4"
                 }
             },
             "spotifyauto": {
@@ -53,8 +53,10 @@ function init() {
                 }
             }
         },
+        "chathook": "chathook",
         "nodeDepends": {
             "jsdom": "22.1.0",
+            
             "ytdl-core": "",
             "fluent-ffmpeg": "",
             "@ffmpeg-installer/ffmpeg": ""
@@ -66,44 +68,48 @@ function init() {
                 "en_US": "Video greater than 25MB!",
                 "args": {}
             },
-            "autoOn": { 
-                "desc": "Turn on Spotify Auto Download", 
-                "vi_VN": "Đã bật Spotify Auto Download tại thread này.", 
-                "en_US": "Turn on Spotify Auto Download at this thread.", 
-                "args": {}, 
-           },
-            "autoOff": { 
-                "desc": "Turn off Spotify Auto Download", 
-                "vi_VN": "Đã tắt Spotify Auto Download tại thread này.", 
-                "en_US": "Turn off Spotify Auto Download at this thread.", 
-                "args": {} 
-            }, 
-            "albumOn": { 
-                "desc": "Turn on Spotify album Download", 
-                "vi_VN": "Đã bật tải xuống album tại thread này.", 
-                "en_US": "Download the album download at this thread.", 
-                "args": {}, 
-           },
-            "albumOff": { 
-                "desc": "Turn off Spotify album Download", 
-                "vi_VN": "Đã tắt tải xuống album tại thread này.", 
-                "en_US": "Turn off the album download at this thread.", 
-                "args": {} 
-            }, 
-            "noPer":{ 
-               "desc": "No permission", 
-                "vi_VN": "Không đủ quyền! Chỉ quản trị viên nhóm và quản trị viên BOT mới có thể dùng.", 
-                "en_US": "No permission! Only group administrators and BOT administrators can use.", 
-                "args": {} 
+            "autoOn": {
+                "desc": "Turn on Spotify Auto Download",
+                "vi_VN": "Đã bật Spotify Auto Download tại thread này.",
+                "en_US": "Turn on Spotify Auto Download at this thread.",
+                "args": {},
             },
-            "noAlbum":{ 
-                "desc": "Do not download the entire album", 
-                 "vi_VN": "Chế độ tải Album đã bị tắt ở nhóm này. Vui lòng dùng '{prefix}spotifyalbum' để bật chế độ này.", 
-                 "en_US": "The album download mode has been turned off in this group. Please use '{Prefix}spotifyalbum' to turn on this mode.", 
-                 "args": {
-
-                 } 
-             }
+            "autoOff": {
+                "desc": "Turn off Spotify Auto Download",
+                "vi_VN": "Đã tắt Spotify Auto Download tại thread này.",
+                "en_US": "Turn off Spotify Auto Download at this thread.",
+                "args": {}
+            },
+            "albumOn": {
+                "desc": "Turn on Spotify album Download",
+                "vi_VN": "Đã bật tải xuống album tại thread này.",
+                "en_US": "Download the album download at this thread.",
+                "args": {},
+            },
+            "albumOff": {
+                "desc": "Turn off Spotify album Download",
+                "vi_VN": "Đã tắt tải xuống album tại thread này.",
+                "en_US": "Turn off the album download at this thread.",
+                "args": {}
+            },
+            "noPer": {
+                "desc": "No permission",
+                "vi_VN": "Không đủ quyền! Chỉ quản trị viên nhóm và quản trị viên BOT mới có thể dùng.",
+                "en_US": "No permission! Only group administrators and BOT administrators can use.",
+                "args": {}
+            },
+            "noAlbum": {
+                "desc": "Do not download the entire album",
+                "vi_VN": "Chế độ tải Album đã bị tắt ở nhóm này. Vui lòng dùng '{prefix}spotifyalbum' để bật chế độ này.",
+                "en_US": "The album download mode has been turned off in this group. Please use '{Prefix}spotifyalbum' to turn on this mode.",
+                "args": {}
+            },
+            "illegal": {
+                "desc": "The link is not valid",
+                "vi_VN": "Đường link không hợp lệ!",
+                "en_US": "The link is not valid!",
+                "args": {}
+            }
         },
         "config": {
             "albumDownload": false
@@ -114,7 +120,6 @@ function init() {
 }
 
 async function main(data, api, adv, chk, isAlbum) {
-    const yts = require('yt-search');
     const path = require('path');
     const fs = require('fs');
     const ytdl = require('ytdl-core');
@@ -122,14 +127,21 @@ async function main(data, api, adv, chk, isAlbum) {
     var ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
     ffmpeg.setFfmpegPath(ffmpegPath);
 
-    const link = chk ? chk:data.args[1];
-    const info = await getInfo(link);
+    const link = chk ? chk: data.args[1];
+    var info;
+    try {
+        info = await getInfo(link);
+    } catch (error) {
+        console.warn("Spotify", error);
+        if(chk) return;
+        return api.sendMessage(adv.rlang("illegal"), data.threadID, data.messageID);
+    }
     var ytid;
 
     if (info.type == "music.song") ytid = await getID(info.title, info.artist);
     else if (info.type == "music.album") {
         if (!global.data.spotify.album[data.threadID]) {
-            if (!chk) api.sendMessage(replaceMap(rlang("noAlbum"), {
+            if (!chk) api.sendMessage(adv.replaceMap(adv.rlang("noAlbum"), {
                 "{prefix}": global.config.facebook.prefix
             }), data.threadID, data.messageID);
             return;
@@ -149,13 +161,15 @@ async function main(data, api, adv, chk, isAlbum) {
     ensureExists(dir);
     dir = path.join(dir, name);
 
-    let stream = ytdl(ytid, { quality: "highestaudio" });
+    let stream = ytdl(ytid, {
+        quality: "highestaudio"
+    });
 
     ffmpeg(stream).audioBitrate(128).save
     ffmpeg(stream).audioBitrate(128).save(dir).on('end', () => {
         if (fs.statSync(dir).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dir), data.messageID)
-        else 
-        api.sendMessage({
+        else
+            api.sendMessage({
             body: "Success: " + info.title,
             attachment: fs.createReadStream(dir)
         }, data.threadID, () => fs.unlinkSync(dir), data.messageID)
@@ -165,64 +179,84 @@ async function main(data, api, adv, chk, isAlbum) {
     console.log(info);
 }
 
-async function auto(data, api, {rlang, getThreadInfo}) { 
-    if(global.config.facebook.admin.indexOf(data.senderID) == -1) { 
-         let adminL = (await getThreadInfo(data.threadID)).adminIDs; 
-         let check = false; 
-         for(let i of adminL) if(i.id == data.senderID) { 
-             check = true; break; 
-         }  
-         if(!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID); 
-     } 
-     if(global.data.spotify.autodown[data.threadID]) {
-         global.data.spotify.autodown[data.threadID] = false;
-         return api.sendMessage(rlang("autoOff"), data.threadID, data.messageID);
-     }
-  
-     global.data.spotify.autodown[data.threadID] = true;
-     api.sendMessage(rlang("autoOn"), data.threadID, data.messageID); 
+async function auto(data, api, {rlang, getThreadInfo}) {
+    if (global.config.facebook.admin.indexOf(data.senderID) == -1) {
+        let adminL = (await getThreadInfo(data.threadID)).adminIDs;
+        let check = false;
+        for (let i of adminL) if (i.id == data.senderID) {
+            check = true; break;
+        }
+        if (!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID);
+    }
+    if (global.data.spotify.autodown[data.threadID]) {
+        global.data.spotify.autodown[data.threadID] = false;
+        return api.sendMessage(rlang("autoOff"), data.threadID, data.messageID);
+    }
+
+    global.data.spotify.autodown[data.threadID] = true;
+    api.sendMessage(rlang("autoOn"), data.threadID, data.messageID);
 }
 
-async function album(data, api, {rlang, getThreadInfo}) { 
-    if(global.config.facebook.admin.indexOf(data.senderID) == -1) { 
-         let adminL = (await getThreadInfo(data.threadID)).adminIDs; 
-         let check = false; 
-         for(let i of adminL) if(i.id == data.senderID) { 
-             check = true; break; 
-         }  
-         if(!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID); 
-     } 
-     if(global.data.spotify.album[data.threadID]) {
-         global.data.spotify.album[data.threadID] = false;
-         return api.sendMessage(rlang("albumOff"), data.threadID, data.messageID);
-     }
-  
-     global.data.spotify.album[data.threadID] = true;
-     api.sendMessage(rlang("albumOn"), data.threadID, data.messageID); 
- }
+async function album(data, api, {rlang, getThreadInfo}) {
+    if (global.config.facebook.admin.indexOf(data.senderID) == -1) {
+        let adminL = (await getThreadInfo(data.threadID)).adminIDs;
+        let check = false;
+        for (let i of adminL) if (i.id == data.senderID) {
+            check = true; break;
+        }
+        if (!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID);
+    }
+    if (global.data.spotify.album[data.threadID]) {
+        global.data.spotify.album[data.threadID] = false;
+        return api.sendMessage(rlang("albumOff"), data.threadID, data.messageID);
+    }
 
- async function chathook(data, api, adv) {
-    !global.data.spotify ? global.data.spotify = {}:"";
-    !global.data.spotify.autodown ? global.data.spotify.autodown = {}:"";
-    global.data.spotify.autodown[data.threadID] == undefined ? global.data.spotify.autodown[data.threadID] = true:"";
-    !global.data.spotify.album ? global.data.spotify.album = {}:"";
-    global.data.spotify.album[data.threadID] == undefined ? global.data.spotify.album[data.threadID] = false:"";
+    global.data.spotify.album[data.threadID] = true;
+    api.sendMessage(rlang("albumOn"), data.threadID, data.messageID);
+}
 
-    if((data.type != "message" && data.type != "message_reply") || !global.data.spotify.autodown[data.threadID] || data.body.indexOf(global.config.facebook.prefix) == 0) return;
- }
+async function chathook(data, api, adv) {
+    !global.data.spotify ? global.data.spotify = {}: "";
+    !global.data.spotify.autodown ? global.data.spotify.autodown = {}: "";
+    global.data.spotify.autodown[data.threadID] == undefined ? global.data.spotify.autodown[data.threadID] = true: "";
+    !global.data.spotify.album ? global.data.spotify.album = {}: "";
+    global.data.spotify.album[data.threadID] == undefined ? global.data.spotify.album[data.threadID] = false: "";
+
+    if ((data.type != "message" && data.type != "message_reply") || !global.data.spotify.autodown[data.threadID] || data.body.indexOf(global.config.facebook.prefix) == 0) return;
+    
+    if (data.body.indexOf("spotify.com") == -1) return;
+    
+    var args = data.body.split(" ");
+    
+    for (let i of args) {
+        if (i.indexOf("spotify.com") == -1) continue;
+        
+        let type = (await getInfo(i)).type;
+        if (type != "music.song") continue;
+        
+        main(data, api, adv, i);
+    }
+}
 
 // Functions support
 
 async function getInfo(url) {
-    const { JSDOM } = require("jsdom");
+    const {
+        JSDOM
+    } = require("jsdom");
     const fetch = require("node-fetch");
 
-    const { hostname, pathname } = new URL(url);
+    const {
+        hostname,
+        pathname
+    } = new URL(url);
     const path = pathname.replace("/sent/", "");
     const finalUrl = `https://${hostname}${path}`;
     const response = await fetch(finalUrl);
     if (!response.ok) {
-        return { error: `HTTP error ${response.status}` };
+        return {
+            error: `HTTP error ${response.status}`
+        };
     }
     const body = await response.text();
 
@@ -241,7 +275,7 @@ async function getInfo(url) {
     return res;
 }
 
-async function getID(name, artist){
+async function getID(name, artist) {
     const fetch = require("node-fetch");
 
     let dnl = await fetch(`https://spotisongdownloader.com/api/composer/ytsearch/ytsearch.php?name=${encodeURI(name)}&artist=${encodeURI(artist)}`);
@@ -250,15 +284,22 @@ async function getID(name, artist){
 }
 
 async function getListTrack(url) {
-    const { JSDOM } = require("jsdom");
+    const {
+        JSDOM
+    } = require("jsdom");
     const fetch = require("node-fetch");
 
-    const { hostname, pathname } = new URL(url);
+    const {
+        hostname,
+        pathname
+    } = new URL(url);
     const path = pathname.replace("/sent/", "");
     const finalUrl = `https://${hostname}${path}`;
     const response = await fetch(finalUrl);
     if (!response.ok) {
-        return { error: `HTTP error ${response.status}` };
+        return {
+            error: `HTTP error ${response.status}`
+        };
     }
     const body = await response.text();
 
@@ -267,7 +308,7 @@ async function getListTrack(url) {
     let list = dom.querySelectorAll('meta[name="music:song"]');
     var res = [];
 
-    for(let i of list) res.push(i.content);
+    for (let i of list) res.push(i.content);
 
     return res;
 }
@@ -296,5 +337,6 @@ module.exports = {
     init,
     main,
     auto,
-    album
+    album,
+    chathook
 }

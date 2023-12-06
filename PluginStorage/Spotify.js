@@ -154,7 +154,8 @@ async function main(data, api, adv, chk, isAlbum) {
         }
         let list = await getListTrack(info.link);
         for (let i of list) {
-            await main(data, api, adv, i, true);
+             main(data, api, adv, i, true);
+             await new Promise((t)=>setTimeout(t, 1000));
         }
         console.log("Spotify", "Fetch data from album is done, the download process will continue!")
         return;
@@ -170,9 +171,12 @@ async function main(data, api, adv, chk, isAlbum) {
     let stream = ytdl(ytid, {
         quality: "highestaudio"
     });
-
-    ffmpeg(stream).audioBitrate(128).save
+    
+    info.ytid = ytid;
+    console.log("Spotify", info);
+    //ffmpeg(stream).audioBitrate(128).save
     ffmpeg(stream).audioBitrate(128).save(dir).on('end', () => {
+        console.log("Spotify", "Success: " + info.title+". Sending...");
         if (fs.statSync(dir).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dir), data.messageID)
         else
             api.sendMessage({
@@ -181,8 +185,6 @@ async function main(data, api, adv, chk, isAlbum) {
         }, data.threadID, () => fs.unlinkSync(dir), data.messageID)
     });
 
-
-    console.log(info);
 }
 
 async function auto(data, api, {rlang, getThreadInfo}) {

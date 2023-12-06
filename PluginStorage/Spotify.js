@@ -109,7 +109,13 @@ function init() {
                 "vi_VN": "Đường link không hợp lệ!",
                 "en_US": "The link is not valid!",
                 "args": {}
-            }
+            },
+            "notSP": {
+                "desc": "Format not yet supported",
+                "vi_VN": "Định dạng chưa được hỗ trợ!",
+                "en_US": "Format not yet supported!",
+                "args": {}
+            },
         },
         "config": {
             "albumDownload": false
@@ -152,7 +158,7 @@ async function main(data, api, adv, chk, isAlbum) {
         }
         console.log("Spotify", "Fetch data from album is done, the download process will continue!")
         return;
-    }
+    } else return api.sendMessage(adv.rlang("notSP"), data.threadID, data.messageID);
 
 
     let name = new Date().getTime() + data.messageID + ".mp3";

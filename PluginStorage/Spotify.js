@@ -265,9 +265,9 @@ async function getInfo(url) {
         type: dom.querySelector('meta[property="og:type"]').content,
         link: dom.querySelector('meta[property="og:url"]').content,
         title: dom.querySelector('meta[property="og:title"]').content,
-        artist: dom.querySelector('meta[property="og:description"]').content.split(" · ")[0],
-        date: dom.querySelector('meta[name="music:release_date"]').content,
-        image: dom.querySelector('meta[name="twitter:image"]').content
+        artist: dom.querySelector('meta[property="og:description"]') ? dom.querySelector('meta[property="og:description"]').content.split(" · ")[0]:"",
+        date: dom.querySelector('meta[name="music:release_date"]') ? dom.querySelector('meta[name="music:release_date"]').content:"",
+        image: dom.querySelector('meta[name="twitter:image"]') ? dom.querySelector('meta[name="twitter:image"]').content:""
     }
 
     //console.log(res);

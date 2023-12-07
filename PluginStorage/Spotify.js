@@ -155,7 +155,7 @@ async function main(data, api, adv, chk, isAlbum) {
         let list = await getListTrack(info.link);
         for (let i of list) {
              main(data, api, adv, i, true);
-             await new Promise((t)=>setTimeout(t, 1000));
+             await new Promise((t)=>setTimeout(t, 5000));
         }
         console.log("Spotify", "Fetch data from album is done, the download process will continue!")
         return;

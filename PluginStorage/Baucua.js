@@ -80,10 +80,10 @@ async function main(data, api, adv) {
             }
             if (winBet == 0) continue;
             
-            global.data.economy[data.senderID].coin += winBet;
+            global.data.economy[i].coin += winBet;
             
             let name = (await adv.getUserInfo(i)).name;
-            listWinStr += `${num++}. ${name}: +${winBet+global.data.economyConfig.icon}. Hiện có: ${global.data.economy[data.senderID].coin+global.data.economyConfig.icon}\n`
+            listWinStr += `${num++}. ${name}: +${winBet+global.data.economyConfig.icon}. Hiện có: ${global.data.economy[i].coin+global.data.economyConfig.icon}\n`
         }
         
         let list = ["🍐", "🦀", "🐟", "🐔", "🦐", "🦌"];

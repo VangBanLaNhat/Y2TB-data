@@ -87,7 +87,7 @@ async function main(data, api, adv) {
         }
         
         let list = ["🍐", "🦀", "🐟", "🐔", "🦐", "🦌"];
-        api.sendMessage(`Kết quả:\n|${list[dice[0]-1]}|${list[dice[1]-1]}|${list[dice[2]-1]}|\n\nDanh sách người chơi thắng cuộc: \n${listWinStr}`, data.threadID);
+        api.sendMessage(`Kết quả:\n|${list[dice[0]-1]}|${list[dice[1]-1]}|${list[dice[2]-1]}|\n\nDanh sách người chơi thắng cuộc: \n${listWinStr == ""?"Không có ai":listWinStr}`, data.threadID);
         delete global.temp.baucua[data.threadID];
     }, 60*1000);
 }

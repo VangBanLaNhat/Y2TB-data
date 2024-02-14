@@ -1,5 +1,13 @@
 [
   { 
+     "file": "Baucua.js", 
+     "username": "HerokeyVN", 
+     "author": "HerokeyVN", 
+     "vi": "Trò chơi Bầu Cua", 
+     "en": "Chuck-a-luck Game", 
+     "ver": "0.0.1" 
+   },
+  { 
      "file": "Spotify.js", 
      "username": "HerokeyVN", 
      "author": "HerokeyVN", 

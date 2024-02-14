@@ -86,8 +86,8 @@ async function main(data, api, adv) {
             listWinStr += `${num++}. ${name}: +${winBet+global.data.economyConfig.icon}. Hiện có: ${global.data.economy[data.senderID].coin+global.data.economyConfig.icon}\n`
         }
         
-        let list = ["Bầu (🍐)", "Cua (🦀)", "Cá (🐟)", "Gà (🐔)", "Tôm (🦐)", "Nai (🦌)"];
-        api.sendMessage(`Kết quả: |${list[dice[0]-1]}|${list[dice[1]-1]}|${list[dice[2]-1]}|\n\nDanh sách người chơi thắng cuộc: \n${listWinStr}`, data.threadID);
+        let list = ["🍐", "🦀", "🐟", "🐔", "🦐", "🦌"];
+        api.sendMessage(`Kết quả:\n|${list[dice[0]-1]}|${list[dice[1]-1]}|${list[dice[2]-1]}|\n\nDanh sách người chơi thắng cuộc: \n${listWinStr}`, data.threadID);
         delete global.temp.baucua[data.threadID];
     }, 60*1000);
 }

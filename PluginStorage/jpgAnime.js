@@ -5,8 +5,8 @@ function init() {
         "commandList": {
             "anime": {
                 "help": {
-                    "vi_VN": "<Neko> || <Bomb> || <BDSM> || <Maid> || <Hentai>",
-                    "en_US": "<Neko> || <Bomb> || <BDSM> || <Maid> || <Hentai>"
+                    "vi_VN": "<Bomb> || <BDSM> || <Maid> || <Hentai>",
+                    "en_US": "<Bomb> || <BDSM> || <Maid> || <Hentai>"
                 },
                 "tag": {
                     "vi_VN": "Cho bạn 1 tấm ảnh Anime cute UwU",
@@ -33,10 +33,6 @@ function main(data, api) {
     ensureExists(path.join(__dirname, "cache", "jpgAnime"));
 
     switch ((data.args[1]+"").toLowerCase()) {
-        case "neko": {
-            neko(data, api);
-            break;
-        }
         case "bomb": {
             bomb(data, api);
             break;

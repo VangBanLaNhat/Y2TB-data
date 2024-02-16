@@ -50,7 +50,7 @@ function main(data, api) {
             break;
         }
         default: {
-            api.sendMessage("Wrong command. Use: "+global.config.facebook.prefix+"anime <Neko> || <Bomb> || <BDSM> || <Maid> || <Hentai>\n- Ex: "+global.config.facebook.prefix+"anime neko", data.threadID, data.messageID);
+            api.sendMessage("Wrong command. Use: "+global.config.facebook.prefix+"anime <Bomb> || <BDSM> || <Maid> || <Hentai>\n- Ex: "+global.config.facebook.prefix+"anime maid", data.threadID, data.messageID);
             break;
         }
     }

@@ -119,7 +119,7 @@ async function main(data, api, adv) {
             url: res.data.video,
             responseType: 'stream'
         });
-        
+        if(res.data.video == res.data.audio) {api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); return;}
         let dir = path.join(__dirname, "cache", "tiktok", data.messageID+".mp4")
         ensureExists(path.join(__dirname, "cache", "tiktok"))
 

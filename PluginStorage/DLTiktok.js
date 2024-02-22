@@ -42,8 +42,7 @@ function init() {
         "author": "Yuuki",
         "version": "0.1.0",
         "nodeDepends": {
-            "nayan-media-downloader": "2.0.4",
-            "@tobyg74/tiktok-api-dl": "1.0.4"
+            "nayan-media-downloader": "2.0.4"
         },
         "config": {
             "autodown": true
@@ -192,9 +191,6 @@ async function bruh(data, api, adv) {
     if (data.body.indexOf(global.config.facebook.prefix) == 0) return;
 
     const { tikdown } = require("nayan-media-downloader");
-    const {
-        TiktokDL
-    } = require("@tobyg74/tiktok-api-dl");
 
 
     regEx_tiktok = /(^https:\/\/)((vm|vt|www|v)\.)?(tiktok|douyin)\.com\//
@@ -212,7 +208,6 @@ async function bruh(data, api, adv) {
         if (brah == true) {
             try {
                 var res = await tikdown(cc);
-                var ress = await TiktokDL(cc);
             } catch (e) {
                 return console.warn("Auto Download", e);
             }
@@ -220,10 +215,10 @@ async function bruh(data, api, adv) {
             // console.log(res.result);
             if(!res.data) continue;
 
-            if (ress.result.type == "image") {
-                await imageType(data, api, adv, res);
-                continue;
-            }
+            // if (res.data.type == "image") {
+            //     await imageType(data, api, adv, res);
+            //     continue;
+            // }
 
             await videoType(data, api, adv, res);
         }
@@ -243,15 +238,15 @@ async function imageType(data, api, adv, res) {
         config,
         replaceMap
     } = adv;
-    var nameidea = res.result.description;
-    var name = res.result.author.nickname;
-    var username = res.result.author.username;
-    var views = res.result.statistics.playCount;
-    var loves = res.result.statistics.likeCount;
-    var comments = res.result.statistics.commentCount;
-    var shares = res.result.statistics.shareCount;
-    var favorite = res.result.statistics.favoriteCount;
-    var downloadC = res.result.statistics.downloadCount;
+        var nameidea = res.data.title;
+        var name = res.data.author.nickname;
+        var username = res.data.author.unique_id;
+        var views = res.data.play;
+        var loves = res.data.view;
+        var comments = res.data.comment;
+        var shares = res.data.share;
+        // var favorite = res.result.statistics.favoriteCount;
+        var downloadC = res.data.download;
 
 
     let map = {
@@ -263,7 +258,7 @@ async function imageType(data, api, adv, res) {
         "{comments}": comments,
         "{shares}": shares,
         "{downloadC}": downloadC,
-        "{favorite}": favorite
+        // "{favorite}": favorite
     }
 
     let img = [],

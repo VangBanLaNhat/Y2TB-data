@@ -42,7 +42,7 @@ function init() {
         "author": "Yuuki",
         "version": "0.1.0",
         "nodeDepends": {
-            "@tobyg74/tiktok-api-dl": "1.0.4"
+            "nayan-media-downloader": "2.0.4"
         },
         "config": {
             "autodown": true
@@ -88,7 +88,7 @@ function init() {
     }
 }
 async function main(data, api, adv) {
-    const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
+    const { tikdown } = require("nayan-media-downloader");
     const {rlang, replaceMap} = adv;
 
     try {
@@ -101,22 +101,22 @@ async function main(data, api, adv) {
     	let code = global.config.bot_info.lang;
     	
         if (!link) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
-        const res = await TiktokDL(link);
+        const res = await tikdown(link);
         //console.log(res);
         if(res.status == "error") return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
-        var nameidea = res.result.description;
-        var name = res.result.author.nickname;
-        var username = res.result.author.username;
-        var views = res.result.statistics.playCount;
-        var loves = res.result.statistics.likeCount;
-        var comments = res.result.statistics.commentCount;
-        var shares = res.result.statistics.shareCount;
-        var favorite = res.result.statistics.favoriteCount;
-        var downloadC = res.result.statistics.downloadCount;
+        var nameidea = res.data.title;
+        var name = res.data.author.nickname;
+        var username = res.data.author.unique_id;
+        var views = res.data.play;
+        var loves = res.data.view;
+        var comments = res.data.comment;
+        var shares = res.data.share;
+        // var favorite = res.result.statistics.favoriteCount;
+        var downloadC = res.data.download;
         //console.log(nameidea);
         const response = await axios({
             method: 'get',
-            url: res.result.video[1],
+            url: res.data.video,
             responseType: 'stream'
         });
         
@@ -133,7 +133,7 @@ async function main(data, api, adv) {
         	"{comments}": comments,
         	"{shares}": shares,
         	"{downloadC}": downloadC,
-        	"{favorite}": favorite
+        	// "{favorite}": favorite
         }
         stream.on("finish", () => {
         	//console.log(rlang("Done"))
@@ -190,9 +190,7 @@ async function bruh(data, api, adv) {
     if (!global.data.autodown[data.threadID]) return;
     if (data.body.indexOf(global.config.facebook.prefix) == 0) return;
 
-    const {
-        TiktokDL
-    } = require("@tobyg74/tiktok-api-dl");
+    const { tikdown } = require("nayan-media-downloader");
 
 
     regEx_tiktok = /(^https:\/\/)((vm|vt|www|v)\.)?(tiktok|douyin)\.com\//
@@ -209,18 +207,18 @@ async function bruh(data, api, adv) {
         let brah = new RegExp(regEx_tiktok).test(cc);
         if (brah == true) {
             try {
-                var res = await TiktokDL(cc);
+                var res = await tikdown(cc);
             } catch (e) {
                 return console.warn("Auto Download", e);
             }
 
             // console.log(res.result);
-            if(!res.result) continue;
+            if(!res.data) continue;
 
-            if (res.result.type == "image") {
-                await imageType(data, api, adv, res);
-                continue;
-            }
+            // if (res.data.type == "image") {
+            //     await imageType(data, api, adv, res);
+            //     continue;
+            // }
 
             await videoType(data, api, adv, res);
         }
@@ -240,15 +238,15 @@ async function imageType(data, api, adv, res) {
         config,
         replaceMap
     } = adv;
-    var nameidea = res.result.description;
-    var name = res.result.author.nickname;
-    var username = res.result.author.username;
-    var views = res.result.statistics.playCount;
-    var loves = res.result.statistics.likeCount;
-    var comments = res.result.statistics.commentCount;
-    var shares = res.result.statistics.shareCount;
-    var favorite = res.result.statistics.favoriteCount;
-    var downloadC = res.result.statistics.downloadCount;
+        var nameidea = res.data.title;
+        var name = res.data.author.nickname;
+        var username = res.data.author.unique_id;
+        var views = res.data.play;
+        var loves = res.data.view;
+        var comments = res.data.comment;
+        var shares = res.data.share;
+        // var favorite = res.result.statistics.favoriteCount;
+        var downloadC = res.data.download;
 
 
     let map = {
@@ -260,7 +258,7 @@ async function imageType(data, api, adv, res) {
         "{comments}": comments,
         "{shares}": shares,
         "{downloadC}": downloadC,
-        "{favorite}": favorite
+        // "{favorite}": favorite
     }
 
     let img = [],
@@ -321,19 +319,19 @@ async function videoType(data, api, adv, res) {
         config,
         replaceMap
     } = adv;
-    var nameidea = res.result.description;
-    var name = res.result.author.nickname;
-    var username = res.result.author.username;
-    var views = res.result.statistics.playCount;
-    var loves = res.result.statistics.likeCount;
-    var comments = res.result.statistics.commentCount;
-    var shares = res.result.statistics.shareCount;
-    var favorite = res.result.statistics.favoriteCount;
-    var downloadC = res.result.statistics.downloadCount;
+        var nameidea = res.data.title;
+        var name = res.data.author.nickname;
+        var username = res.data.author.unique_id;
+        var views = res.data.play;
+        var loves = res.data.view;
+        var comments = res.data.comment;
+        var shares = res.data.share;
+        // var favorite = res.result.statistics.favoriteCount;
+        var downloadC = res.data.download;
 
     const response = await axios({
         method: 'get',
-        url: res.result.video[1],
+        url: res.data.video,
         responseType: 'stream'
     });
     let time = Date.parse(new Date());
@@ -355,7 +353,7 @@ async function videoType(data, api, adv, res) {
         "{comments}": comments,
         "{shares}": shares,
         "{downloadC}": downloadC,
-        "{favorite}": favorite
+        // "{favorite}": favorite
     }
     stream.on("finish",
         () => {

@@ -92,11 +92,13 @@ async function mainv1(data, api, adv) {
 	!global.data.openai ? global.data.openai = {}:"";
 	!global.data.openai.chatgpt ? global.data.openai.chatgpt = {}:"";
 	!global.data.openai.chatgpt[data.threadID] ? global.data.openai.chatgpt[data.threadID] = []:"";
-	const { Configuration, OpenAIApi } = require("openai");
-	const configuration = new Configuration({
+	const { Configuration, OpenAI } = require("openai");
+	/*const configuration = new Configuration({
 		apiKey: config.apiKey,
+	});*/
+	const openai = new OpenAI ({
+		apiKey: config.apiKey
 	});
-	const openai = new OpenAIApi(configuration);
 	
 	try{
 		/*global.data.openai.chatgpt[data.threadID].push({
@@ -104,8 +106,8 @@ async function mainv1(data, api, adv) {
 			"content": data.body
 		});*/
 		console.log(data.body);
-		let api_res = await openai.createCompletion({
-			model: "text-davinci-003",
+		let api_res = await openai.openai.chat.completions.create({
+			model: "gpt-3.5-turbo",
 			prompt: data.body,
 			temperature: 0.7
 			//max_tokens: 2049
@@ -113,11 +115,11 @@ async function mainv1(data, api, adv) {
 		
 		//global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);
 		//console.log(api_res.data.choices[0].text);
-		api.sendMessage(api_res.data.choices[0].text.toString(), data.threadID, data.messageID);
+		api.sendMessage(api_res.choices[0].text.toString(), data.threadID, data.messageID);
 	} catch(e){
 		console.error("ChatGPT", e.response);
 		
-		return api.sendMessage(e.response.data.error.message, data.threadID, data.messageID);
+		return api.sendMessage(e.response.error.message, data.threadID, data.messageID);
 	}
 }
 
@@ -155,7 +157,7 @@ async function main(data, api, adv, ii) {
 		});
 		//console.log(data.body);
 		let api_res = await openai.chat.completions.create({
-			model: "gpt-3.5-turbo",
+			model: "gpt-3.5-turbo-16k",
 			messages: global.data.openai.chatgpt[data.threadID],
 			max_tokens: 2049 - data.body.length
 		})

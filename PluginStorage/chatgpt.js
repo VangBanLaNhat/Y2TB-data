@@ -122,6 +122,7 @@ async function mainv1(data, api, adv) {
 }
 
 async function main(data, api, adv, ii) {
+	//console.log(adv.config.apiKey);
 	let {config, rlang} = adv;
 	if(config.apiKey == "" || !config.apiKey) return api.sendMessage(rlang("nokey"), data.threadID, data.messageID);
 	if(data.body == "") return api.sendMessage(rlang("noinput"), data.threadID, data.messageID);
@@ -133,11 +134,13 @@ async function main(data, api, adv, ii) {
 	!global.openai.timeout ? global.openai.timeout = {}:"";
 	!global.openai.timeout.chatgpt ? global.openai.timeout.chatgpt = {}:"";
 	
-	const { Configuration, OpenAIApi } = require("openai");
-	const configuration = new Configuration({
+	const { Configuration, OpenAI } = require("openai");
+	/*const configuration = new Configuration({
 		apiKey: config.apiKey,
+	});*/
+	const openai = new OpenAI ({
+		apiKey: config.apiKey
 	});
-	const openai = new OpenAIApi(configuration);
 	
 	if(!global.openai.timeout.chatgpt[data.threadID])
 		global.openai.timeout.chatgpt[data.threadID] = setTimeout(function() {
@@ -151,22 +154,23 @@ async function main(data, api, adv, ii) {
 			"content": data.body
 		});
 		//console.log(data.body);
-		let api_res = await openai.createChatCompletion({
+		let api_res = await openai.chat.completions.create({
 			model: "gpt-3.5-turbo",
 			messages: global.data.openai.chatgpt[data.threadID],
 			max_tokens: 2049 - data.body.length
 		})
 		
-		if(api_res.data.choices[0].message.content.toString().length <= 1000){
-			global.data.openai.chatgpt[data.threadID].push(api_res.data.choices[0].message);
+		if(api_res.choices[0].message.content.toString().length <= 1000){
+			global.data.openai.chatgpt[data.threadID].push(api_res.choices[0].message);
 		}
 		//console.log(api_res.data.choices[0].text);
-		api.sendMessage(api_res.data.choices[0].message.content.toString(), data.threadID, data.messageID);
+		api.sendMessage(api_res.choices[0].message.content.toString(), data.threadID, data.messageID);
 	} catch(e){
-		if(e.response.status == 429 || e.response.status == 401 ||e.response.status == 404){
-			console.error("ChatGPT", e.response);
+		console.log(e)
+		if(e.error){
+			console.error("ChatGPT", e.error.message);
 		
-			return api.sendMessage(e.response.data.error.message, data.threadID, data.messageID);
+			return api.sendMessage(e.error.message, data.threadID, data.messageID);
 		}
 		
 		ii = !ii?0:ii;

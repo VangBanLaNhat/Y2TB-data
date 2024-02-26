@@ -117,9 +117,10 @@ async function mainv1(data, api, adv) {
 		//console.log(api_res.data.choices[0].text);
 		api.sendMessage(api_res.choices[0].text.toString(), data.threadID, data.messageID);
 	} catch(e){
-		console.error("ChatGPT", e.error.message);
+		console.log(e);
+		/*console.error("ChatGPT", e.error.message);
 		
-		return api.sendMessage(e.error.message, data.threadID, data.messageID);
+		return api.sendMessage(e.error.message, data.threadID, data.messageID);*/
 	}
 }
 

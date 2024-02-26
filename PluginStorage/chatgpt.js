@@ -106,7 +106,7 @@ async function mainv1(data, api, adv) {
 			"content": data.body
 		});*/
 		console.log(data.body);
-		let api_res = await openai.openai.chat.completions.create({
+		let api_res = await openai.chat.completions.create({
 			model: "gpt-3.5-turbo",
 			prompt: data.body,
 			temperature: 0.7

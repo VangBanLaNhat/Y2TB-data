@@ -24,9 +24,9 @@ async function csim(data, api, adv){
         })
         var json = await datajs.json();
 
-        //Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời
         var s = json.message != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời." ? json.message : msg;
         s = s != "I do not know how to answer. Teach me the answer." ? s : msg;
+        s = s != "Required parameter is not present" ? s : msg;
         s = s != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời" ? s : "Lói cái dell gì thế ?";
         
         var rt = global.lang.Csim.simReturn[global.config.bot_info.lang].replace("{0}", s);
@@ -54,6 +54,7 @@ async function chathook(data, api, adv){
 
         var s = json.message != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời." ? json.message : msg;
         s = s != "I do not know how to answer. Teach me the answer." ? s : msg;
+        s = s != "Required parameter is not present" ? s : msg;
         s = s != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời" ? s : "Lói cái dell gì thế ?";
 
         var rt = global.lang.Csim.simReturn[global.config.bot_info.lang].replace("{0}", s);

@@ -24,8 +24,10 @@ async function csim(data, api, adv){
         })
         var json = await datajs.json();
 
+        //Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời
         var s = json.message != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời." ? json.message : msg;
         s = s != "I do not know how to answer. Teach me the answer." ? s : msg;
+        s = s != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời" ? s : "Lói cái dell gì thế ?";
         
         var rt = global.lang.Csim.simReturn[global.config.bot_info.lang].replace("{0}", s);
         if (s != undefined) {
@@ -36,7 +38,7 @@ async function csim(data, api, adv){
 
 async function chathook(data, api, adv){
     !global.data.csim?global.data.csim = {}:"";
-    if(data.type == "message" && global.data.csim[data.threadID] && data.body != `${global.config.facebook.prefix}csim off`){
+    if(data.type == "message" && global.data.csim[data.threadID] && data.body != `${global.config.facebook.prefix}csim off` && data.body.indexOf(global.config.facebook.prefix) != 0){
         const fetch = require("node-fetch");
         
         let lang = global.config.bot_info.lang.split("_")[1].toLowerCase() == "vn" ? "vn" : global.config.bot_info.lang.split("_")[0];
@@ -52,6 +54,7 @@ async function chathook(data, api, adv){
 
         var s = json.message != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời." ? json.message : msg;
         s = s != "I do not know how to answer. Teach me the answer." ? s : msg;
+        s = s != "Tôi không biết làm thế nào để trả lời. Dạy tôi câu trả lời" ? s : "Lói cái dell gì thế ?";
 
         var rt = global.lang.Csim.simReturn[global.config.bot_info.lang].replace("{0}", s);
         if (s != undefined) {
@@ -120,7 +123,7 @@ function init(){
             "api_key_premium": ""
         },
         "author": "HerokeyVN",
-        "version": "0.0.2"
+        "version": "0.0.3"
     }
 }
 

@@ -305,7 +305,7 @@ async function imageType(data, api, adv, res) {
     }
 
     console.log(res.result.music.playUrl[0]);
-    return;
+    //return;
     const response = await axios({
         method: 'get',
         url: res.result.music.playUrl[0],

@@ -215,7 +215,7 @@ async function bruh(data, api, adv) {
                 return console.warn("Auto Download", e);
             }
 
-            console.log(res.result);
+            console.log(res);
             if(!res.data) continue;
 
             // if (res.data.type == "image") {

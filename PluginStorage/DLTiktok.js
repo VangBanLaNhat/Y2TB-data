@@ -163,6 +163,7 @@ async function bruh(data, api, adv) {
     if (data.body.indexOf(global.config.facebook.prefix) == 0) return;
 
     const { tikdown } = require("nayan-media-downloader");
+    const { TiktokDownloader } = require("@tobyg74/tiktok-api-dl");
 
 
     regEx_tiktok = /(^https:\/\/)((vm|vt|www|v)\.)?(tiktok|douyin)\.com\//

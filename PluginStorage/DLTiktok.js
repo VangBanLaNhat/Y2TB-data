@@ -119,7 +119,10 @@ async function main(data, api, adv) {
             url: res.data.video,
             responseType: 'stream'
         });
-        if(res.data.video == res.data.audio) {api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); return;}
+        if(res.data.video == res.data.audio) {
+            api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); 
+            return;
+        }
         let dir = path.join(__dirname, "cache", "tiktok", data.messageID+".mp4")
         ensureExists(path.join(__dirname, "cache", "tiktok"))
 
@@ -212,7 +215,7 @@ async function bruh(data, api, adv) {
                 return console.warn("Auto Download", e);
             }
 
-            // console.log(res.result);
+            console.log(res.result);
             if(!res.data) continue;
 
             // if (res.data.type == "image") {
@@ -226,89 +229,89 @@ async function bruh(data, api, adv) {
 
 }
 
-// async function imageType(data, api, adv, res) {
-//     const path = require("path");
-//     const streamBuffers = require("stream-buffers");
-//     const axios = require('axios');
-//     const fetch = require("node-fetch");
-//     const fs = require("fs");
+async function imageType(data, api, adv, res) {
+    const path = require("path");
+    const streamBuffers = require("stream-buffers");
+    const axios = require('axios');
+    const fetch = require("node-fetch");
+    const fs = require("fs");
 
-//     let {
-//         rlang,
-//         config,
-//         replaceMap
-//     } = adv;
-//         var nameidea = res.data.title;
-//         var name = res.data.author.nickname;
-//         var username = res.data.author.unique_id;
-//         var views = res.data.play;
-//         var loves = res.data.view;
-//         var comments = res.data.comment;
-//         var shares = res.data.share;
-//         // var favorite = res.result.statistics.favoriteCount;
-//         var downloadC = res.data.download;
+    let {
+        rlang,
+        config,
+        replaceMap
+    } = adv;
+        var nameidea = res.data.title;
+        var name = res.data.author.nickname;
+        var username = res.data.author.unique_id;
+        var views = res.data.play;
+        var loves = res.data.view;
+        var comments = res.data.comment;
+        var shares = res.data.share;
+        // var favorite = res.result.statistics.favoriteCount;
+        var downloadC = res.data.download;
 
 
-//     let map = {
-//         "{nameidea}": nameidea,
-//         "{name}": name,
-//         "{username}": username,
-//         "{views}": views,
-//         "{loves}": loves,
-//         "{comments}": comments,
-//         "{shares}": shares,
-//         "{downloadC}": downloadC,
-//         // "{favorite}": favorite
-//     }
+    let map = {
+        "{nameidea}": nameidea,
+        "{name}": name,
+        "{username}": username,
+        "{views}": views,
+        "{loves}": loves,
+        "{comments}": comments,
+        "{shares}": shares,
+        "{downloadC}": downloadC,
+        // "{favorite}": favorite
+    }
 
-//     let img = [],
-//     listFile = [];
+    let img = [],
+    listFile = [];
 
-//     for (let i in res.result.images) {
-//         let x = res.result.images[i];
-//         let fetchimage = await fetch(x);
-//         let buffer = await fetchimage.buffer();
-//         let imagesx = new streamBuffers.ReadableStreamBuffer({
-//             frequency: 10,
-//             chunkSize: 1024
-//         });
-//         imagesx.path = path.join(__dirname, "cache", "tiktok", data.messageID+encodeURI(x)+".jpg");
-//         img.push(path.join(__dirname, "cache", "tiktok", data.messageID+encodeURI(x)+".jpg"));
-//         imagesx.put(buffer);
-//         imagesx.stop();
+    for (let i in res.result.images) {
+        let x = res.result.images[i];
+        let fetchimage = await fetch(x);
+        let buffer = await fetchimage.buffer();
+        let imagesx = new streamBuffers.ReadableStreamBuffer({
+            frequency: 10,
+            chunkSize: 1024
+        });
+        imagesx.path = path.join(__dirname, "cache", "tiktok", data.messageID+encodeURI(x)+".jpg");
+        img.push(path.join(__dirname, "cache", "tiktok", data.messageID+encodeURI(x)+".jpg"));
+        imagesx.put(buffer);
+        imagesx.stop();
 
-//         listFile.push(imagesx);
-//     }
+        listFile.push(imagesx);
+    }
 
-//     const response = await axios({
-//         method: 'get',
-//         url: res.result.music[0],
-//         responseType: 'stream'
-//     });
+    const response = await axios({
+        method: 'get',
+        url: res.result.music[0],
+        responseType: 'stream'
+    });
     
-//     let time = Date.parse(new Date());
-//     let dir = path.join(__dirname, "cache", "tiktok", data.messageID+ time + ".mp3")
-//     ensureExists(path.join(__dirname, "cache", "tiktok"))
+    let time = Date.parse(new Date());
+    let dir = path.join(__dirname, "cache", "tiktok", data.messageID+ time + ".mp3")
+    ensureExists(path.join(__dirname, "cache", "tiktok"))
 
-//     let stream = response.data.pipe(fs.createWriteStream(dir));
+    let stream = response.data.pipe(fs.createWriteStream(dir));
 
-//     stream.on("finish", () => {
-//         api.sendMessage({
-//             body: replaceMap(rlang("Done"), map),
-//             attachment: listFile
-//         }, data.threadID, (e, a)=> {
-//             for (let i of img) {
-//                 try {
-//                     fs.unlinkSync(i);
-//                 } catch(_) {};
-//             }
-//             api.sendMessage(({
-//                 attachment: fs.createReadStream(dir)
-//             }), data.threadID,() => fs.unlinkSync(dir), a.messageID);
-//         }, data.messageID);
+    stream.on("finish", () => {
+        api.sendMessage({
+            body: replaceMap(rlang("Done"), map),
+            attachment: listFile
+        }, data.threadID, (e, a)=> {
+            for (let i of img) {
+                try {
+                    fs.unlinkSync(i);
+                } catch(_) {};
+            }
+            api.sendMessage(({
+                attachment: fs.createReadStream(dir)
+            }), data.threadID,() => fs.unlinkSync(dir), a.messageID);
+        }, data.messageID);
 
-//     });
-// }
+    });
+}
 
 async function videoType(data, api, adv, res) {
     const fs = require('fs-extra');

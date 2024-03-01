@@ -48,8 +48,8 @@ function init() {
         "config": {
             "autodown": true
         },
-        "langMap":{
-            "nolink":{
+        "langMap": {
+            "nolink": {
                 "desc": "Send went no input",
                 "vi_VN": "Vui lòng nhập link video Tiktok!",
                 "en_US": "Please enter the Tiktok video link!",
@@ -91,28 +91,28 @@ function init() {
 async function main(data, api, adv) {
     const { tikdown } = require("nayan-media-downloader");
     const { TiktokDownloader } = require("@tobyg74/tiktok-api-dl");
-    const {rlang, replaceMap} = adv;
+    const { rlang, replaceMap } = adv;
 
     try {
         const axios = require('axios');
         const fs = require('fs-extra');
         const path = require('path');
         const link = data.args[1];
-        
+
         let lang = global.lang["Download Tiktok"];
-    	let code = global.config.bot_info.lang;
-    	
+        let code = global.config.bot_info.lang;
+
         if (!link) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
         var res = await tikdown(link);
-        
-        if(res.status == "error") return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
-        
-        if(res.data.video == res.data.audio) {
+
+        if (res.status == "error") return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
+
+        if (res.data.video == res.data.audio) {
             res = await TiktokDownloader(link, {
                 version: "v1" //  version: "v1" | "v2" | "v3"
             });
             imageType(data, api, adv, res);
-            
+
             //api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); 
             return;
         }
@@ -157,8 +157,8 @@ async function bruh(data, api, adv) {
         replaceMap
     } = adv;
 
-    !global.data.autodown ? global.data.autodown = {}: '';
-    global.data.autodown[data.threadID] == undefined ? global.data.autodown[data.threadID] = config.autodown: '';
+    !global.data.autodown ? global.data.autodown = {} : '';
+    global.data.autodown[data.threadID] == undefined ? global.data.autodown[data.threadID] = config.autodown : '';
 
 
     if (!global.data.autodown[data.threadID]) return;
@@ -187,7 +187,7 @@ async function bruh(data, api, adv) {
             }
 
             console.log(res);
-            if(!res.data) continue;
+            if (!res.data) continue;
 
             // if (res.data.type == "image") {
             //     await imageType(data, api, adv, res);
@@ -207,20 +207,70 @@ async function imageType(data, api, adv, res) {
     const fetch = require("node-fetch");
     const fs = require("fs");
 
+    /*
+     {
+  status: 'success',
+  result: {
+    type: 'image',
+    id: '7325004576195726593',
+    createTime: 1705485537,
+    description: '#xuhuong #fyp #pthanhdanh_o7 ',
+    hashtag: [ 'xuhuong', 'fyp', 'pthanhdanh_o7' ],
+    author: {
+      uid: '7291670076872377349',
+      username: '_thanhdanh.o7',
+      nickname: '𝑇ℎ𝑎𝑛ℎ 𝐷𝑎𝑛ℎ ?'      ,
+      signature: '📍follow me📍\ntdanh 💦',
+      region: 'VN',
+      avatarThumb: [Array],
+      avatarMedium: [Array],
+      url: 'https://www.tiktok.com/@_thanhdanh.o7'
+    },
+    statistics: {
+      playCount: 4332280,
+      downloadCount: 17383,
+      shareCount: 3043,
+      commentCount: 4930,
+      likeCount: 244571,
+      favoriteCount: 23860,
+      forwardCount: 0,
+      whatsappShareCount: 0,
+      loseCount: 0,
+      loseCommentCount: 0
+    },
+    images: [
+      'https://p16-sign-sg.tiktokcdn.com/tos-alisg-i-photomode-sg/af5c90c9834d4e159948347b94e019a7~tplv-photomode-image-v1:q80.heic?from=photomode.FEED&lk3s=d05b14bd&x-expires=1710579600&x-signature=j8HA5mP6gJLjZP2cRnto9qNS04o%3D',
+      'https://p16-sign-sg.tiktokcdn.com/tos-alisg-i-photomode-sg/9590082fe20842a9bbe8f0b5b5114b67~tplv-photomode-image-v1:q80.heic?from=photomode.FEED&lk3s=d05b14bd&x-expires=1710579600&x-signature=xXaP5%2FjoXy44nfNmDM%2BnPv3b4MQ%3D'
+    ],
+    music: {
+      id: 7323228990943022000,
+      title: 'original sound - ng...yen.nhi',
+      author: 'Ng yến nhi (cún) 🍁',
+      album: '',
+      playUrl: [Array],
+      coverLarge: [Array],
+      coverMedium: [Array],
+      coverThumb: [Array],
+      duration: 13
+    }
+  }
+}
+    */
+
     let {
         rlang,
         config,
         replaceMap
     } = adv;
-        var nameidea = res.data.title;
-        var name = res.data.author.nickname;
-        var username = res.data.author.unique_id;
-        var views = res.data.play;
-        var loves = res.data.view;
-        var comments = res.data.comment;
-        var shares = res.data.share;
-        // var favorite = res.result.statistics.favoriteCount;
-        var downloadC = res.data.download;
+    var nameidea = res.result.description;
+    var name = res.result.author.nickname;
+    var username = res.result.author.username;
+    var views = res.result.statistics.playCount;
+    var loves = res.result.statistics.likeCount;
+    var comments = res.result.statistics.commentCount;
+    var shares = res.result.statistics.shareCount;
+    var favorite = res.result.statistics.favoriteCount;
+    var downloadC = res.result.statistics.downloadCount;
 
 
     let map = {
@@ -232,7 +282,7 @@ async function imageType(data, api, adv, res) {
         "{comments}": comments,
         "{shares}": shares,
         "{downloadC}": downloadC,
-        // "{favorite}": favorite
+        "{favorite}": favorite
     }
 
     let img = [],
@@ -344,20 +394,20 @@ async function videoType(data, api, adv, res) {
 
 function ensureExists(path, mask) {
     var fs = require('fs');
-  if (typeof mask != 'number') {
-    mask = 0o777;
-  }
-  try {
-    fs.mkdirSync(path, {
-      mode: mask,
-      recursive: true
-    });
-    return;
-  } catch (ex) {
-    return {
-      err: ex
-    };
-  }
+    if (typeof mask != 'number') {
+        mask = 0o777;
+    }
+    try {
+        fs.mkdirSync(path, {
+            mode: mask,
+            recursive: true
+        });
+        return;
+    } catch (ex) {
+        return {
+            err: ex
+        };
+    }
 }
 
 

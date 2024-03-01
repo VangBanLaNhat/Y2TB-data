@@ -42,7 +42,8 @@ function init() {
         "author": "Yuuki",
         "version": "0.1.0",
         "nodeDepends": {
-            "nayan-media-downloader": "2.0.4"
+            "nayan-media-downloader": "2.0.4",
+            "@tobyg74/tiktok-api-dl": "1.0.14"
         },
         "config": {
             "autodown": true
@@ -89,6 +90,7 @@ function init() {
 }
 async function main(data, api, adv) {
     const { tikdown } = require("nayan-media-downloader");
+    const { TiktokDownloader } = require("@tobyg74/tiktok-api-dl");
     const {rlang, replaceMap} = adv;
 
     try {
@@ -101,51 +103,28 @@ async function main(data, api, adv) {
     	let code = global.config.bot_info.lang;
     	
         if (!link) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
-        const res = await tikdown(link);
+        var res = await tikdown(link);
         //console.log(res);
         if(res.status == "error") return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
-        var nameidea = res.data.title;
-        var name = res.data.author.nickname;
-        var username = res.data.author.unique_id;
-        var views = res.data.play;
-        var loves = res.data.view;
-        var comments = res.data.comment;
-        var shares = res.data.share;
-        // var favorite = res.result.statistics.favoriteCount;
-        var downloadC = res.data.download;
+        // var nameidea = res.data.title;
+        // var name = res.data.author.nickname;
+        // var username = res.data.author.unique_id;
+        // var views = res.data.play;
+        // var loves = res.data.view;
+        // var comments = res.data.comment;
+        // var shares = res.data.share;
+        // // var favorite = res.result.statistics.favoriteCount;
+        // var downloadC = res.data.download;
         //console.log(nameidea);
-        const response = await axios({
-            method: 'get',
-            url: res.data.video,
-            responseType: 'stream'
-        });
         if(res.data.video == res.data.audio) {
-            api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); 
+            res = await TiktokDownloader(link, {
+                version: "v1" //  version: "v1" | "v2" | "v3"
+            });
+            console.log(res);
+            //api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); 
             return;
         }
-        let dir = path.join(__dirname, "cache", "tiktok", data.messageID+".mp4")
-        ensureExists(path.join(__dirname, "cache", "tiktok"))
-
-        let stream = response.data.pipe(fs.createWriteStream(dir));
-        let map = {
-        	"{nameidea}": nameidea,
-        	"{name}": name,
-        	"{username}": username,
-        	"{views}": views,
-        	"{loves}": loves,
-        	"{comments}": comments,
-        	"{shares}": shares,
-        	"{downloadC}": downloadC,
-        	// "{favorite}": favorite
-        }
-        stream.on("finish", () => {
-        	//console.log(rlang("Done"))
-            api.sendMessage(({
-            	
-                body: replaceMap(rlang("Done"), map),
-                attachment: fs.createReadStream(dir)
-            }), data.threadID, ()=>fs.unlinkSync(dir), data.messageID);
-        });
+        await videoType(data, api, adv, res);
     } catch (err) {
         console.error(err);
         api.sendMessage(err, data.threadID, data.messageID)
@@ -322,15 +301,15 @@ async function videoType(data, api, adv, res) {
         config,
         replaceMap
     } = adv;
-        var nameidea = res.data.title;
-        var name = res.data.author.nickname;
-        var username = res.data.author.unique_id;
-        var views = res.data.play;
-        var loves = res.data.view;
-        var comments = res.data.comment;
-        var shares = res.data.share;
-        // var favorite = res.result.statistics.favoriteCount;
-        var downloadC = res.data.download;
+    var nameidea = res.data.title;
+    var name = res.data.author.nickname;
+    var username = res.data.author.unique_id;
+    var views = res.data.play;
+    var loves = res.data.view;
+    var comments = res.data.comment;
+    var shares = res.data.share;
+    // var favorite = res.result.statistics.favoriteCount;
+    var downloadC = res.data.download;
 
     const response = await axios({
         method: 'get',
@@ -338,7 +317,7 @@ async function videoType(data, api, adv, res) {
         responseType: 'stream'
     });
     let time = Date.parse(new Date());
-    if(res.data.video == res.data.audio) {api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); return;}
+    //if(res.data.video == res.data.audio) {api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); return;}
     let dir = path.join(__dirname,
         "cache",
         "tiktok",

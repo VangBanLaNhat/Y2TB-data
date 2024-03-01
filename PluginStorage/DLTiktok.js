@@ -179,13 +179,14 @@ async function bruh(data, api, adv) {
 
         let brah = new RegExp(regEx_tiktok).test(cc);
         if (brah == true) {
+            let res;
             try {
-                var res = await tikdown(cc);
+                res = await tikdown(cc);
             } catch (e) {
                 return console.warn("Auto Download", e);
             }
 
-            console.log(res);
+            //console.log(res);
             if (!res.data) continue;
 
             // if (res.data.type == "image") {
@@ -193,7 +194,7 @@ async function bruh(data, api, adv) {
             //     continue;
             // }
             if (res.data.video == res.data.audio) {
-                res = await TiktokDownloader(link, {
+                res = await TiktokDownloader(cc, {
                     version: "v1" //  version: "v1" | "v2" | "v3"
                 });
                 imageType(data, api, adv, res);

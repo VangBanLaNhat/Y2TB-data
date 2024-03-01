@@ -40,7 +40,7 @@ function init() {
         },
         "chathook": "bruh",
         "author": "Yuuki",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "nodeDepends": {
             "nayan-media-downloader": "2.0.4",
             "@tobyg74/tiktok-api-dl": "1.0.14"
@@ -112,8 +112,6 @@ async function main(data, api, adv) {
                 version: "v1" //  version: "v1" | "v2" | "v3"
             });
             imageType(data, api, adv, res);
-
-            //api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); 
             return;
         }
         await videoType(data, api, adv, res);
@@ -193,6 +191,13 @@ async function bruh(data, api, adv) {
             //     await imageType(data, api, adv, res);
             //     continue;
             // }
+            if (res.data.video == res.data.audio) {
+                res = await TiktokDownloader(link, {
+                    version: "v1" //  version: "v1" | "v2" | "v3"
+                });
+                imageType(data, api, adv, res);
+                continue;
+            }
 
             await videoType(data, api, adv, res);
         }
@@ -206,56 +211,6 @@ async function imageType(data, api, adv, res) {
     const axios = require('axios');
     const fetch = require("node-fetch");
     const fs = require("fs");
-
-    /*
-     {
-  status: 'success',
-  result: {
-    type: 'image',
-    id: '7325004576195726593',
-    createTime: 1705485537,
-    description: '#xuhuong #fyp #pthanhdanh_o7 ',
-    hashtag: [ 'xuhuong', 'fyp', 'pthanhdanh_o7' ],
-    author: {
-      uid: '7291670076872377349',
-      username: '_thanhdanh.o7',
-      nickname: '𝑇ℎ𝑎𝑛ℎ 𝐷𝑎𝑛ℎ ?'      ,
-      signature: '📍follow me📍\ntdanh 💦',
-      region: 'VN',
-      avatarThumb: [Array],
-      avatarMedium: [Array],
-      url: 'https://www.tiktok.com/@_thanhdanh.o7'
-    },
-    statistics: {
-      playCount: 4332280,
-      downloadCount: 17383,
-      shareCount: 3043,
-      commentCount: 4930,
-      likeCount: 244571,
-      favoriteCount: 23860,
-      forwardCount: 0,
-      whatsappShareCount: 0,
-      loseCount: 0,
-      loseCommentCount: 0
-    },
-    images: [
-      'https://p16-sign-sg.tiktokcdn.com/tos-alisg-i-photomode-sg/af5c90c9834d4e159948347b94e019a7~tplv-photomode-image-v1:q80.heic?from=photomode.FEED&lk3s=d05b14bd&x-expires=1710579600&x-signature=j8HA5mP6gJLjZP2cRnto9qNS04o%3D',
-      'https://p16-sign-sg.tiktokcdn.com/tos-alisg-i-photomode-sg/9590082fe20842a9bbe8f0b5b5114b67~tplv-photomode-image-v1:q80.heic?from=photomode.FEED&lk3s=d05b14bd&x-expires=1710579600&x-signature=xXaP5%2FjoXy44nfNmDM%2BnPv3b4MQ%3D'
-    ],
-    music: {
-      id: 7323228990943022000,
-      title: 'original sound - ng...yen.nhi',
-      author: 'Ng yến nhi (cún) 🍁',
-      album: '',
-      playUrl: [Array],
-      coverLarge: [Array],
-      coverMedium: [Array],
-      coverThumb: [Array],
-      duration: 13
-    }
-  }
-}
-    */
 
     let {
         rlang,
@@ -304,8 +259,6 @@ async function imageType(data, api, adv, res) {
         listFile.push(imagesx);
     }
 
-    console.log(res.result.music.playUrl[0]);
-    //return;
     const response = await axios({
         method: 'get',
         url: res.result.music.playUrl[0],

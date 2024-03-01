@@ -104,23 +104,15 @@ async function main(data, api, adv) {
     	
         if (!link) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
         var res = await tikdown(link);
-        //console.log(res);
+        
         if(res.status == "error") return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
-        // var nameidea = res.data.title;
-        // var name = res.data.author.nickname;
-        // var username = res.data.author.unique_id;
-        // var views = res.data.play;
-        // var loves = res.data.view;
-        // var comments = res.data.comment;
-        // var shares = res.data.share;
-        // // var favorite = res.result.statistics.favoriteCount;
-        // var downloadC = res.data.download;
-        //console.log(nameidea);
+        
         if(res.data.video == res.data.audio) {
             res = await TiktokDownloader(link, {
                 version: "v1" //  version: "v1" | "v2" | "v3"
             });
-            console.log("tik", res);
+            imageType(data, api, adv, res);
+            
             //api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); 
             return;
         }

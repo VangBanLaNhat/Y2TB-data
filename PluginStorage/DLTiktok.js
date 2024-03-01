@@ -117,7 +117,7 @@ async function main(data, api, adv) {
         // var downloadC = res.data.download;
         //console.log(nameidea);
         if(res.data.video == res.data.audio) {
-            res = await TiktokDownloader(link, {
+            res = await TiktokDL(link, {
                 version: "v1" //  version: "v1" | "v2" | "v3"
             });
             console.log(res);

@@ -90,7 +90,7 @@ function init() {
 }
 async function main(data, api, adv) {
     const { tikdown } = require("nayan-media-downloader");
-    const { TiktokDownloader, TiktokDL } = require("@tobyg74/tiktok-api-dl");
+    const { TiktokDownloader } = require("@tobyg74/tiktok-api-dl");
     const {rlang, replaceMap} = adv;
 
     try {
@@ -117,13 +117,10 @@ async function main(data, api, adv) {
         // var downloadC = res.data.download;
         //console.log(nameidea);
         if(res.data.video == res.data.audio) {
-            let res1 = await TiktokDL(link, {
+            res = await TiktokDownloader(link, {
                 version: "v1" //  version: "v1" | "v2" | "v3"
             });
-            let res2 = await TiktokDownloader(link, {
-                version: "v1" //  version: "v1" | "v2" | "v3"
-            });
-            console.log("tik", res1, res2);
+            console.log("tik", res);
             //api.sendMessage("Ảnh cái cc bố ko hỗ trợ ok!", data.threadID, data.messageID); 
             return;
         }

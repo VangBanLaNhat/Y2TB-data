@@ -40,7 +40,7 @@ function init() {
         },
         "chathook": "bruh",
         "author": "Yuuki",
-        "version": "0.1.1",
+        "version": "0.1.2",
         "nodeDepends": {
             "nayan-media-downloader": "2.0.4",
             "@tobyg74/tiktok-api-dl": "1.0.14"

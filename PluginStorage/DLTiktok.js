@@ -304,9 +304,10 @@ async function imageType(data, api, adv, res) {
         listFile.push(imagesx);
     }
 
+    console.log(res.result.music.playUrl);
     const response = await axios({
         method: 'get',
-        url: res.result.music[0],
+        url: res.result.music.playUrl[0],
         responseType: 'stream'
     });
     

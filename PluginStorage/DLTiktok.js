@@ -219,7 +219,7 @@ async function imageType(data, api, adv, res) {
         config,
         replaceMap
     } = adv;
-    var nameidea = res.result.description;//
+    var nameidea = res.result.description;
     var name = res.result.author.nickname;
     var username = res.result.author.username;
     var views = res.result.statistics.playCount;

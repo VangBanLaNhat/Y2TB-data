@@ -132,7 +132,7 @@ function send(data, api, adv){
     let listStr = "";
     for(let i in global.temp.threadPending.list){
         console.log(global.temp.threadPending.list[i]);
-        listStr += "\n"+Number(i+1)+". "+global.temp.threadPending.list[i].threadName
+        listStr += "\n"+(Number(i)+1)+". "+global.temp.threadPending.list[i].threadName
     }
     
     let map = {

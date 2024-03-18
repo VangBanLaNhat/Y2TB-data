@@ -222,7 +222,7 @@ async function imageType(data, api, adv, link) {
         console.log(vers, res);
     }
     
-    if (res.status == "error") {
+    if (res.status == "error" || !res.result.images[0]) {
         vers = "v3";
         res = await TiktokDownloader(link, {
                     version: vers

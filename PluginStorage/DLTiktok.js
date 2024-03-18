@@ -236,6 +236,7 @@ async function imageType(data, api, adv, link) {
         replaceMap
     } = adv;
     if (!res.result) return console.log(res);
+    if (!res.result.statistics) res.result.statistics = {};
     var nameidea = res.result.description;
     var name = res.result.author.nickname;
     var username = res.result.author.username;

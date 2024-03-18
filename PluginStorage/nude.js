@@ -24,7 +24,7 @@ function init(){
             }
         },
         "nodeDepends":{
-        	"random": "",
+        	"random": "3.0.6",
         	"stream-buffers":""
         },
         "author": "HerokeyVN",

@@ -281,7 +281,7 @@ async function imageType(data, api, adv, link) {
 
     const response = await axios({
         method: 'get',
-        url: res.result.music.playUrl[0],
+        url: (vers == "v1" ? res.result.music.playUrl[0]:res.result.music),
         responseType: 'stream'
     });
     

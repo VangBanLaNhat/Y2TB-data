@@ -209,15 +209,26 @@ async function imageType(data, api, adv, link) {
     const fetch = require("node-fetch");
     const fs = require("fs");
     
+    let vers = "v1";
     let res = await TiktokDownloader(link, {
-                    version: "v1" //  version: "v1" | "v2" | "v3"
+                    version: vers //  version: "v1" | "v2" | "v3"
                 });
-    if (res.status == "error") res = await TiktokDownloader(link, {
-                    version: "v2"
+
+    if (res.status == "error") {
+        vers = "v2";
+        res = await TiktokDownloader(link, {
+                    version: vers
                 });
-    if (res.status == "error") res = await TiktokDownloader(link, {
-                    version: "v3"
+        console.log(vers, res);
+    }
+    
+    if (res.status == "error") {
+        vers = "v3";
+        res = await TiktokDownloader(link, {
+                    version: vers
                 });
+        console.log(vers, res);
+    }
 
     let {
         rlang,
@@ -225,7 +236,7 @@ async function imageType(data, api, adv, link) {
         replaceMap
     } = adv;
     if (!res.result) return console.log(res);
-    var nameidea = res.result.description;
+    var nameidea = res.resuconsole.log(vers, res);lt.description;
     var name = res.result.author.nickname;
     var username = res.result.author.username;
     var views = res.result.statistics.playCount;

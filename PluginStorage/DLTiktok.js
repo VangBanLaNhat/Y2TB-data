@@ -90,7 +90,7 @@ function init() {
 }
 async function main(data, api, adv) {
     const { tikdown } = require("nayan-media-downloader");
-    const { TiktokDownloader } = require("@tobyg74/tiktok-api-dl");
+    
     const { rlang, replaceMap } = adv;
 
     try {
@@ -108,10 +108,7 @@ async function main(data, api, adv) {
         if (res.status == "error") return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
 
         if (res.data.video == res.data.audio) {
-            res = await TiktokDownloader(link, {
-                version: "v1" //  version: "v1" | "v2" | "v3"
-            });
-            imageType(data, api, adv, res);
+            imageType(data, api, adv, link);
             return;
         }
         await videoType(data, api, adv, res);
@@ -194,10 +191,7 @@ async function bruh(data, api, adv) {
             //     continue;
             // }
             if (res.data.video == res.data.audio) {
-                res = await TiktokDownloader(cc, {
-                    version: "v1" //  version: "v1" | "v2" | "v3"
-                });
-                imageType(data, api, adv, res);
+                imageType(data, api, adv, cc);
                 continue;
             }
 
@@ -207,12 +201,23 @@ async function bruh(data, api, adv) {
 
 }
 
-async function imageType(data, api, adv, res) {
+async function imageType(data, api, adv, link) {
+    const { TiktokDownloader } = require("@tobyg74/tiktok-api-dl");
     const path = require("path");
     const streamBuffers = require("stream-buffers");
     const axios = require('axios');
     const fetch = require("node-fetch");
     const fs = require("fs");
+    
+    let res = await TiktokDownloader(link, {
+                    version: "v1" //  version: "v1" | "v2" | "v3"
+                });
+    if (res.status == "error") res = await TiktokDownloader(link, {
+                    version: "v2"
+                });
+    if (res.status == "error") res = await TiktokDownloader(link, {
+                    version: "v3"
+                });
 
     let {
         rlang,

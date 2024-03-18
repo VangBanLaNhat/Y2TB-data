@@ -222,7 +222,7 @@ async function imageType(data, api, adv, link) {
         console.log(vers, res);
     }
     
-    if (res.status == "error" || !res.result.images[0]) {
+    if (res.status == "error" || res.result.images[0] == undefined) {
         vers = "v3";
         res = await TiktokDownloader(link, {
                     version: vers
@@ -236,7 +236,7 @@ async function imageType(data, api, adv, link) {
         replaceMap
     } = adv;
     if (!res.result) return console.log(res);
-    var nameidea = res.resuconsole.log(vers, res);lt.description;
+    var nameidea = res.result.description;
     var name = res.result.author.nickname;
     var username = res.result.author.username;
     var views = res.result.statistics.playCount;

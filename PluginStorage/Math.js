@@ -39,6 +39,7 @@ async function math (data, api) {
 		api.sendMessage("Lỗi: Phương trình không được để trống!", data.threadID, data.messageID);
 	} else {
 		var dataa = JSON.parse(require('sync-request')("GET", "https://coccoc.com/composer/math?q=" + encodeURIComponent(msg)).body.toString());
+  console.log(dataa);
 		if (!dataa.math.hasOwnProperty("variants")) {
 			api.sendMessage("Lỗi: Không phải phương trình!", data.threadID, data.messageID);
 		} else if (!dataa.math.variants.length) {

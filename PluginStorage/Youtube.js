@@ -204,7 +204,7 @@ function init() {
         },
         "chathook": "chathook",
         "author": "HerokeyVN",
-        "version": "1.5.0"
+        "version": "1.5.1"
     }
 }
 
@@ -474,7 +474,9 @@ async function downmp4(data, api, { rlang, replaceMap }, link) {
         }
         api.sendMessage(replaceMap(rlang("downloading"), map), data.threadID, data.messageID);
 
-        ytdl(link).pipe(fs.createWriteStream(dirr)).on("close", () => {
+        ytdl(link, {
+            quality: 'highestaudio',
+        }).pipe(fs.createWriteStream(dirr)).on("close", () => {
             if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID);
             else api.sendMessage({
                 body: replaceMap(rlang("done"), map),

@@ -166,7 +166,7 @@ function chathook(data, api, adv){
                 }
             })
             
-            done.push(i.threadName);
+            done.push(i.name);
         }
     } else {
         for(let i in msg) msg[i] = Number(msg[i]);
@@ -183,12 +183,12 @@ function chathook(data, api, adv){
                     }
                 })
 
-                done.push(i.threadName);
+                done.push(i.name);
             } else {
                 api.removeUserFromGroup(global.botid, i.threadID);
                 api.deleteThread(i.threadID);
 
-                out.push(i.threadName);
+                out.push(i.name);
             }
         }
     }

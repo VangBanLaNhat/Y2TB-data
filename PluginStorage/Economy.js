@@ -113,6 +113,21 @@ function init() {
           "vi_VN": "baltop",
           "en_US": "baltop"
         }
+      },
+      "daily": {
+        "help": {
+          "vi_VN": "",
+          "en_US": ""
+        },
+        "tag": {
+          "vi_VN": "Điểm danh hàng ngày",
+          "en_US": "Daily attendance"
+        },
+        "mainFunc": "daily",
+        "example": {
+          "vi_VN": "daily",
+          "en_US": "daily"
+        }
       }
     },
     "nodeDepends": {
@@ -352,10 +367,31 @@ function init() {
             "en_US": "Total pages"
           }
         }
+      },
+      "daily": {
+        "desc": "Điểm danh hàng ngày",
+        "vi_VN": "Bạn đã điểm danh ngày hôm nay và nhận được {daily}. Số tiền hiện có: {total}",
+        "en_US": "You took attendance today and received {daily}. Current amount: {total}",
+        "args": {
+          "{daily}": {
+            "vi_VN": "Số tiền được nhận",
+            "en_US": "Amount received"
+          },
+          "{total}": {
+            "vi_VN": "Số tiền hiện có",
+            "en_US": "Current amount"
+          }
+        }
+      },
+      "reDaily": {
+        "desc": "Đã điểm danh",
+        "vi_VN": "Hôm nay bạn đã điểm danh rồi, hãy quay lại vào ngày mai nhé!",
+        "en_US": "You've taken attendance today, come back tomorrow!",
+        "args": {}
       }
     },
     "author": "HerokeyVN",
-    "version": "0.0.1"
+    "version": "0.1.0"
   }
 }
 
@@ -633,6 +669,25 @@ async function baltop(data, api) {
   api.sendMessage(global.lang["Economy"].baltop[global.config.bot_info.lang].replace("{0}", s).replace("{1}", page).replace("{2}", Math.trunc(list.length / max) + 1), data.threadID, data.messageID);
 }
 
+function daily(data, api, adv) {
+  let {rlang, replaceMap} = adv;
+  var random = require("random");
+  !global.data.economy[data.senderID] ? global.data.economy[data.senderID] = {
+    coin: 0
+  } : "";
+  let date = (new Date()).toDateString().replaceAll(" ", "");
+  if (global.data.economy[data.senderID].daily == date) return api.sendMessage(rlang("reDaily"), data.threadID, data.senderID);
+
+  global.data.economy[data.senderID].daily = date;
+  let daily = random.int(1000, 10000);
+  global.data.economy[data.senderID].coin += daily;
+  let map = {
+    "{daily}": daily,
+    "{total}": global.data.economy[data.senderID].coin
+  }
+  api.sendMessage(replaceAll(rlang("daily"), map), data.threadID, data.messageID);
+}
+
 function replaceAll(string, arg, rep) {
   string = string.replace(arg, rep);
   if (string.indexOf(arg) != -1) {
@@ -649,5 +704,6 @@ module.exports = {
   eco,
   transfers,
   bal,
-  baltop
+  baltop,
+  daily
 }

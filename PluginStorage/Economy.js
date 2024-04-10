@@ -676,7 +676,7 @@ function daily(data, api, adv) {
     coin: 0
   } : "";
   let date = (new Date()).toDateString().replaceAll(" ", "");
-  if (global.data.economy[data.senderID].daily == date) return api.sendMessage(rlang("reDaily"), data.threadID, data.senderID);
+  if (global.data.economy[data.senderID].daily == date) return api.sendMessage(rlang("reDaily"), data.threadID, data.messageID);
 
   global.data.economy[data.senderID].daily = date;
   let daily = random.int(1000, 10000);

@@ -24,8 +24,8 @@ function init(){
              },
             "fbauto": { 
                  "help": { 
-                     "vi_VN": "", 
-                     "en_US": "" 
+                     "vi_VN": "[on || off]", 
+                     "en_US": "[on || off]" 
                  }, 
                  "tag": { 
                      "vi_VN": "Tự động tải về video từ Facebook", 
@@ -141,7 +141,7 @@ async function fbauto(data, api, {rlang, replaceMap, getThreadInfo}) {
          }  
          if(!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID); 
      } 
-     if(global.data.facebook.autodown[data.threadID]) {
+     if(global.data.facebook.autodown[data.threadID] || data.args[1].toLowerCase() == "off") {
          global.data.facebook.autodown[data.threadID] = false;
          return api.sendMessage(rlang("autoOff"), data.threadID, data.messageID);
      }

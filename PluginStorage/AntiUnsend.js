@@ -9,16 +9,16 @@ function init(){
         "commandList": {
             "antiunsend": {
                 "help": {
-                    "vi_VN": "",
-                    "en_US": ""
+                    "vi_VN": "[on || off]",
+                    "en_US": "[on || off]"
                 },
                 "tag": {
                     "vi_VN": "Bật/Tắt AntiUnsend",
                     "en_US": "On/Off AntiUnsend"
                 },
                 "example": {
-                    "vi_VN": "antiunsend",
-                    "en_US": "antiunsend"
+                    "vi_VN": "antiunsend off",
+                    "en_US": "antiunsend off"
                 },
                 "mainFunc": "start"
             }
@@ -97,7 +97,7 @@ async function start(data, api, adv){
     }
     var rt = lang.noad[l];
     if (listadgr.indexOf(data.senderID) != -1) {
-        if (global.data.antiunsend[data.threadID]) {
+        if (global.data.antiunsend[data.threadID] || data.args[1].toLowerCase() == "off") {
             global.data.antiunsend[data.threadID] = false;
             rt = lang.off[l].replace("{0}", "Admin group")
         } else {
@@ -106,7 +106,7 @@ async function start(data, api, adv){
             rt = lang.on[l].replace("{0}", "Admin group")
         }
     } else if (global.config.facebook.admin.indexOf(data.senderID) != -1) {
-        if (global.data.antiunsend[data.threadID]) {
+        if (global.data.antiunsend[data.threadID] || data.args[1].toLowerCase() == "off") {
             global.data.antiunsend[data.threadID] = false;
             rt = lang.off[l].replace("{0}", "Admin BotChat")
         } else {

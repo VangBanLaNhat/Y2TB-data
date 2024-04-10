@@ -24,8 +24,8 @@ function init() {
             },
             "spotifyauto": {
                 "help": {
-                    "vi_VN": "",
-                    "en_US": ""
+                    "vi_VN": "[on || off]",
+                    "en_US": "[on || off]"
                 },
                 "tag": {
                     "vi_VN": "Bật/Tắt tự động tải nhạc từ Spotify",
@@ -39,8 +39,8 @@ function init() {
             },
             "spotifyalbum": {
                 "help": {
-                    "vi_VN": "",
-                    "en_US": ""
+                    "vi_VN": "[on || off]",
+                    "en_US": "[on || off]"
                 },
                 "tag": {
                     "vi_VN": "Bật/Tắt tải Album Spotify",
@@ -196,7 +196,7 @@ async function auto(data, api, {rlang, getThreadInfo}) {
         }
         if (!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID);
     }
-    if (global.data.spotify.autodown[data.threadID]) {
+    if (global.data.spotify.autodown[data.threadID] || data.args[1].toLowerCase() == "off") {
         global.data.spotify.autodown[data.threadID] = false;
         return api.sendMessage(rlang("autoOff"), data.threadID, data.messageID);
     }
@@ -214,7 +214,7 @@ async function album(data, api, {rlang, getThreadInfo}) {
         }
         if (!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID);
     }
-    if (global.data.spotify.album[data.threadID]) {
+    if (global.data.spotify.album[data.threadID] || data.args[1].toLowerCase() == "off") {
         global.data.spotify.album[data.threadID] = false;
         return api.sendMessage(rlang("albumOff"), data.threadID, data.messageID);
     }

@@ -24,8 +24,8 @@ function init() {
             },
             "autopint": {
                 "help": {
-                    "vi_VN": "",
-                    "en_US": ""
+                    "vi_VN": "[on || off]",
+                    "en_US": "[on || off]"
                 },
                 "tag": {
                     "vi_VN": "Bật/Tắt tự dộng tải xuống link Pinterest",
@@ -118,7 +118,7 @@ async function auto(data, api, {rlang, getThreadInfo}) {
         }  
         if(!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID); 
     } 
-    if(global.data.pinterest[data.threadID]) {
+    if(global.data.pinterest[data.threadID] || data.args[1].toLowerCase() == "off") {
         global.data.pinterest[data.threadID] = false;
         return api.sendMessage(rlang("Off"), data.threadID, data.messageID);
     }

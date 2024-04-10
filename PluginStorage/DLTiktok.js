@@ -24,12 +24,12 @@ function init() {
             },
             "tikauto": {
                 "help": {
-                    "vi_VN": "Bật | Tắt tính năng autodown TikTok!",
-                    "en_US": "Turn on | Turn off autodown TikTok!",
+                    "vi_VN": "[on || off]",
+                    "en_US": "[on || off]",
                 },
                 "tag": {
-                    "vi_VN": "",
-                    "en_US": "",
+                    "vi_VN": "Bật | Tắt tính năng autodown TikTok!",
+                    "en_US": "Turn on | Turn off autodown TikTok!",
                 },
                 "mainFunc": "auto",
                 "example": {
@@ -136,7 +136,7 @@ async function auto(data, api, adv) {
         if (!check) return api.sendMessage(rlang("noPermision"), data.threadID, data.messageID);
     }
 
-    if (global.data.autodown[data.threadID]) {
+    if (global.data.autodown[data.threadID] || data.args[1].toLowerCase() == "off") {
         global.data.autodown[data.threadID] = false; api.sendMessage(rlang("turnOff"), data.threadID, data.messageID)
     } else {
         global.data.autodown[data.threadID] = true; api.sendMessage(rlang("turnOn"), data.threadID, data.messageID)

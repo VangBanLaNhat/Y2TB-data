@@ -685,7 +685,7 @@ function daily(data, api, adv) {
     "{daily}": daily,
     "{total}": global.data.economy[data.senderID].coin
   }
-  api.sendMessage(replaceAll(rlang("daily"), map), data.threadID, data.messageID);
+  api.sendMessage(replaceMap(rlang("daily"), map), data.threadID, data.messageID);
 }
 
 function replaceAll(string, arg, rep) {

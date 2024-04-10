@@ -682,8 +682,8 @@ function daily(data, api, adv) {
   let daily = random.int(1000, 10000);
   global.data.economy[data.senderID].coin += daily;
   let map = {
-    "{daily}": daily,
-    "{total}": global.data.economy[data.senderID].coin
+    "{daily}": daily+global.data.economyConfig.icon,
+    "{total}": global.data.economy[data.senderID].coin+global.data.economyConfig.icon
   }
   api.sendMessage(replaceMap(rlang("daily"), map), data.threadID, data.messageID);
 }

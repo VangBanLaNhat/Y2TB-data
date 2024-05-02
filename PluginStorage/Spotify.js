@@ -196,7 +196,7 @@ async function auto(data, api, {rlang, getThreadInfo}) {
         }
         if (!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID);
     }
-    if (global.data.spotify.autodown[data.threadID] || data.args[1].toLowerCase() == "off") {
+    if (global.data.spotify.autodown[data.threadID] || (data.args[1] && data.args[1].toLowerCase() == "off")) {
         global.data.spotify.autodown[data.threadID] = false;
         return api.sendMessage(rlang("autoOff"), data.threadID, data.messageID);
     }
@@ -214,7 +214,7 @@ async function album(data, api, {rlang, getThreadInfo}) {
         }
         if (!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID);
     }
-    if (global.data.spotify.album[data.threadID] || data.args[1].toLowerCase() == "off") {
+    if (global.data.spotify.album[data.threadID] || (data.args[1] && data.args[1].toLowerCase() == "off")) {
         global.data.spotify.album[data.threadID] = false;
         return api.sendMessage(rlang("albumOff"), data.threadID, data.messageID);
     }

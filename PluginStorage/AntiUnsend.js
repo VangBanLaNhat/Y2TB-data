@@ -97,7 +97,7 @@ async function start(data, api, adv){
     }
     var rt = lang.noad[l];
     if (listadgr.indexOf(data.senderID) != -1) {
-        if (global.data.antiunsend[data.threadID] || data.args[1].toLowerCase() == "off") {
+        if (global.data.antiunsend[data.threadID] || (data.args[1] && data.args[1].toLowerCase() == "off")) {
             global.data.antiunsend[data.threadID] = false;
             rt = lang.off[l].replace("{0}", "Admin group")
         } else {
@@ -106,7 +106,7 @@ async function start(data, api, adv){
             rt = lang.on[l].replace("{0}", "Admin group")
         }
     } else if (global.config.facebook.admin.indexOf(data.senderID) != -1) {
-        if (global.data.antiunsend[data.threadID] || data.args[1].toLowerCase() == "off") {
+        if (global.data.antiunsend[data.threadID] || (data.args[1] && data.args[1].toLowerCase() == "off")) {
             global.data.antiunsend[data.threadID] = false;
             rt = lang.off[l].replace("{0}", "Admin BotChat")
         } else {

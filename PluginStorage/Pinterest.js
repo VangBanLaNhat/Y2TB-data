@@ -118,7 +118,7 @@ async function auto(data, api, {rlang, getThreadInfo}) {
         }  
         if(!check) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID); 
     } 
-    if(global.data.pinterest[data.threadID] || data.args[1].toLowerCase() == "off") {
+    if(global.data.pinterest[data.threadID] || (data.args[1] && data.args[1].toLowerCase() == "off")) {
         global.data.pinterest[data.threadID] = false;
         return api.sendMessage(rlang("Off"), data.threadID, data.messageID);
     }

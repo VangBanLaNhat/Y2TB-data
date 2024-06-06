@@ -35,7 +35,7 @@ function pong(data, api){
     api.sendMessage("Pinging...", data.threadID, (e, a) => {
         if (api.editMessage) api.editMessage(`Ping: ${Date.now() - timeStart}ms`, a.messageID);
         else api.sendMessage(`Ping: ${Date.now() - timeStart}ms`, data.threadID, data.messageID)
-    })
+    }, data.messageID);
 }
 
 function pongch(data, api){

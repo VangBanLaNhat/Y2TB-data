@@ -32,7 +32,10 @@ function init(){
 
 function pong(data, api){
     const timeStart = Date.now();
-    api.sendMessage("Pinging...", data.threadID, () => api.sendMessage(`Ping: ${Date.now() - timeStart}ms`, data.threadID, data.messageID))
+    api.sendMessage("Pinging...", data.threadID, (e, a) => {
+        if (api.editMessage) api.editMessage(`Ping: ${Date.now() - timeStart}ms`, a.messageID);
+        else api.sendMessage(`Ping: ${Date.now() - timeStart}ms`, data.threadID, data.messageID)
+    })
 }
 
 function pongch(data, api){

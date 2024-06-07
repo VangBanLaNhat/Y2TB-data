@@ -104,6 +104,7 @@ function main(data, api, {rlang, replaceMap}) {
             }), data.threadID, data.messageID)
 	}
     !global.data.economy[data.senderID] ? global.data.economy[data.senderID] = {coin: 0}:"";
+    if (bet && bet < 0) bet = 0;
     if (bet && bet > global.data.economy[data.senderID].coin) return api.sendMessage(replaceMap(rlang("nem"), {
         "{money}": global.data.economy[data.senderID].coin+global.data.economyConfig.icon
     }), data.threadID, data.messageID);

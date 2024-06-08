@@ -28,7 +28,7 @@ function init(){
             "send":{
                 "desc": "unsend",
                 "vi_VN": "Kích hoạt AntiUnsend. {0} đã gỡ 1 tin nhắn.\n{1}{2}",
-                "en_US": "Enable AntiUnsend. {0} removed 1 message.{1}{2}",
+                "en_US": "Enable AntiUnsend. {0} removed 1 message.\n{1}{2}",
                 "args": {
                     "{0}": {
                         "vi_VN": "Tên",

@@ -412,7 +412,7 @@ async function chathook(data, api, adv) {
 }
 
 async function downmp3(data, api, { rlang, replaceMap }, link) {
-    var ytdl = require('ytdl-core');
+    var ytdl = require('@distube/ytdl-core');
     var ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
     var ffmpeg = require('fluent-ffmpeg');
     var fs = require("fs");

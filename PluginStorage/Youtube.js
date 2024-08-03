@@ -74,6 +74,7 @@ function init() {
         },
         "nodeDepends": {
             "ytdl-core": "",
+            "@distube/ytdl-core": "",
             "ytsr": "",
             "@ffmpeg-installer/ffmpeg": "",
             "fluent-ffmpeg": ""
@@ -361,7 +362,7 @@ async function chathook(data, api, adv) {
 
     if((data.type == "message" || data.type == "message_reply") && global.data.youtube.autodown[data.threadID] != "off" && data.body.indexOf("‍‍‍‍‍‍‍‍‍‍") != 0 && data.body.indexOf(global.config.facebook.prefix) != 0) {
         let args = data.body.split(" ");
-        let ytdl = require('ytdl-core');
+        let ytdl = require('@distube/ytdl-core');
 
         for(let i of args) {
             if(i.indexOf("youtube.com") != -1 || i.indexOf("youtu.be") != -1){

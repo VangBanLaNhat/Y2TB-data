@@ -73,7 +73,6 @@ function init() {
             }
         },
         "nodeDepends": {
-            "ytdl-core": "",
             "@distube/ytdl-core": "",
             "ytsr": "",
             "@ffmpeg-installer/ffmpeg": "",
@@ -193,11 +192,11 @@ function init() {
                 "args": {}
             },
             "noPer":{
-        		"desc": "No permission",
+                        "desc": "No permission",
                 "vi_VN": "Không đủ quyền!",
                 "en_US": "No permission!",
                 "args": {}
-        	},
+                },
         },
         "config": {
             note: 'auto_download: "auto" (Recomend), "mp3", "mp4", "off"',
@@ -378,12 +377,12 @@ async function chathook(data, api, adv) {
 
                     return Number(info.player_response.videoDetails.lengthSeconds) / 60 > 2 ? downmp3(data, api, adv, i):downmp4(data, api, adv, i);
                 }
-                
+
                 return global.data.youtube.autodown[data.threadID] == "mp3" ? downmp3(data, api, adv, i):global.data.youtube.autodown[data.threadID] == "mp4" ? downmp4(data, api, adv, i):"";
             }
         }
     }
-    
+
     if (data.type != "message_reply" || !global.temp.youtube || (!global.temp.youtube.ytmp3 && !global.temp.youtube.ytmp4)) return;
     if (!global.temp.youtube.ytmp3[data.threadID] && !global.temp.youtube.ytmp4[data.threadID]) return;
 
@@ -456,7 +455,7 @@ async function downmp3(data, api, { rlang, replaceMap }, link) {
 
 async function downmp4(data, api, { rlang, replaceMap }, link) {
     var fs = require('fs');
-    var ytdl = require("ytdl-core");
+    var ytdl = require("@distube/ytdl-core");
 
     try {
         var info = await ytdl.getInfo(link);

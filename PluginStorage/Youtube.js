@@ -411,7 +411,7 @@ async function chathook(data, api, adv) {
     }
 }
 
-async function downmp3(data, api, { rlang, replaceMap }, link) {
+async function downmp3(data, api, { rlang, replaceMap, config }, link) {
     var ytdl = require('@distube/ytdl-core');
     var ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
     var ffmpeg = require('fluent-ffmpeg');
@@ -419,8 +419,9 @@ async function downmp3(data, api, { rlang, replaceMap }, link) {
     ffmpeg.setFfmpegPath(ffmpegPath);
 
     try {
-        var id = ytdl.getVideoID(link);
-        var info = await ytdl.getInfo(link);
+        var agent = ytdl.createAgent(config.cookies);
+        var id = ytdl.getVideoID(link, { agent });
+        var info = await ytdl.getInfo(link, { agent });
         if (info.player_response.videoDetails.isLiveContent) {
             api.sendMessage(rlang("isLive"), data.threadID, data.messageID);
             return;
@@ -433,6 +434,7 @@ async function downmp3(data, api, { rlang, replaceMap }, link) {
 
         let vdo = ytdl(link, {
             quality: 'highestaudio',
+            agent
         });
         let map = {
             "{0}": info.player_response.videoDetails.title
@@ -454,12 +456,13 @@ async function downmp3(data, api, { rlang, replaceMap }, link) {
     }
 }
 
-async function downmp4(data, api, { rlang, replaceMap }, link) {
+async function downmp4(data, api, { rlang, replaceMap, config }, link) {
     var fs = require('fs');
     var ytdl = require("@distube/ytdl-core");
 
     try {
-        var info = await ytdl.getInfo(link);
+        var agent = ytdl.createAgent(config.cookies);
+        var info = await ytdl.getInfo(link, { agent });
         var dirr = path.join(__dirname, "cache", "ytmp4", ytdl.getVideoID(link) + ".mp4")
         if (info.player_response.videoDetails.isLiveContent) {
             api.sendMessage(rlang("isLive"), data.threadID, data.messageID);
@@ -477,6 +480,7 @@ async function downmp4(data, api, { rlang, replaceMap }, link) {
 
         ytdl(link, {
             quality: 'highestaudio',
+            agent
         }).pipe(fs.createWriteStream(dirr)).on("close", () => {
             if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID);
             else api.sendMessage({

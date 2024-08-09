@@ -200,7 +200,8 @@ function init() {
         },
         "config": {
             note: 'auto_download: "auto" (Recomend), "mp3", "mp4", "off"',
-            auto_download: "auto"
+            auto_download: "auto",
+            cookies: []
         },
         "chathook": "chathook",
         "author": "HerokeyVN",

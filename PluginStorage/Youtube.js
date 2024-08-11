@@ -419,8 +419,8 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
     ffmpeg.setFfmpegPath(ffmpegPath);
 
     try {
-        //var agent = ytdl.createAgent(config.cookies);
-        var agent = ytdl.createProxyAgent({ uri: "136.226.67.116:8800" }, [ {name: "cookie", value: config.cookies} ]);
+        var agent = ytdl.createAgent(config.cookies);
+        //var agent = ytdl.createProxyAgent({ uri: "136.226.67.116:8800" }, [ {name: "cookie", value: config.cookies} ]);
         var id = ytdl.getVideoID(link, { agent });
         var info = await ytdl.getInfo(link, { agent });
         if (info.player_response.videoDetails.isLiveContent) {

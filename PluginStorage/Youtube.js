@@ -420,7 +420,7 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
 
     try {
         //var agent = ytdl.createAgent(config.cookies);
-        var agent = ytdl.createProxyAgent({ uri: "152.26.229.88:9443" }, config.cookies);
+        var agent = ytdl.createProxyAgent({ uri: "152.26.229.88:9443" }, [ {name: "cookie", value: config.cookies} ]);
         var id = ytdl.getVideoID(link, { agent });
         var info = await ytdl.getInfo(link, { agent });
         if (info.player_response.videoDetails.isLiveContent) {

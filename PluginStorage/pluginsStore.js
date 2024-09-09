@@ -66,7 +66,7 @@ function init() {
 
 async function store(data, api, {rlang, replaceMap, iso639}) {
 	if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang("noper"), data.threadID, data.messageID);
-	if(data.isGroup) return api.sendMessage(rlang("ib"), data.threadID, data.messageID);
+	//if(data.isGroup) return api.sendMessage(rlang("ib"), data.threadID, data.messageID);
 	!global.temp.plstore ? global.temp.plstore = {}:"";
 	
 	const axios = require("axios");

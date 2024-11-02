@@ -42,7 +42,7 @@ var fs = require('fs');
                  chathook: 'xps', 
                  obb: 'XPchat', 
                  nodeDepends: { 
-                         jimp: '', 
+                         jimp: '0.22.12', 
                          text2png: '' 
                  },
                  config: {

@@ -299,7 +299,7 @@ var fs = require('fs');
                          ); 
        //console.log("1.1;"); 
                  } catch (e) { 
-                         console.err(e); 
+                         console.error(e); 
                  } 
                  //console.log('1'); 
          } else { 

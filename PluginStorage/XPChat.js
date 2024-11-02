@@ -249,7 +249,7 @@ var fs = require('fs');
          }; 
   
          var fs = require('fs'); 
-         var jimp = (require('jimp')).Jimp; 
+         var jimp = require('jimp'); 
          var t2p = require('text2png'); 
   
          var xp = global.data.xpc[data.senderID].xp; 

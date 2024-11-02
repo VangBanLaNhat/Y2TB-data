@@ -304,6 +304,7 @@ async function rankc(data, api, adv) {
                 );
                 global.data.rankcard[data.senderID].background = 0;
         }
+        console.log(bg)
         bg.resize({ width: 400, height: 121 });
 
         var rank_bg = await jimp.read(map.rank_bg);

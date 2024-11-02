@@ -309,7 +309,7 @@ var fs = require('fs');
                  ); 
                  global.data.rankcard[data.senderID].background = 0; 
          } 
-         bg.resize(400, 121); 
+         bg.resize({width: 400, height: 121}); 
   
          var rank_bg = await jimp.read(map.rank_bg); 
          var bg_avt = await new jimp(90, 90, themecl); 
@@ -320,7 +320,7 @@ var fs = require('fs');
          var bar_rank = await new jimp(245, 20, themecl); 
          bar_bg.mask(mask, 0, 0); 
          bar_rank.mask(mask, 0, 0); 
-         bar_rank.resize(((xp - aftxp) / (maxxp - aftxp)) * 245, 20); 
+         bar_rank.resize({width: ((xp - aftxp) / (maxxp - aftxp)) * 245, height: 20}); 
   
          var pt = await jimp.read( 
                  t2p(`${Math.trunc(((xp - aftxp) / (maxxp - aftxp)) * 100)}%`, { 
@@ -445,7 +445,7 @@ var fs = require('fs');
                  console.error('XP Chat', 'Facebook token is die!'); 
                  try{
                  	var avatar = await jimp.read(uinfo.thumbSrc);
-                 	avatar.resize(86, 86)
+                 	avatar.resize({width: 86, height: 86})
                  	
                  } catch (e) {
                  	delete global.userInfo[data.senderID];
@@ -473,7 +473,7 @@ var fs = require('fs');
                  .composite(nameuser, 125, fonty) 
                  .composite(grrankt, xgrr, 35) 
                  .composite(glrank, xgrr + 2, 49); 
-         bg.resize(800, 242); 
+         bg.resize({width: 800, height: 242}); 
          bg.write(map.rankcard, () => { 
                  api.sendMessage( 
                          { attachment: fs.createReadStream(map.rankcard) }, 

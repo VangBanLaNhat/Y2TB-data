@@ -39,11 +39,10 @@ function init() {
             }
         },
         "chathook": "bruh",
-        "author": "Yuuki",
-        "version": "0.1.3",
+        "author": "ReineOwO",
+        "version": "0.1.4",
         "nodeDepends": {
-            "nayan-media-downloader": "2.0.4",
-            "@tobyg74/tiktok-api-dl": "1.0.14"
+            "@tobyg74/tiktok-api-dl": ""
         },
         "config": {
             "autodown": true
@@ -89,8 +88,7 @@ function init() {
     }
 }
 async function main(data, api, adv) {
-    const { tikdown } = require("nayan-media-downloader");
-    
+    const Tiktok = require("@tobyg74/tiktok-api-dl")
     const { rlang, replaceMap } = adv;
 
     try {
@@ -103,11 +101,14 @@ async function main(data, api, adv) {
         let code = global.config.bot_info.lang;
 
         if (!link) return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
-        var res = await tikdown(link);
+        var res = await Tiktok.Downloader(link, {
+            version: "v1",
+            showOriginalResponse: true
+        });
 
         if (res.status == "error") return api.sendMessage(lang.nolink[code], data.threadID, data.messageID);
 
-        if (res.data.video == res.data.audio) {
+        if (res.resultNotParsed.music.playUrl[0] == res.resultNotParsed.content.video.play_addr.uri) {
             imageType(data, api, adv, link);
             return;
         }
@@ -158,14 +159,9 @@ async function bruh(data, api, adv) {
 
     if (!global.data.autodown[data.threadID]) return;
     if (data.body.indexOf(global.config.facebook.prefix) == 0) return;
-
-    const { tikdown } = require("nayan-media-downloader");
-    const { TiktokDownloader } = require("@tobyg74/tiktok-api-dl");
-
-
+    const Tiktok = require("@tobyg74/tiktok-api-dl")
     regEx_tiktok = /(^https:\/\/)((vm|vt|www|v)\.)?(tiktok|douyin)\.com\//
 
-    //api.sendMessage(data.args[0], data.threadID, data.messageID);
     for (let cc of data.args) {
         let brah = new RegExp(regEx_tiktok).test(cc);
         if (brah == true) api.sendMessage(replaceMap(rlang("urlTruee"), {
@@ -178,19 +174,21 @@ async function bruh(data, api, adv) {
         if (brah == true) {
             let res;
             try {
-                res = await tikdown(cc);
+                res = await Tiktok.Downloader(cc, {
+                    version: "v1",
+                    showOriginalResponse: true
+                });
             } catch (e) {
                 return console.warn("Auto Download", e);
             }
 
-            //console.log(res);
-            if (!res.data) continue;
+            if (!res.resultNotParsed) continue;
 
             // if (res.data.type == "image") {
             //     await imageType(data, api, adv, res);
             //     continue;
             // }
-            if (res.data.video == res.data.audio) {
+            if (res.resultNotParsed.music.playUrl[0] == res.resultNotParsed.content.video.play_addr.uri) {
                 imageType(data, api, adv, cc);
                 continue;
             }
@@ -202,51 +200,51 @@ async function bruh(data, api, adv) {
 }
 
 async function imageType(data, api, adv, link) {
-    const { TiktokDownloader } = require("@tobyg74/tiktok-api-dl");
+    const Tiktok = require("@tobyg74/tiktok-api-dl")
     const path = require("path");
     const streamBuffers = require("stream-buffers");
     const axios = require('axios');
     const fetch = require("node-fetch");
     const fs = require("fs");
-    
-    let vers = "v1";
-    let res = await TiktokDownloader(link, {
-                    version: vers //  version: "v1" | "v2" | "v3"
-                });
 
-    if (res.status == "error") {
-        vers = "v2";
-        res = await TiktokDownloader(link, {
-                    version: vers
-                });
-        console.log(vers, res);
-    }
-    
-    if (res.status == "error" || res.result.images[0] == undefined) {
-        vers = "v3";
-        res = await TiktokDownloader(link, {
-                    version: vers
-                });
-        console.log(vers, res);
-    }
+    let vers = "v1";
+    let res = await Tiktok.Downloader(link, {
+        version: vers,
+        showOriginalResponse: true
+    });
+    // console.log(res.resultNotParsed.content.image_post_info.images[1].display_image.url_list)
+    // console.log("1")
+    // if (res.status == "error") {
+    //     vers = "v2";
+    //     res = await TiktokDownloader.Downloader(link, {
+    //                 version: vers
+    //             });
+    //     console.log(vers, res);
+    // }
+
+    // if (res.status == "error" || res.result.images[0] == undefined) {
+    //     vers = "v3";
+    //     res = await TiktokDownloader.Downloader(link, {
+    //                 version: vers
+    //             });
+    //     console.log(vers, res);
+    // }
 
     let {
         rlang,
         config,
         replaceMap
     } = adv;
-    if (!res.result) return console.log(res);
-    if (!res.result.statistics) res.result.statistics = {};
-    var nameidea = res.result.description;
-    var name = res.result.author.nickname;
-    var username = res.result.author.username;
-    var views = res.result.statistics.playCount;
-    var loves = res.result.statistics.likeCount;
-    var comments = res.result.statistics.commentCount;
-    var shares = res.result.statistics.shareCount;
-    var favorite = res.result.statistics.favoriteCount;
-    var downloadC = res.result.statistics.downloadCount;
-
+    if (!res.resultNotParsed.statistics) res.resultNotParsed.statistics = {};
+    var nameidea = res.resultNotParsed.content.desc;
+    var name = res.resultNotParsed.author.nickname;
+    var username = res.resultNotParsed.author.username;
+    var views = res.resultNotParsed.statistics.playCount;
+    var loves = res.resultNotParsed.statistics.diggCount;
+    var comments = res.resultNotParsed.statistics.commentCount;
+    var shares = res.resultNotParsed.statistics.shareCount;
+    var favorite = res.resultNotParsed.statistics.collectCount;
+    var downloadC = res.resultNotParsed.statistics.downloadCount;
 
     let map = {
         "{nameidea}": nameidea,
@@ -259,34 +257,32 @@ async function imageType(data, api, adv, link) {
         "{downloadC}": downloadC,
         "{favorite}": favorite
     }
-
     let img = [],
-    listFile = [];
+        listFile = [];
 
-    for (let i in res.result.images) {
-        let x = res.result.images[i];
+    for (let i in res.resultNotParsed.content.image_post_info.images) {
+        let x = res.resultNotParsed.content.image_post_info.images[i].display_image.url_list[0];
         let fetchimage = await fetch(x);
         let buffer = await fetchimage.buffer();
         let imagesx = new streamBuffers.ReadableStreamBuffer({
             frequency: 10,
             chunkSize: 1024
         });
-        imagesx.path = path.join(__dirname, "cache", "tiktok", data.messageID+encodeURI(x)+".jpg");
-        img.push(path.join(__dirname, "cache", "tiktok", data.messageID+encodeURI(x)+".jpg"));
+        imagesx.path = path.join(__dirname, "cache", "tiktok", data.messageID + encodeURI(x) + ".jpg");
+        img.push(path.join(__dirname, "cache", "tiktok", data.messageID + encodeURI(x) + ".jpg"));
         imagesx.put(buffer);
         imagesx.stop();
 
         listFile.push(imagesx);
     }
-
     const response = await axios({
         method: 'get',
-        url: (vers == "v1" ? res.result.music.playUrl[0]:res.result.music),
+        url: res.resultNotParsed.music.playUrl[0],
         responseType: 'stream'
     });
-    
+
     let time = Date.parse(new Date());
-    let dir = path.join(__dirname, "cache", "tiktok", data.messageID+ time + ".mp3")
+    let dir = path.join(__dirname, "cache", "tiktok", data.messageID + time + ".mp3")
     ensureExists(path.join(__dirname, "cache", "tiktok"))
 
     let stream = response.data.pipe(fs.createWriteStream(dir));
@@ -295,15 +291,15 @@ async function imageType(data, api, adv, link) {
         api.sendMessage({
             body: replaceMap(rlang("Done"), map),
             attachment: listFile
-        }, data.threadID, (e, a)=> {
+        }, data.threadID, (e, a) => {
             for (let i of img) {
                 try {
                     fs.unlinkSync(i);
-                } catch(_) {};
+                } catch (_) { };
             }
             api.sendMessage(({
                 attachment: fs.createReadStream(dir)
-            }), data.threadID,() => fs.unlinkSync(dir), a.messageID);
+            }), data.threadID, () => fs.unlinkSync(dir), a.messageID);
         }, data.messageID);
 
     });
@@ -318,19 +314,19 @@ async function videoType(data, api, adv, res) {
         config,
         replaceMap
     } = adv;
-    var nameidea = res.data.title;
-    var name = res.data.author.nickname;
-    var username = res.data.author.unique_id;
-    var views = res.data.play;
-    var loves = res.data.view;
-    var comments = res.data.comment;
-    var shares = res.data.share;
-    // var favorite = res.result.statistics.favoriteCount;
-    var downloadC = res.data.download;
+    var nameidea = res.resultNotParsed.content.desc;
+    var name = res.resultNotParsed.author.nickname;
+    var username = res.resultNotParsed.author.username;
+    var views = res.resultNotParsed.statistics.playCount;
+    var loves = res.resultNotParsed.statistics.diggCount;
+    var comments = res.resultNotParsed.statistics.commentCount;
+    var shares = res.resultNotParsed.statistics.shareCount;
+    var favorite = res.resultNotParsed.statistics.collectCount;
+    var downloadC = res.resultNotParsed.statistics.downloadCount;
 
     const response = await axios({
         method: 'get',
-        url: res.data.video,
+        url: res.resultNotParsed.content.video.play_addr.url_list[0],
         responseType: 'stream'
     });
     let time = Date.parse(new Date());
@@ -353,7 +349,7 @@ async function videoType(data, api, adv, res) {
         "{comments}": comments,
         "{shares}": shares,
         "{downloadC}": downloadC,
-        // "{favorite}": favorite
+        "{favorite}": favorite
     }
     stream.on("finish",
         () => {

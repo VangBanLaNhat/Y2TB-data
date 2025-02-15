@@ -151,6 +151,7 @@ function chathook(data, api, adv){
 
     const {rlang} = adv;
     let msg = (data.body.split(" ")); msg[0] = msg[0].toLowerCase();
+    console.log(msg[0]);
     let rt = rlang("connect").replaceAll("{0}", global.config.bot_info.botname) + rlang("help").replaceAll("{0}", global.config.facebook.prefix);
     let done = [];
     let out = [];
@@ -173,6 +174,7 @@ function chathook(data, api, adv){
         
         for(let j in global.temp.threadPending.list){
             let i = global.temp.threadPending.list[j];
+            console.log(j+1);
             if(msg.indexOf(j+1) != -1){
                 api.sendMessage(rt, i.threadID, (e)=>{
                     if(e){

@@ -113,7 +113,7 @@ function pending(data, api, adv){
         global.temp.threadPending = {};
     }
 	
-	api.getThreadList(100, null, ["PENDING"], (e, l)=>{
+	api.getThreadList(100, null, ["PENDING", "SPAM"], (e, l)=>{
 		if(e){
 			console.error(pluginName, e);
 			return api.sendMessage(e, data.threadID, data.messageID)
@@ -174,8 +174,8 @@ function chathook(data, api, adv){
         
         for(let j in global.temp.threadPending.list){
             let i = global.temp.threadPending.list[j];
-            console.log(j+1);
-            if(msg.indexOf(j+1) != -1){
+            console.log(Number(j)+1);
+            if(msg.indexOf(Number(j)+1) != -1){
                 api.sendMessage(rt, i.threadID, (e)=>{
                     if(e){
                         api.deleteThread(i.threadID);

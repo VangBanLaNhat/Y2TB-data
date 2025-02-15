@@ -113,12 +113,12 @@ function pending(data, api, adv){
         global.temp.threadPending = {};
     }
 	
-	api.getThreadList(100, null, ["spam"], (e, l)=>{
+	api.getThreadList(100, null, ["SPAM"], (e, l)=>{
 		if(e){
 			console.error(pluginName, e);
 			return api.sendMessage(e, data.threadID, data.messageID)
 		}
-		
+		console.log(l)
 		global.temp.threadPending = {
             UID: data.senderID,
             list: l

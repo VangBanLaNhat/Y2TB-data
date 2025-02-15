@@ -1,4 +1,12 @@
 [
+     { 
+     "file": "Gemini.js", 
+     "username": "ReineOwO", 
+     "author": "ReineOwO", 
+     "vi": "Chat với Google Gemini AI", 
+     "en": "Chat with Google Gemini AI", 
+     "ver": "0.0.1" 
+   },
 { 
      "file": "joinnoti.js", 
      "username": "ReineOwO", 

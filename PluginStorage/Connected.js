@@ -105,7 +105,7 @@ function init(){
 
 function pending(data, api, adv){
 	const {pluginName, rlang} = adv;
-	if(data.isGroup) return api.sendMessage(rlang("inbox"), data.threadID, data.messageID);
+	//if(data.isGroup) return api.sendMessage(rlang("inbox"), data.threadID, data.messageID);
 	if(global.config.facebook.admin.indexOf(data.senderID) == -1) return api.sendMessage(rlang("noPer"), data.threadID, data.messageID);
     !global.temp.threadPending ? global.temp.threadPending = {}:"";
     if(global.temp.threadPending.MID) {

@@ -164,7 +164,7 @@ async function bruh(data, api, adv) {
 
     for (let cc of data.args) {
         let brah = new RegExp(regEx_tiktok).test(cc);
-        if (brah == true) api.sendMessage(replaceMap(rlang("urlTruee"), {
+        if (brah == true && rlang("urlTruee") != '') api.sendMessage(replaceMap(rlang("urlTruee"), {
             "{link}": cc
         }), data.threadID, data.messageID);
     }

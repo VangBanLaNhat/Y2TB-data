@@ -1,5 +1,13 @@
 [
   { 
+     "file": "adduser.js", 
+     "username": "ReineOwO", 
+     "author": "ReineOwO", 
+     "vi": "Thêm thành viên bằng url hoặc uid facebook", 
+     "en": "Add member by url or facebook uid", 
+     "ver": "0.0.1" 
+   },
+  { 
      "file": "coinFlip.js", 
      "username": "HerokeyVN", 
      "author": "HerokeyVN", 

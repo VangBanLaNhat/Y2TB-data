@@ -113,7 +113,7 @@ function pending(data, api, adv){
         global.temp.threadPending = {};
     }
 	
-	api.getThreadList(100, null, ["PENDING", "ARCHIVED"], (e, l)=>{
+	api.getThreadList(100, null, ["SPAM"], (e, l)=>{
 		if(e){
 			console.error(pluginName, e);
 			return api.sendMessage(e, data.threadID, data.messageID)
@@ -199,13 +199,13 @@ function chathook(data, api, adv){
 
     if(done.length > 0){
         let list = "";
-        for(let i in done) list += "\n" + (i+1) + ". " + done[i];
-        res += rlang("listDone").replaceAll("{list}", list) + "\n";
+        for(let i in done) list += "\n" + (Number(i)+1) + ". " + done[i];
+        res += rlang("listDone").replaceAll("{list}", list) + "\n\n";
     }
 
     if(out.length > 0){
         let list = "";
-        for(let i in out) list += "\n" + (i+1) + ". " + out[i];
+        for(let i in out) list += "\n" + (Number(i)+1) + ". " + out[i];
         res += rlang("listOut").replaceAll("{list}", list);
     }
 

@@ -187,7 +187,7 @@ function chathook(data, api, adv){
 
                 done.push(i.name);
             } else {
-                api.removeUserFromGroup(global.botid, i.threadID, ()=>{});
+                api.removeUserFromGroup(global.botid, i.threadID).catch();
                 api.deleteThread(i.threadID);
 
                 out.push(i.name);

@@ -1,4 +1,12 @@
 [
+{ 
+     "file": "joinnoti.js", 
+     "username": "ReineOwO", 
+     "author": "ReineOwO", 
+     "vi": "Chào mừng thành viên mới vào nhóm!", 
+     "en": "Welcome new members to the group!", 
+     "ver": "0.0.1" 
+   },
   { 
      "file": "adduser.js", 
      "username": "ReineOwO", 

@@ -187,10 +187,10 @@ function chathook(data, api, adv){
 
                 done.push(i.name);
             } else {
-                try {
-                    api.removeUserFromGroup(global.botid, i.threadID);
+                    api.removeUserFromGroup(global.botid, i.threadID).catch(error => {
+                        console.error(error.message);
+                    });
                     api.deleteThread(i.threadID);
-                } catch (_) {}
                 out.push(i.name);
             }
         }

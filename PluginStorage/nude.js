@@ -68,8 +68,8 @@ async function main(data, api){
     let link = json[random.int(0, json.length-1)];
     
     try {
-        let fetchimage = await fetch(link);
-        let buffer = await fetchimage.buffer();
+        var fetchimage = await fetch(link);
+        var buffer = await fetchimage.buffer();
     } catch (_) {
         return 0;
     }
@@ -82,6 +82,7 @@ async function main(data, api){
     imagesx.stop();
 
     api.sendMessage({ attachment: [imagesx] }, data.threadID, data.messageID).catch(error => {
+        api.sendMessage(error.message, data.threadID, data.messageID)
         console.error(error.message);
     });;
 }

@@ -67,8 +67,12 @@ async function main(data, api){
     
     let link = json[random.int(0, json.length-1)];
     
-    let fetchimage = await fetch(link);
-    let buffer = await fetchimage.buffer();
+    try {
+        let fetchimage = await fetch(link);
+        let buffer = await fetchimage.buffer();
+    } catch (_) {
+        return 0;
+    }
     let imagesx = new streamBuffers.ReadableStreamBuffer({
         frequency: 10,
         chunkSize: 1024
@@ -77,7 +81,9 @@ async function main(data, api){
     imagesx.put(buffer);
     imagesx.stop();
 
-    api.sendMessage({ attachment: [imagesx] }, data.threadID, data.messageID);
+    api.sendMessage({ attachment: [imagesx] }, data.threadID, data.messageID).catch(error => {
+        console.error(error.message);
+    });;
 }
 
 function ensureExists(path, mask) {

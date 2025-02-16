@@ -117,7 +117,7 @@ async function startChat() {
         HarmBlockThreshold,
     } = require("@google/generative-ai");
 
-    const apiKey = "AIzaSyBmQmF0xrmaax-4Scak5C6t9KUOMvh8w9s";
+    const apiKey = "APIKEY";
     const genAI = new GoogleGenerativeAI(apiKey);
 
     const model = genAI.getGenerativeModel({

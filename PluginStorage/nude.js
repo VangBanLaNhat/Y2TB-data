@@ -28,7 +28,7 @@ function init(){
         	"stream-buffers":""
         },
         "author": "HerokeyVN",
-        "version": "0.0.1"
+        "version": "0.0.2"
     }
 }
 
@@ -67,18 +67,19 @@ async function main(data, api){
     
     let link = json[random.int(0, json.length-1)];
     
-    try {
-        var fetchimage = await fetch(link);
-        var buffer = await fetchimage.buffer();
-    } catch (_) {
-        return 0;
-    }
     let imagesx = new streamBuffers.ReadableStreamBuffer({
         frequency: 10,
         chunkSize: 1024
     });
     imagesx.path = path.join(__dirname, "cache", "nude", data.messageID+".jpg");
-    imagesx.put(buffer);
+    try {
+        var fetchimage = await fetch(link);
+        var buffer = await fetchimage.buffer();
+        imagesx.put(buffer);
+    } catch (_) {
+        return 0;
+    }
+    
     imagesx.stop();
 
     api.sendMessage({ attachment: [imagesx] }, data.threadID, data.messageID).catch(error => {

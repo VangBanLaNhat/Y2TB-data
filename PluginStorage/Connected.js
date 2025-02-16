@@ -99,7 +99,7 @@ function init(){
         "loginFunc": "connect", 
         "chathook": "chathook",
         "author": "HerokeyVN",
-        "version": "1.0.0"
+        "version": "1.0.1"
     }
 }
 
@@ -118,7 +118,7 @@ function pending(data, api, adv){
 			console.error(pluginName, e);
 			return api.sendMessage(e, data.threadID, data.messageID)
 		}
-		console.log(l)
+		
 		global.temp.threadPending = {
             UID: data.senderID,
             list: l
@@ -160,12 +160,16 @@ function chathook(data, api, adv){
         for(let i of global.temp.threadPending.list){
             api.sendMessage(rt, i.threadID, (e)=>{
                 if(e){
-                    api.deleteThread(i.threadID);
+                    api.deleteThread(i.threadID).catch(error => {
+                        console.error(error.message);
+                    });
                     console.error("Connected", `Can't connected to ${i.threadID} with error: ${e}`)
                 } else {
                     console.log("Connected", `Connected to ${i.threadID} success!`);
                 }
-            })
+            }).catch(error => {
+                console.error(error.message);
+            });
             
             done.push(i.name);
         }
@@ -174,23 +178,29 @@ function chathook(data, api, adv){
         
         for(let j in global.temp.threadPending.list){
             let i = global.temp.threadPending.list[j];
-            console.log(Number(j)+1);
+            
             if(msg.indexOf(Number(j)+1) != -1){
                 api.sendMessage(rt, i.threadID, (e)=>{
                     if(e){
-                        api.deleteThread(i.threadID);
+                        api.deleteThread(i.threadID).catch(error => {
+                            console.error(error.message);
+                        });
                         console.error("Connected", `Can't connected to ${i.threadID} with error: ${e}`)
                     } else {
                         console.log("Connected", `Connected to ${i.threadID} success!`);
                     }
-                })
+                }).catch(error => {
+                    console.error(error.message);
+                });
 
                 done.push(i.name);
             } else {
                     api.removeUserFromGroup(global.botid, i.threadID).catch(error => {
                         console.error(error.message);
                     });
-                    api.deleteThread(i.threadID);
+                    api.deleteThread(i.threadID).catch(error => {
+                        console.error(error.message);
+                    });;
                 out.push(i.name);
             }
         }
@@ -224,7 +234,7 @@ function connect(api, adv){
             var lang = global.lang.Connected;
             var la = global.config.bot_info.lang;
             try{
-            api.getThreadList(100, null, ["PENDING"], (e, l)=>{
+            api.getThreadList(100, null, ["PENDING", "OTHER"], (e, l)=>{
                 for(var i in l){
                     var rt = lang.connect[la].replace("{0}", global.config.bot_info.botname) + lang.help[la].replace("{0}", global.config.facebook.prefix);
 
@@ -233,6 +243,8 @@ function connect(api, adv){
                             api.deleteThread(l[i].threadID);
                             console.error("Connected", `Can't connected to ${l[i].threadID} with error: ${e}`)
                         }else console.log("Connected", `Connected to ${l[i].threadID} success!`)
+                    }).catch(error => {
+                        console.error(error.message);
                     });
                 }
             })

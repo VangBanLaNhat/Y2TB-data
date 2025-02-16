@@ -33,9 +33,10 @@ function init() {
         "config": {
             "first": "true",
             "auto": "true",
-            "type": ".mp4"
+            "type": ".mp4", 
+            "urldf": "https://v16m-default.tiktokcdn-us.com/39e8e787e9d73447d3a86172617f6ef2/67b08940/video/tos/alisg/tos-alisg-pve-0037c001/ooiQFDFzuAtuA4GQixNU9IiAo8yfEz9NC5awIB/?a=0&bti=OHYpOTY0Zik3OjlmOm01MzE6ZDQ0MDo%3D&ch=0&cr=13&dr=0&er=0&lr=all&net=0&cd=0%7C0%7C0%7C&cv=1&br=2492&bt=1246&cs=0&ds=6&ft=Wg2pvNM6VUOwU0mr1arz7Er5SEBVSBPXtg58vlcyqF_4&mime_type=video_mp4&qs=0&rc=MzhoMzk4ZDhlNWdlOzwzNUBpM3JwbWs5cjY7dzMzODczNEBfYl42LTQ0NjUxLjI1MjUyYSNhcWNwMmRjZG1gLS1kMS1zcw%3D%3D&vvpl=1&l=202502150631374B6479AA734D4623D534&btag=e000b8000"
         },
-        "onLoad": "onload",
+        // "onload": "onload",
         "chathook": "send",
         "author": "Yuuki",
         "version": "0.0.1"
@@ -46,21 +47,22 @@ function init() {
 async function onload() {
     const axios = require('axios');
     const fs = require('fs-extra');
+    const path = require('path');
     let datatype = JSON.parse(fs.readFileSync('./udata/Plugins config/joinnoti.json', 'utf-8'))
-    if(datatype.first == "true") {
-    const response = await axios({
-        method: 'get',
-        url: "https://l.facebook.com/l.php?u=https%3A%2F%2Fscontent.xx.fbcdn.net%2Fv%2Ft42.3356-2%2F429282105_6743243492448811_4673830387479179023_n.mp4%3F_nc_cat%3D102%26ccb%3D1-7%26_nc_sid%3D4f86bc%26_nc_ohc%3D1bKosvcuqYkAX8_OZgl%26_nc_ht%3Dscontent.xx%26oh%3D03_AdTJMCBoWIXZ5yxuvGGXl_WWAdvZ4-hRcNzlmP3m1cS-Kg%26oe%3D65DE0A3A%26dl%3D1&h=AT0JAnw8PgElltIC_dW0WK-8pGVS8fHLAZBAf3ngDA90kl_Q92Q9xwYxCsXpYVzZhfOgnmQ60Z7Sm8z9IY0Kb7J_wcZP9FO9gIkYUxXecNT03KWL1Nz3rizxMx7Td4fSGl_BoFF47cctPbgVKJXg9Q",
-        responseType: 'stream'
-    });
+    if (datatype.first == "true") {
+        const response = await axios({
+            method: 'get',
+            url: datatype.urldf,
+            responseType: 'stream'
+        });
 
-    let dir = path.join(__dirname, "cache", "joinnoti", "join.mp4")
-    ensureExists(path.join(__dirname, "cache", "joinnoti"))
-    let stream = await response.data.pipe(fs.createWriteStream(dir));
-    stream.on("finish", () => { console.log("Download default joinnoti done!") })
-    datatype.first = "false";
-    return fs.writeFileSync('./udata/Plugins config/joinnoti.json', JSON.stringify(datatype))
-}
+        let dir = path.join(__dirname, "cache", "joinnoti", "join.mp4")
+        ensureExists(path.join(__dirname, "cache", "joinnoti"))
+        let stream = await response.data.pipe(fs.createWriteStream(dir));
+        stream.on("finish", () => { console.log("Download default joinnoti done!") })
+        datatype.first = "false";
+        return fs.writeFileSync('./udata/Plugins config/joinnoti.json', JSON.stringify(datatype))
+    }
 }
 
 async function main(data, api, adv) {
@@ -80,6 +82,9 @@ async function main(data, api, adv) {
                 if (data.type != 'message_reply') return api.sendMessage("Bạn phải reply attachments!", data.threadID, data.messageID);
                 if (!data.messageReply.attachments[0]) return api.sendMessage('Bạn phải reply attachments!', data.threadID, data.messageID);
                 const link = data.messageReply.attachments[0].url;
+                let datatypee = JSON.parse(fs.readFileSync('./udata/Plugins config/joinnoti.json', 'utf-8'))
+                datatypee.urldf = link;
+                fs.writeFileSync('./udata/Plugins config/joinnoti.json', JSON.stringify(datatypee))
                 const response = await axios({
                     method: 'get',
                     url: link,
@@ -125,11 +130,25 @@ async function main(data, api, adv) {
 }
 
 async function send(data, api, adv) {
+    // try {
+    //     const uidBot = api.getCurrentUserID();
+    //     const uida = data.logMessageData.addedParticipants[0].userFbId
+    //     if (uida == uidBot) {
+    //         api.changeNickname(`[ ${global.config.facebook.prefix} ] • ${(global.config.bot_info.botname)}`, data.threadID, api.getCurrentUserID());
+    //         return api.sendMessage(`Connected successfully! `, data.threadID);
+    //     }
+    // } catch {
+    //     // console.log("")
+    // }
+
     const fs = require('fs-extra');
     let datatype = JSON.parse(fs.readFileSync('./udata/Plugins config/joinnoti.json', 'utf-8'))
     if (datatype.auto == "false") return;
     if (data.type != 'event') return;
     if (data.logMessageType != "log:subscribe") return;
+
+    // api.sendMessage(data.logMessageType, data.threadID)
+    console.log(data.logMessageData.addedParticipants)
     for (id in data.logMessageData.addedParticipants) {
         const username = data.logMessageData.addedParticipants[id].fullName;
         var count = data.participantIDs.length;
@@ -162,7 +181,7 @@ function ensureExists(path, mask) {
 
 
 module.exports = {
-    onload,
+    // onload,
     main,
     send,
     init

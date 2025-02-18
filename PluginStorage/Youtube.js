@@ -431,6 +431,7 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
             api.sendMessage(replaceMap(rlang("more"), { "{m}": 10 }), data.threadID, data.messageID);
             return;
         }
+        ensureExists(path.join(__dirname, "cache", "ytmp3"));
         var dirr = path.join(__dirname, "cache", "ytmp3", id + ".mp3")
 
         let vdo = ytdl(link, {
@@ -443,7 +444,7 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
         api.sendMessage(replaceMap(rlang("downloading"), map), data.threadID, data.messageID);
 
         ffmpeg(vdo).audioBitrate(128).save(dirr).on('progress', p => {
-            console.log("ytmp3", `${p.targetSize}KB downloaded`);
+            console.log("ytmp3", `${p.targetSize}KB downloaded\r`);
         }).on('end', () => {
             if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)
             else api.sendMessage({
@@ -464,6 +465,7 @@ async function downmp4(data, api, { rlang, replaceMap, config }, link) {
     try {
         var agent = ytdl.createAgent(config.cookies);
         var info = await ytdl.getInfo(link, { agent });
+        ensureExists(path.join(__dirname, "cache", "ytmp4"));
         var dirr = path.join(__dirname, "cache", "ytmp4", ytdl.getVideoID(link) + ".mp4")
         if (info.player_response.videoDetails.isLiveContent) {
             api.sendMessage(rlang("isLive"), data.threadID, data.messageID);

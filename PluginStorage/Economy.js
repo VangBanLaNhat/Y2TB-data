@@ -642,7 +642,7 @@ function bal(data, api) {
   }
 }
 
-async function baltop(data, api) {
+async function baltop(data, api, adv) {
   var args = data.args;
   var list = [];
   var c = 0;
@@ -663,7 +663,7 @@ async function baltop(data, api) {
       }
   for (let i = max * page - max; i < max * page; i++) {
     if (!list[i]) break;
-    var name = (await api.getUserInfo(list[i]))[list[i]].name;
+    var name = (await adv.getUserInfo(list[i]))[list[i]].name;
     s += `${i + 1}. ${name}: ${global.data.economy[list[i]].coin}${global.data.economyConfig.icon}\n`
   }
   api.sendMessage(global.lang["Economy"].baltop[global.config.bot_info.lang].replace("{0}", s).replace("{1}", page).replace("{2}", Math.trunc(list.length / max) + 1), data.threadID, data.messageID);

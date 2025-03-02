@@ -113,17 +113,19 @@ function pending(data, api, adv){
         global.temp.threadPending = {};
     }
 	
-	api.getThreadList(100, null, ["PENDING", "OTHER"], (e, l)=>{
-		if(e){
-			console.error(pluginName, e);
-			return api.sendMessage(e, data.threadID, data.messageID)
-		}
-		
-		global.temp.threadPending = {
-            UID: data.senderID,
-            list: l
-        };
-		send(data, api, adv);
+	api.getThreadList(100, null, ["OTHER"], (error_orther, orther)=>{
+        api.getThreadList(100, null, ["PENDING"], (error_pending, pending)=>{
+            if(error_orther || error_pending){
+                console.error(pluginName, error_orther+"\n"+error_pending);
+                return api.sendMessage(error_orther+"\n"+error_pending, data.threadID, data.messageID)
+            }
+            
+            global.temp.threadPending = {
+                UID: data.senderID,
+                list: orther.concat(pending)
+            };
+            send(data, api, adv);
+        });
 	});
 }
 

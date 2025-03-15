@@ -448,7 +448,6 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
         }).on('end', () => {
             if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)
             else api.sendMessage({
-                body: "Success: " + info.player_response.videoDetails.title,
                 attachment: fs.createReadStream(dirr)
             }, data.threadID, () => fs.unlinkSync(dirr), data.messageID)
         });
@@ -487,7 +486,6 @@ async function downmp4(data, api, { rlang, replaceMap, config }, link) {
         }).pipe(fs.createWriteStream(dirr)).on("close", () => {
             if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID);
             else api.sendMessage({
-                body: replaceMap(rlang("done"), map),
                 attachment: fs.createReadStream(dirr)
             }, data.threadID, () => fs.unlinkSync(dirr), data.messageID)
         })

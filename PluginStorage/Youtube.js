@@ -444,6 +444,8 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
         api.sendMessage(replaceMap(rlang("downloading"), map), data.threadID, data.messageID);
 
         ffmpeg(vdo).audioBitrate(128).save(dirr).on('progress', p => {
+            process.stdout.clearLine();
+            process.stdout.cursorTo(0);
             console.log("ytmp3", `${p.targetSize}KB downloaded\r`);
         }).on('end', () => {
             if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)

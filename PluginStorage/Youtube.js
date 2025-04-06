@@ -421,7 +421,7 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
     try {
         let agent = ytdl.createAgent(config.cookies);
         //let agent = ytdl.createProxyAgent({ uri: "136.226.67.116:8800" }, [ {name: "cookie", value: config.cookies} ]);
-        let id = ytdl.getVideoID(link, { agent })+(new Date()).getTime();
+        let id = ytdl.getVideoID(link, { agent });
         let info = await ytdl.getInfo(link, { agent });
         if (info.player_response.videoDetails.isLiveContent) {
             api.sendMessage(rlang("isLive"), data.threadID, data.messageID);
@@ -463,10 +463,9 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
         if (fs.statSync(dirr).size > 26214400) {
             api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID);
         } else {
-            console.log(fs.createReadStream(dirr))
             api.sendMessage({
                 attachment: fs.createReadStream(dirr)
-            }, data.threadID, () => fs.unlinkSync(dirr), data.messageID);
+            }, data.threadID, data.messageID);
         }
     } catch (err) {
         console.error("ytmp3", err);

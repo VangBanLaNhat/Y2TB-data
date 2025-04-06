@@ -421,7 +421,7 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
     try {
         let agent = ytdl.createAgent(config.cookies);
         //let agent = ytdl.createProxyAgent({ uri: "136.226.67.116:8800" }, [ {name: "cookie", value: config.cookies} ]);
-        let id = ytdl.getVideoID(link, { agent });
+        let id = ytdl.getVideoID(link, { agent })+(new Date()).getTime();
         let info = await ytdl.getInfo(link, { agent });
         if (info.player_response.videoDetails.isLiveContent) {
             api.sendMessage(rlang("isLive"), data.threadID, data.messageID);
@@ -432,49 +432,70 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
             return;
         }
         ensureExists(path.join(__dirname, "cache", "ytmp3"));
-        let dirr = path.join(__dirname, "cache", "ytmp3", id + ".mp3")
+        let dirMp4 = path.join(__dirname, "cache", "ytmp3", id + ".mp4");
+        let dirMp3 = path.join(__dirname, "cache", "ytmp3", id + ".mp3");
 
-        let vdo = ytdl(link, {
-            quality: 'highestaudio',
-            agent
-        });
         let map = {
             "{0}": info.player_response.videoDetails.title
         }
         api.sendMessage(replaceMap(rlang("downloading"), map), data.threadID, data.messageID);
 
-        let progressHandler = p => {
-            if (process.stdout.isTTY) {
-                process.stdout.clearLine(0);
-                process.stdout.cursorTo(0);
-            }
-            console.log("ytmp3", `${p.targetSize}KB downloaded!`);
-        };
-
+        // Tải video và lưu tạm thời dưới dạng .mp4
         await new Promise((resolve, reject) => {
-            ffmpeg(vdo)
-                .audioBitrate(128)
-                .save(dirr)
-                .on('progress', progressHandler)
-                .on('end', resolve)
-                .on('error', (e)=>{
-                    console.error(e);
-                    reject();
-                });
+            ytdl(link, {
+                quality: 'highestaudio',
+                agent
+            })
+                .pipe(fs.createWriteStream(dirMp4))
+                .on('finish', resolve)
+                .on('error', reject);
         });
 
-        console.log(fs.statSync(dirr));
-        if (fs.statSync(dirr).size > 26214400) {
-            api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID);
+        // Chuyển đổi từ .mp4 sang .mp3
+        await convertToMp3(dirMp4, dirMp3);
+
+        // Xóa file .mp4 sau khi chuyển đổi
+        fs.unlinkSync(dirMp4);
+
+        // Kiểm tra kích thước file .mp3 và gửi tin nhắn
+        const fileSize = fs.statSync(dirMp3).size;
+        if (fileSize > 26214400) {
+            api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirMp3), data.messageID);
         } else {
             api.sendMessage({
-                attachment: fs.createReadStream(dirr)
-            }, data.threadID, data.messageID);
+                attachment: fs.createReadStream(dirMp3)
+            }, data.threadID, () => fs.unlinkSync(dirMp3), data.messageID);
         }
+        // let progressHandler = p => {
+        //     if (process.stdout.isTTY) { // Check if stdout is a TTY
+        //         process.stdout.clearLine(0);
+        //         process.stdout.cursorTo(0);
+        //     }
+        //     console.log("ytmp3", `${p.targetSize}KB downloaded!`);
+        // };
+        // ffmpeg(vdo).audioBitrate(128).save(dirr)
+        //     .on('progress', progressHandler)
+        //     .on('end', () => {
+        //     if (fs.statSync(dirr).size > 26214400) 
+        //         api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)
+        //     else api.sendMessage({
+        //         attachment: fs.createReadStream(dirr)
+        //     }, data.threadID, () => fs.unlinkSync(dirr), data.messageID)
+        // });
     } catch (err) {
         console.error("ytmp3", err);
         api.sendMessage(err + "", data.threadID, data.messageID)
     }
+}
+
+function convertToMp3(inputPath, outputPath) {
+    return new Promise((resolve, reject) => {
+        ffmpeg(inputPath)
+            .audioBitrate(128)
+            .save(outputPath)
+            .on('end', resolve)
+            .on('error', reject);
+    });
 }
 
 async function downmp4(data, api, { rlang, replaceMap, config }, link) {

@@ -444,22 +444,29 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
         api.sendMessage(replaceMap(rlang("downloading"), map), data.threadID, data.messageID);
 
         let progressHandler = p => {
-            if (process.stdout.isTTY) { // Check if stdout is a TTY
+            if (process.stdout.isTTY) {
                 process.stdout.clearLine(0);
                 process.stdout.cursorTo(0);
             }
             console.log("ytmp3", `${p.targetSize}KB downloaded!`);
         };
-        ffmpeg(vdo).audioBitrate(128).save(dirr)
-            .on('progress', progressHandler)
-            .on('end', () => {
-            ffmpeg(vdo).removeListener('progress', progressHandler);
-            if (fs.statSync(dirr).size > 26214400) 
-                api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)
-            else api.sendMessage({
-                attachment: fs.createReadStream(dirr)
-            }, data.threadID, () => fs.unlinkSync(dirr), data.messageID)
+
+        await new Promise((resolve, reject) => {
+            ffmpeg(vdo)
+                .audioBitrate(128)
+                .save(dirr)
+                .on('progress', progressHandler)
+                .on('end', resolve)
+                .on('error', reject);
         });
+
+        if (fs.statSync(dirr).size > 26214400) {
+            api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID);
+        } else {
+            api.sendMessage({
+                attachment: fs.createReadStream(dirr)
+            }, data.threadID, () => fs.unlinkSync(dirr), data.messageID);
+        }
     } catch (err) {
         console.error("ytmp3", err);
         api.sendMessage(err + "", data.threadID, data.messageID)

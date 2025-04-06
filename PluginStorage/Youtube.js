@@ -476,7 +476,7 @@ async function downmp4(data, api, { rlang, replaceMap, config }, link) {
         var agent = ytdl.createAgent(config.cookies);
         var info = await ytdl.getInfo(link, { agent });
         ensureExists(path.join(__dirname, "cache", "ytmp4"));
-        var dirr = path.join(__dirname, "cache", "ytmp4", ytdl.getVideoID(link) + ".mp4")
+        var dirMp4 = path.join(__dirname, "cache", "ytmp4", ytdl.getVideoID(link) + ".mp4")
         if (info.player_response.videoDetails.isLiveContent) {
             api.sendMessage(rlang("isLive"), data.threadID, data.messageID);
             return;

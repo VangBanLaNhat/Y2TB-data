@@ -473,7 +473,7 @@ async function downmp4(data, api, { rlang, replaceMap, config }, link) {
         var agent = ytdl.createAgent(config.cookies);
         var info = await ytdl.getInfo(link, { agent });
         ensureExists(path.join(__dirname, "cache", "ytmp4"));
-        var dirr = path.join(__dirname, "cache", "ytmp4", ytdl.getVideoID(link)+(new Date()).getTime() + ".mp4")
+        var dirr = path.join(__dirname, "cache", "ytmp4", ytdl.getVideoID(link) + ".mp4")
         if (info.player_response.videoDetails.isLiveContent) {
             api.sendMessage(rlang("isLive"), data.threadID, data.messageID);
             return;
@@ -488,15 +488,39 @@ async function downmp4(data, api, { rlang, replaceMap, config }, link) {
         }
         api.sendMessage(replaceMap(rlang("downloading"), map), data.threadID, data.messageID);
 
-        ytdl(link, {
+        let vdo = ytdl(link, {
             quality: 'highestaudio',
             agent
-        }).pipe(fs.createWriteStream(dirr)).on("close", () => {
-            if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID);
+        });
+        let progressHandler = p => {
+            if (process.stdout.isTTY) { // Check if stdout is a TTY
+                process.stdout.clearLine(0);
+                process.stdout.cursorTo(0);
+            }
+            console.log("ytmp4", `${p.targetSize}KB downloaded!`);
+        };
+        ffmpeg(vdo)
+            .videoCodec('libx264') // Sử dụng codec video H.264
+            .audioCodec('aac') // Sử dụng codec âm thanh AAC
+            .format('mp4') // Định dạng MP4
+            .save(dirMp4)
+            .on('progress', progressHandler)
+            .on('end', () => {
+            if (fs.statSync(dirr).size > 26214400) 
+                api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)
             else api.sendMessage({
                 attachment: fs.createReadStream(dirr)
-            }, data.threadID, () => fs.unlinkSync(dirr), data.messageID)
-        })
+            }, data.threadID, data.messageID)
+        });
+        // ytdl(link, {
+        //     quality: 'highestaudio',
+        //     agent
+        // }).pipe(fs.createWriteStream(dirr)).on("close", () => {
+        //     if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID);
+        //     else api.sendMessage({
+        //         attachment: fs.createReadStream(dirr)
+        //     }, data.threadID, () => fs.unlinkSync(dirr), data.messageID)
+        // })
     } catch (err) {
         console.error("ytmp4", err);
         api.sendMessage(err + "", data.threadID, data.messageID);

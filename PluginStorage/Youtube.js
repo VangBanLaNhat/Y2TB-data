@@ -466,8 +466,11 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
 }
 
 async function downmp4(data, api, { rlang, replaceMap, config }, link) {
-    var fs = require('fs');
-    var ytdl = require("@distube/ytdl-core");
+    var ytdl = require('@distube/ytdl-core');
+    var ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+    var ffmpeg = require('fluent-ffmpeg');
+    var fs = require("fs");
+    ffmpeg.setFfmpegPath(ffmpegPath);
 
     try {
         var agent = ytdl.createAgent(config.cookies);

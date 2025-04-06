@@ -463,6 +463,7 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
         if (fs.statSync(dirr).size > 26214400) {
             api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID);
         } else {
+            console.log(fs.createReadStream(dirr))
             api.sendMessage({
                 attachment: fs.createReadStream(dirr)
             }, data.threadID, () => fs.unlinkSync(dirr), data.messageID);

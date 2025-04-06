@@ -444,9 +444,11 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
         api.sendMessage(replaceMap(rlang("downloading"), map), data.threadID, data.messageID);
 
         let progressHandler = p => {
-            process.stdout.clearLine();
-            process.stdout.cursorTo(0);
-            console.log("ytmp3", `${p.targetSize}KB downloaded\r`);
+            if (process.stdout.isTTY) { // Check if stdout is a TTY
+                process.stdout.clearLine(0);
+                process.stdout.cursorTo(0);
+            }
+            console.log("ytmp3", `${p.targetSize}KB downloaded!`);
         };
         ffmpeg(vdo).audioBitrate(128).save(dirr)
             .on('progress', progressHandler)

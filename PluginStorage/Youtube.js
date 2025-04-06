@@ -419,10 +419,10 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
     ffmpeg.setFfmpegPath(ffmpegPath);
 
     try {
-        var agent = ytdl.createAgent(config.cookies);
-        //var agent = ytdl.createProxyAgent({ uri: "136.226.67.116:8800" }, [ {name: "cookie", value: config.cookies} ]);
-        var id = ytdl.getVideoID(link, { agent })+(new Date()).getTime();
-        var info = await ytdl.getInfo(link, { agent });
+        let agent = ytdl.createAgent(config.cookies);
+        //let agent = ytdl.createProxyAgent({ uri: "136.226.67.116:8800" }, [ {name: "cookie", value: config.cookies} ]);
+        let id = ytdl.getVideoID(link, { agent })+(new Date()).getTime();
+        let info = await ytdl.getInfo(link, { agent });
         if (info.player_response.videoDetails.isLiveContent) {
             api.sendMessage(rlang("isLive"), data.threadID, data.messageID);
             return;
@@ -432,7 +432,7 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
             return;
         }
         ensureExists(path.join(__dirname, "cache", "ytmp3"));
-        var dirr = path.join(__dirname, "cache", "ytmp3", id + ".mp3")
+        let dirr = path.join(__dirname, "cache", "ytmp3", id + ".mp3")
 
         let vdo = ytdl(link, {
             quality: 'highestaudio',
@@ -443,12 +443,17 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
         }
         api.sendMessage(replaceMap(rlang("downloading"), map), data.threadID, data.messageID);
 
-        ffmpeg(vdo).audioBitrate(128).save(dirr).on('progress', p => {
+        let progressHandler = p => {
             process.stdout.clearLine();
             process.stdout.cursorTo(0);
             console.log("ytmp3", `${p.targetSize}KB downloaded\r`);
-        }).on('end', () => {
-            if (fs.statSync(dirr).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)
+        };
+        ffmpeg(vdo).audioBitrate(128).save(dirr)
+            .on('progress', progressHandler)
+            .on('end', () => {
+            ffmpeg(vdo).removeListener('progress', progressHandler);
+            if (fs.statSync(dirr).size > 26214400) 
+                api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)
             else api.sendMessage({
                 attachment: fs.createReadStream(dirr)
             }, data.threadID, () => fs.unlinkSync(dirr), data.messageID)

@@ -509,10 +509,10 @@ async function downmp4(data, api, { rlang, replaceMap, config }, link) {
             .save(dirMp4)
             .on('progress', progressHandler)
             .on('end', () => {
-            if (fs.statSync(dirr).size > 26214400) 
-                api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirr), data.messageID)
+            if (fs.statSync(dirMp4).size > 26214400) 
+                api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dirMp4), data.messageID)
             else api.sendMessage({
-                attachment: fs.createReadStream(dirr)
+                attachment: fs.createReadStream(dirMp4)
             }, data.threadID, data.messageID)
         });
         // ytdl(link, {

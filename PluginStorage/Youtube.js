@@ -457,7 +457,10 @@ async function downmp3(data, api, { rlang, replaceMap, config }, link) {
                 .save(dirr)
                 .on('progress', progressHandler)
                 .on('end', resolve)
-                .on('error', reject);
+                .on('error', (e)=>{
+                    console.error(e);
+                    reject();
+                });
         });
 
         if (fs.statSync(dirr).size > 26214400) {

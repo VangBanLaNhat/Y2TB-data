@@ -175,6 +175,21 @@ function init() {
           }
         }
       },
+      "firstTimeSlut": {
+        "desc": "Lang khi người dùng dùng slut lần đầu",
+        "vi_VN": ["Chúc mừng, đây là lần đầu bạn làm chuyện đó với người lạ và kiếm được {0}. Sau lần đầu, số tiền nhận được sẽ giảm xuống. Số tiền hiện có: {1}"],
+        "en_US": ["Congratulations, this is the first time you f**ked a stranger and earn {0}. After the first time, the amount received will be reduced. Amount available: {1}"],
+        "args": {
+          "{0}": {
+            "vi_VN": "Tiền vừa kiếm được",
+            "en_US": "Money just earned"
+          },
+          "{1}": {
+            "vi_VN": "Tiền hiện có",
+            "en_US": "Cash available"
+          }
+        }
+      },
       "crime": {
         "desc": "Lang khi người dùng sài crime",
         "vi_VN": ["Bạn đã cướp ngân hàng thành công và kiếm được {0}. Số tiền hiện có: {1}", "Bạn đã cướp ngân hàng nhưng đã bị cảnh sát bắt, bạn đã dùng {0} để hối lộ. Số tiền hiện có: {1}"],
@@ -442,9 +457,15 @@ function slut(data, api) {
   !global.data.economy[data.senderID] ? global.data.economy[data.senderID] = {
     coin: 0
   } : "";
-  !global.data.economy[data.senderID].slut ? global.data.economy[data.senderID].slut = {
-    countdown: 0
-  } : "";
+
+  let isFirstTime = false;
+  if (!global.data.economy[data.senderID].slut) {
+    global.data.economy[data.senderID].slut = {
+      countdown: 0
+    }
+
+    isFirstTime = true;
+  }
   var time = new Date().getTime();
   var re = (time - global.data.economy[data.senderID].slut.countdown) / 1000
   if (re < cf.countdown && re >= 0) {
@@ -453,6 +474,15 @@ function slut(data, api) {
   }//Ꮙ
   global.data.economy[data.senderID].slut.countdown = time;
   var coinPlus = random.int(cf.min, cf.max);
+
+  // First time
+
+  if (isFirstTime) {
+    coinPlus *= 100;
+    global.data.economy[data.senderID].coin += coinPlus;
+    api.sendMessage(global.lang["Economy"].firstTimeSlut[global.config.bot_info.lang][0].replace("{0}", coinPlus.toString() + global.data.economyConfig.icon).replace("{1}", global.data.economy[data.senderID].coin.toString() + global.data.economyConfig.icon), data.threadID, data.messageID);
+  }
+
   if (random.boolean()) {
     global.data.economy[data.senderID].coin += coinPlus;
     api.sendMessage(global.lang["Economy"].slut[global.config.bot_info.lang][0].replace("{0}", coinPlus.toString() + global.data.economyConfig.icon).replace("{1}", global.data.economy[data.senderID].coin.toString() + global.data.economyConfig.icon), data.threadID, data.messageID);

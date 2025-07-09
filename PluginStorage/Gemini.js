@@ -136,6 +136,29 @@ function getApiKey() {
     return apiKeys.apiKeys[currentApiKeyIndex];
 }
 
+function createChatSession() {
+    if (!model) {
+        console.error("Cannot create chat session: model is null");
+        return null;
+    }
+    
+    try {
+        return model.startChat({
+            generationConfig: {
+                temperature: 1,
+                topP: 0.95,
+                topK: 40,
+                maxOutputTokens: 8192,
+                responseMimeType: "text/plain",
+            },
+            history: [],
+        });
+    } catch (error) {
+        console.error("Error creating chat session:", error);
+        return null;
+    }
+}
+
 function createModel() {
     return genAI.getGenerativeModel({
         model: "gemini-2.0-flash-lite",
@@ -211,18 +234,13 @@ async function status(data, api, adv) {
             return api.sendMessage(rlang("isOn"), threadID, data.messageID);
         } else {
             global.data.geminiStatus[threadID] = true;
-            if (!chatSessions.has(threadID)) {
-                chatSessions.set(threadID, model.startChat({
-                    generationConfig: {
-                        temperature: 1,
-                        topP: 0.95,
-                        topK: 40,
-                        maxOutputTokens: 8192,
-                        responseMimeType: "text/plain",
-                    },
-                    history: [],
-                }));
+            
+            if (!model) {
+                api.sendMessage("Gemini is not fully initialized yet, but status is set to ON.", threadID, data.messageID);
+            } else if (!chatSessions.has(threadID)) {
+                chatSessions.set(threadID, createChatSession());
             }
+            
             api.sendMessage(rlang("turnOn"), threadID, data.messageID);
             saveStatus(statusFile);
         }
@@ -238,24 +256,23 @@ async function cmd1(data, api, adv) {
     
     if (data.body == "") return api.sendMessage(rlang("askContent"), data.threadID, data.messageID);
 
-    const threadID = data.threadID;
-    let chatSession = chatSessions.get(threadID);
-
-    if (!chatSession) {
-        chatSession = model.startChat({
-            generationConfig: {
-                temperature: 1,
-                topP: 0.95,
-                topK: 40,
-                maxOutputTokens: 8192,
-                responseMimeType: "text/plain",
-            },
-            history: [],
-        });
-        chatSessions.set(threadID, chatSession);
+    // Check if Gemini is initialized
+    if (!model || !genAI) {
+        api.sendMessage("Gemini API is initializing, please try again in a moment.", data.threadID, data.messageID);
+        return;
     }
 
+    const threadID = data.threadID;
+    let chatSession;
+    
     try {
+        chatSession = chatSessions.get(threadID);
+        
+        if (!chatSession) {
+            chatSession = createChatSession();
+            chatSessions.set(threadID, chatSession);
+        }
+
         const result = await chatSession.sendMessage(data.body);
         api.sendMessage(result.response.text(), data.threadID, data.messageID);
     } catch (error) {
@@ -293,11 +310,13 @@ async function chathook(data, api, adv) {
     const path = require('path');
     const axios = require('axios');
     
+    // Early exit conditions
+    if (data.type !== "message") return;
+    if (!model || !genAI) return;
+
     const cacheDir = path.join(__dirname, "/cache/gemini");
     const apiKeyFile = path.join(cacheDir, "gemini.json");
     
-    if (data.type !== "message") return;
-
     let { rlang, config, replaceMap } = adv;
 
     !global.data.geminiStatus ? global.data.geminiStatus = {} : '';
@@ -307,10 +326,16 @@ async function chathook(data, api, adv) {
     if (data.body.indexOf(global.config.facebook.prefix) === 0) return;
 
     const threadID = data.threadID;
-    const chatSession = chatSessions.get(threadID);
+    let chatSession = chatSessions.get(threadID);
 
     if (!chatSession) {
-        return;
+        try {
+            chatSession = createChatSession();
+            chatSessions.set(threadID, chatSession);
+        } catch (error) {
+            console.error("Error creating chat session:", error);
+            return;
+        }
     }
     
     if (data.attachments && data.attachments.length > 0) {
@@ -333,11 +358,11 @@ async function chathook(data, api, adv) {
         }
         
         ensureExists(path.join(__dirname, "cache", "gemini"));
-        await downloadImage(link, dir);
-        const prompt = data.body;
-        const attachmentPart = fileToGenerativePart(dir, mimeType);
-        
         try {
+            await downloadImage(link, dir);
+            const prompt = data.body;
+            const attachmentPart = fileToGenerativePart(dir, mimeType);
+            
             const result = await chatSession.sendMessage([prompt, attachmentPart]);
             api.sendMessage(result.response.text(), data.threadID, data.messageID);
         } catch (error) {
@@ -362,42 +387,48 @@ async function chathook(data, api, adv) {
 }
 
 function onload(info) {
-    const fs = require("fs");
-    const path = require("path");
-    const { GoogleGenerativeAI } = require("@google/generative-ai");
-    
-    // Setup cache directory
-    const cacheDir = path.join(__dirname, "/cache/gemini");
-    const apiKeyFile = path.join(cacheDir, "gemini.json");
-    const statusFile = path.join(cacheDir, "status.json");
-    
-    // Create cache directory
-    ensureExists(cacheDir);
-    
-    // Initialize API keys
-    apiKeys = loadApiKeys(cacheDir, apiKeyFile);
-    currentApiKeyIndex = 0;
-    
-    // Initialize Gemini
-    genAI = new GoogleGenerativeAI(getApiKey());
-    model = createModel();
-    
-    // Load status and create chat sessions
-    global.data.geminiStatus = loadStatus(statusFile);
+    try {
+        const fs = require("fs");
+        const path = require("path");
+        
+        // Setup cache directory
+        const cacheDir = path.join(__dirname, "/cache/gemini");
+        const apiKeyFile = path.join(cacheDir, "gemini.json");
+        const statusFile = path.join(cacheDir, "status.json");
+        
+        // Create cache directory
+        ensureExists(cacheDir);
+        
+        // Initialize API keys
+        apiKeys = loadApiKeys(cacheDir, apiKeyFile);
+        currentApiKeyIndex = 0;
+        
+        try {
+            // Import the Gemini API library
+            const { GoogleGenerativeAI } = require("@google/generative-ai");
+            
+            // Initialize Gemini
+            genAI = new GoogleGenerativeAI(getApiKey());
+            model = createModel();
+            
+            // Load status and create chat sessions
+            global.data.geminiStatus = loadStatus(statusFile);
 
-    for (const threadID in global.data.geminiStatus) {
-        if (global.data.geminiStatus[threadID]) {
-            chatSessions.set(threadID, model.startChat({
-                generationConfig: {
-                    temperature: 1,
-                    topP: 0.95,
-                    topK: 40,
-                    maxOutputTokens: 8192,
-                    responseMimeType: "text/plain",
-                },
-                history: [],
-            }));
+            for (const threadID in global.data.geminiStatus) {
+                if (global.data.geminiStatus[threadID]) {
+                    try {
+                        chatSessions.set(threadID, createChatSession());
+                    } catch (error) {
+                        console.error(`Error creating chat session for thread ${threadID}:`, error);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Failed to initialize Gemini API:", error);
+            console.error("Please make sure @google/generative-ai is installed correctly.");
         }
+    } catch (error) {
+        console.error("Error in onload function:", error);
     }
 }
 

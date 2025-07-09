@@ -480,7 +480,7 @@ function slut(data, api) {
   if (isFirstTime) {
     coinPlus *= 100;
     global.data.economy[data.senderID].coin += coinPlus;
-    api.sendMessage(global.lang["Economy"].firstTimeSlut[global.config.bot_info.lang][0].replace("{0}", coinPlus.toString() + global.data.economyConfig.icon).replace("{1}", global.data.economy[data.senderID].coin.toString() + global.data.economyConfig.icon), data.threadID, data.messageID);
+    return api.sendMessage(global.lang["Economy"].firstTimeSlut[global.config.bot_info.lang][0].replace("{0}", coinPlus.toString() + global.data.economyConfig.icon).replace("{1}", global.data.economy[data.senderID].coin.toString() + global.data.economyConfig.icon), data.threadID, data.messageID);
   }
 
   if (random.boolean()) {

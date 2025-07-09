@@ -33,8 +33,8 @@ function init() {
                 },
                 "mainFunc": "status", 
                 "example": {
-                    "vi_VN": "Vietnamese example",
-                    "en_US": "English example"
+                    "vi_VN": "on",
+                    "en_US": "off"
                 }
             },
         },
@@ -42,32 +42,53 @@ function init() {
             "@google/generative-ai": ""
         },
         "langMap": {
-            "translation code 1": {
-                "desc": "Describe the function of translation",
-                "vi_VN": "Translation in Vietnamese {0}",
-                "en_US": "Translation in English {0}",
-                "args": {
-                    "{0}": {
-                        "vi_VN": "Describe the function of the variable in Vietnamese",
-                        "en_US": "Describe the function of the variable in English"
-                    }
-                }
+            "noPermission": {
+                "desc": "No permission message",
+                "vi_VN": "Không đủ quyền!",
+                "en_US": "No permission!",
+                "args": {}
             },
-            "translation code 2": {
-                "desc": "Describe the function of translation",
-                "vi_VN": "Translation in Vietnamese {1}",
-                "en_US": "Translation in English {1}",
-                "args": {
-                    "{1}": {
-                        "vi_VN": "Describe the function of the variable in Vietnamese",
-                        "en_US": "Describe the function of the variable in English"
-                    }
-                }
+            "turnOn": {
+                "desc": "Turn on Gemini",
+                "vi_VN": "Đã bật Gemini!",
+                "en_US": "Turn on Gemini!",
+                "args": {}
+            },
+            "turnOff": {
+                "desc": "Turn off Gemini",
+                "vi_VN": "Đã tắt Gemini!",
+                "en_US": "Turn off Gemini!",
+                "args": {}
+            },
+            "isOn": {
+                "desc": "Gemini is on",
+                "vi_VN": "Gemini đang bật!",
+                "en_US": "Gemini is now on!",
+                "args": {}
+            },
+            "isOff": {
+                "desc": "Gemini is off",
+                "vi_VN": "Gemini đang tắt!",
+                "en_US": "Gemini is now off!",
+                "args": {}
+            },
+            "askContent": {
+                "desc": "Ask for content",
+                "vi_VN": "Vui lòng nhập nội dung muốn hỏi Gemini!",
+                "en_US": "Please enter content to ask Gemini!",
+                "args": {}
+            },
+            "errorMessage": {
+                "desc": "Error message",
+                "vi_VN": "Có lỗi xảy ra khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.",
+                "en_US": "An error occurred while processing your request. Please try again later.",
+                "args": {}
             }
         },
         "config": {
             "APIKey": "YOUR_KEY",
-            "instruction": "Your_instruction"
+            "instruction": "Your_instruction",
+            "geminiStatus": false
         },
         "chathook": "chathook",
         "onload": "onload",
@@ -76,39 +97,26 @@ function init() {
     }
 }
 
-
-
-const {
-    GoogleGenerativeAI
-} = require("@google/generative-ai");
-const fs = require("fs");
-const path = require("path");
-
-const cacheDir = path.join(__dirname, "/cache/gemini");
-const apiKeyFile = path.join(cacheDir, "gemini.json");
-const statusFile = path.join(cacheDir, "status.json");
-const defaultApiKeys = [
-    "APIKEY 1",
-    "APIKEY 2",
-    "APIKEY..."
-];
-
-fs.mkdirSync(cacheDir, {
-    recursive: true
-});
-
-let apiKeys = loadApiKeys();
+// Shared state - initialized during onload
+let apiKeys = null;
 let currentApiKeyIndex = 0;
-let genAI = new GoogleGenerativeAI(getApiKey());
-let model = createModel();
+let genAI = null;
+let model = null;
 let chatSessions = new Map();
 
-function loadApiKeys() {
+function loadApiKeys(cacheDir, apiKeyFile) {
+    const fs = require("fs");
+    const defaultApiKeys = [
+        "APIKEY 1",
+        "APIKEY 2",
+        "APIKEY..."
+    ];
+    
     try {
         const data = fs.readFileSync(apiKeyFile, "utf8");
         return JSON.parse(data);
     } catch (error) {
-        console.warn("Không tìm thấy file API Key, sử dụng API Key mặc định.");
+        console.warn("API key file not found, using default API key.");
         const initialData = {
             apiKeys: defaultApiKeys,
             requestCounts: defaultApiKeys.map(() => 0),
@@ -119,7 +127,8 @@ function loadApiKeys() {
     }
 }
 
-function saveApiKeys() {
+function saveApiKeys(apiKeyFile) {
+    const fs = require("fs");
     fs.writeFileSync(apiKeyFile, JSON.stringify(apiKeys, null, 2), "utf8");
 }
 
@@ -129,44 +138,49 @@ function getApiKey() {
 
 function createModel() {
     return genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.0-flash-lite",
         systemInstruction: "YOUR INSTRUCTION",
     });
 }
 
-
-function updateApiKeyUsage() {
+function updateApiKeyUsage(apiKeyFile) {
     apiKeys.requestCounts[currentApiKeyIndex]++;
 
     if (apiKeys.requestCounts[currentApiKeyIndex] >= 1500) {
-        console.log("Đã đạt giới hạn 1500 request cho API Key hiện tại. Chuyển sang API Key mới.");
+        console.log("Reached 1500 request limit for current API key. Switching to new API key.");
         apiKeys.requestCounts[currentApiKeyIndex] = 0;
         currentApiKeyIndex = (currentApiKeyIndex + 1) % apiKeys.apiKeys.length;
-        console.log(`Sử dụng API Key mới: ${apiKeys.apiKeys[currentApiKeyIndex]}`);
+        console.log(`Using new API key: ${apiKeys.apiKeys[currentApiKeyIndex]}`);
+        
+        const { GoogleGenerativeAI } = require("@google/generative-ai");
         genAI = new GoogleGenerativeAI(getApiKey());
         model = createModel();
     }
-    saveApiKeys();
+    saveApiKeys(apiKeyFile);
 }
 
-
-
-function loadStatus() {
+function loadStatus(statusFile) {
+    const fs = require("fs");
     try {
         const data = fs.readFileSync(statusFile, "utf8");
         return JSON.parse(data);
     } catch (error) {
-        console.warn("Không tìm thấy file trạng thái, tạo file mới.");
+        console.warn("Status file not found, creating new file.");
         fs.writeFileSync(statusFile, "{}", "utf8");
         return {};
     }
 }
 
-function saveStatus() {
+function saveStatus(statusFile) {
+    const fs = require("fs");
     fs.writeFileSync(statusFile, JSON.stringify(global.data.geminiStatus, null, 2), "utf8");
 }
 
 async function status(data, api, adv) {
+    const path = require("path");
+    const cacheDir = path.join(__dirname, "/cache/gemini");
+    const statusFile = path.join(cacheDir, "status.json");
+    
     let { rlang, config, getThreadInfo } = adv;
 
     if (global.config.facebook.admin.indexOf(data.senderID) == -1) {
@@ -178,7 +192,7 @@ async function status(data, api, adv) {
                 break;
             }
         }
-        if (!check) return api.sendMessage("No permision!", data.threadID, data.messageID);
+        if (!check) return api.sendMessage(rlang("noPermission"), data.threadID, data.messageID);
     }
 
     const threadID = data.threadID;
@@ -186,15 +200,15 @@ async function status(data, api, adv) {
 
     if (data.args[1] && data.args[1].toLowerCase() == "off") {
         if (!global.data.geminiStatus[threadID]) {
-            return api.sendMessage("Gemini is now off!", threadID, data.messageID);
+            return api.sendMessage(rlang("isOff"), threadID, data.messageID);
         }
         global.data.geminiStatus[threadID] = false;
         chatSessions.delete(threadID);
-        api.sendMessage("Turn off Gemini!", threadID, data.messageID);
-        saveStatus();
+        api.sendMessage(rlang("turnOff"), threadID, data.messageID);
+        saveStatus(statusFile);
     } else {
         if (currentStatus) {
-            return api.sendMessage("Gemini is now on!", threadID, data.messageID);
+            return api.sendMessage(rlang("isOn"), threadID, data.messageID);
         } else {
             global.data.geminiStatus[threadID] = true;
             if (!chatSessions.has(threadID)) {
@@ -209,14 +223,20 @@ async function status(data, api, adv) {
                     history: [],
                 }));
             }
-            api.sendMessage("Turn on Gemini!", threadID, data.messageID);
-            saveStatus();
+            api.sendMessage(rlang("turnOn"), threadID, data.messageID);
+            saveStatus(statusFile);
         }
     }
 }
 
 async function cmd1(data, api, adv) {
-    if (data.body == "") return api.sendMessage("Vui lòng nhập nội dung muốn hỏi Gemini!", data.threadID, data.messageID);
+    const path = require("path");
+    const cacheDir = path.join(__dirname, "/cache/gemini");
+    const apiKeyFile = path.join(cacheDir, "gemini.json");
+    
+    let { rlang } = adv;
+    
+    if (data.body == "") return api.sendMessage(rlang("askContent"), data.threadID, data.messageID);
 
     const threadID = data.threadID;
     let chatSession = chatSessions.get(threadID);
@@ -239,19 +259,18 @@ async function cmd1(data, api, adv) {
         const result = await chatSession.sendMessage(data.body);
         api.sendMessage(result.response.text(), data.threadID, data.messageID);
     } catch (error) {
-        console.error("Lỗi khi gọi Gemini API:", error);
-        api.sendMessage("Có lỗi xảy ra khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.", data.threadID, data.messageID);
+        console.error("Error calling Gemini API:", error);
+        api.sendMessage(rlang("errorMessage"), data.threadID, data.messageID);
     } finally {
-        updateApiKeyUsage();
+        updateApiKeyUsage(apiKeyFile);
     }
 }
 
-
-function fileToGenerativePart(path, mimeType) {
+function fileToGenerativePart(filepath, mimeType) {
     const fs = require('fs');
     return {
         inlineData: {
-            data: Buffer.from(fs.readFileSync(path)).toString("base64"),
+            data: Buffer.from(fs.readFileSync(filepath)).toString("base64"),
             mimeType,
         },
     };
@@ -260,7 +279,6 @@ function fileToGenerativePart(path, mimeType) {
 async function downloadImage(url, filePath) {
     const fs = require('fs');
     const axios = require('axios');
-    const path = require('path');
     const response = await axios({ url, method: 'GET', responseType: 'stream' });
     const writer = fs.createWriteStream(filePath);
     response.data.pipe(writer);
@@ -270,12 +288,14 @@ async function downloadImage(url, filePath) {
     });
 }
 
-
 async function chathook(data, api, adv) {
-    const axios = require('axios');
-    const fs = require('fs-extra');
+    const fs = require('fs');
     const path = require('path');
-
+    const axios = require('axios');
+    
+    const cacheDir = path.join(__dirname, "/cache/gemini");
+    const apiKeyFile = path.join(cacheDir, "gemini.json");
+    
     if (data.type !== "message") return;
 
     let { rlang, config, replaceMap } = adv;
@@ -292,6 +312,7 @@ async function chathook(data, api, adv) {
     if (!chatSession) {
         return;
     }
+    
     if (data.attachments && data.attachments.length > 0) {
         const attachment = data.attachments[0];
         const link = attachment.url;
@@ -310,18 +331,20 @@ async function chathook(data, api, adv) {
         } else {
             return; 
         }
+        
         ensureExists(path.join(__dirname, "cache", "gemini"));
         await downloadImage(link, dir);
         const prompt = data.body;
         const attachmentPart = fileToGenerativePart(dir, mimeType);
+        
         try {
             const result = await chatSession.sendMessage([prompt, attachmentPart]);
             api.sendMessage(result.response.text(), data.threadID, data.messageID);
         } catch (error) {
-            console.error("Lỗi khi gọi Gemini API:", error);
-            api.sendMessage("Có lỗi xảy ra khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.", data.threadID, data.messageID);
+            console.error("Error calling Gemini API:", error);
+            api.sendMessage(rlang("errorMessage"), data.threadID, data.messageID);
         } finally {
-            updateApiKeyUsage();
+            updateApiKeyUsage(apiKeyFile);
         }
         return;
     }
@@ -331,16 +354,36 @@ async function chathook(data, api, adv) {
         const result = await chatSession.sendMessage(messageS);
         api.sendMessage(result.response.text(), data.threadID, data.messageID);
     } catch (error) {
-        console.error("Lỗi khi gọi Gemini API:", error);
-        api.sendMessage("Có lỗi xảy ra khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.", data.threadID, data.messageID);
+        console.error("Error calling Gemini API:", error);
+        api.sendMessage(rlang("errorMessage"), data.threadID, data.messageID);
     } finally {
-        updateApiKeyUsage();
+        updateApiKeyUsage(apiKeyFile);
     }
 }
 
 function onload(info) {
-    global.data.geminiStatus = loadStatus();
-
+    const fs = require("fs");
+    const path = require("path");
+    const { GoogleGenerativeAI } = require("@google/generative-ai");
+    
+    // Setup cache directory
+    const cacheDir = path.join(__dirname, "/cache/gemini");
+    const apiKeyFile = path.join(cacheDir, "gemini.json");
+    const statusFile = path.join(cacheDir, "status.json");
+    
+    // Create cache directory
+    ensureExists(cacheDir);
+    
+    // Initialize API keys
+    apiKeys = loadApiKeys(cacheDir, apiKeyFile);
+    currentApiKeyIndex = 0;
+    
+    // Initialize Gemini
+    genAI = new GoogleGenerativeAI(getApiKey());
+    model = createModel();
+    
+    // Load status and create chat sessions
+    global.data.geminiStatus = loadStatus(statusFile);
 
     for (const threadID in global.data.geminiStatus) {
         if (global.data.geminiStatus[threadID]) {
@@ -356,12 +399,10 @@ function onload(info) {
             }));
         }
     }
-
 }
 
-
 function ensureExists(path, mask) {
-    var fs = require('fs');
+    const fs = require('fs');
     if (typeof mask != 'number') {
         mask = 0o777;
     }

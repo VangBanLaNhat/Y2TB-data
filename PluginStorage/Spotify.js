@@ -53,20 +53,30 @@ function init() {
                 }
             }
         },
-        "chathook": "chathook",
+        "chathook": "chathook",        
         "nodeDepends": {
-            "jsdom": "22.1.0",
-            
-            "ytdl-core": "",
+            "spottydl": "",
+            "@distube/ytdl-core": "",
             "fluent-ffmpeg": "",
             "@ffmpeg-installer/ffmpeg": ""
-        },
+        },        
         "langMap": {
             "more25mb": {
                 "desc": "Video greater than 25MB",
                 "vi_VN": "Video lớn hơn 25MB!",
                 "en_US": "Video greater than 25MB!",
                 "args": {}
+            },
+            "downloading": {
+                "desc": "Song is downloading",
+                "vi_VN": "Đang tải: {0}",
+                "en_US": "Downloading: {0}",
+                "args": {
+                    "{0}": {
+                        "vi_VN": "tên bài hát",
+                        "en_US": "song name"
+                    }
+                }
             },
             "autoOn": {
                 "desc": "Turn on Spotify Auto Download",
@@ -106,8 +116,8 @@ function init() {
             },
             "illegal": {
                 "desc": "The link is not valid",
-                "vi_VN": "Đường link không hợp lệ!",
-                "en_US": "The link is not valid!",
+                "vi_VN": "Đường link không hợp lệ hoặc không tìm thấy bài hát!",
+                "en_US": "The link is not valid or song not found!",
                 "args": {}
             },
             "notSP": {
@@ -126,65 +136,104 @@ function init() {
 }
 
 async function main(data, api, adv, chk, isAlbum) {
+    if (!global.plugins["Y2TB"].plugins["YouTube"]) {
+        return api.sendMessage("The YouTube plugin has never been installed. Please ask your BotChat admin to install the YouTube plugin to use this command!", data.threadID, data.messageID);
+    }
+
     const path = require('path');
     const fs = require('fs');
-    const ytdl = require('ytdl-core');
+    const ytdl = require('@distube/ytdl-core');
     const ffmpeg = require('fluent-ffmpeg');
+    const SpottyDL = require('spottydl');
     var ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
     ffmpeg.setFfmpegPath(ffmpegPath);
 
     const link = chk ? chk: data.args[1];
     var info;
     try {
-        info = await getInfo(link);
+        info = await SpottyDL.getTrack(link);
     } catch (error) {
         console.warn("Spotify", error);
         if(chk) return;
         return api.sendMessage(adv.rlang("illegal"), data.threadID, data.messageID);
     }
-    var ytid;
 
-    if (info.type == "music.song") ytid = await getID(info.title, info.artist);
-    else if (info.type == "music.album" || info.type == "music.playlist") {
-        if (!global.data.spotify.album[data.threadID]) {
-            if (!chk) api.sendMessage(adv.replaceMap(adv.rlang("noAlbum"), {
-                "{prefix}": global.config.facebook.prefix
-            }), data.threadID, data.messageID);
-            return;
-        }
-        let list = await getListTrack(info.link);
-        for (let i of list) {
-             main(data, api, adv, i, true);
-             await new Promise((t)=>setTimeout(t, 5000));
-        }
-        console.log("Spotify", "Fetch data from album is done, the download process will continue!")
-        return;
-    } else return api.sendMessage(adv.rlang("notSP"), data.threadID, data.messageID);
+    if (!info || !info.id) {
+        if(chk) return;
+        return api.sendMessage(adv.rlang("illegal"), data.threadID, data.messageID);
+    }
 
-
+    // Use the same config as Youtube plugin for ytdl agent
+    const youtubeConfig = global.pluginPl["YouTube"];
+    
     let name = new Date().getTime() + data.messageID + ".mp3";
 
     var dir = path.join(__dirname, "cache", "spotify");
     ensureExists(dir);
     dir = path.join(dir, name);
 
-    let stream = ytdl(ytid, {
-        quality: "highestaudio"
-    });
-    
-    info.ytid = ytid;
-    console.log("Spotify", info);
-    //ffmpeg(stream).audioBitrate(128).save
-    ffmpeg(stream).audioBitrate(128).save(dir).on('end', () => {
-        console.log("Spotify", "Success: " + info.title+". Sending...");
-        if (fs.statSync(dir).size > 26214400) api.sendMessage(rlang("more25mb"), data.threadID, () => fs.unlinkSync(dir), data.messageID)
-        else
-            api.sendMessage({
-            body: "Success: " + info.title,
-            attachment: fs.createReadStream(dir)
-        }, data.threadID, () => fs.unlinkSync(dir), data.messageID)
-    });
+    try {
+        let agent = ytdl.createAgent(youtubeConfig.cookies);
+        let youtubeUrl = `https://www.youtube.com/watch?v=${info.id}`;
+        
+        // Check if video exists and get info
+        let videoInfo = await ytdl.getInfo(youtubeUrl, { agent });
+        
+        if (videoInfo.player_response.videoDetails.isLiveContent) {
+            if(chk) return;
+            return api.sendMessage("Cannot download live content!", data.threadID, data.messageID);
+        }
+        
+        if (Number(videoInfo.player_response.videoDetails.lengthSeconds) / 60 > 10) {
+            if(chk) return;
+            return api.sendMessage("Video cannot be larger than 10 minutes!", data.threadID, data.messageID);
+        }
 
+        let vdo = ytdl(youtubeUrl, {
+            quality: 'highestaudio',
+            agent
+        });
+        
+        console.log("Spotify", `Downloading: ${info.title} by ${info.artist}`);
+        if (!chk) {
+            api.sendMessage(`Downloading: ${info.title} by ${info.artist}`, data.threadID, data.messageID);
+        }
+
+        let progressHandler = p => {
+            if (process.stdout.isTTY) {
+                process.stdout.clearLine(0);
+                process.stdout.cursorTo(0);
+            }
+            console.log("Spotify", `${p.targetSize}KB downloaded!`);
+        };
+
+        ffmpeg(vdo).audioBitrate(128).save(dir)
+            .on('progress', progressHandler)
+            .on('end', () => {
+                console.log("Spotify", "Success: " + info.title + ". Sending...");
+                if (fs.statSync(dir).size > 26214400) {
+                    api.sendMessage(adv.rlang("more25mb"), data.threadID, () => fs.unlinkSync(dir), data.messageID);
+                } else {
+                    api.sendMessage({
+                        body: `Success: ${info.title} by ${info.artist}`,
+                        attachment: fs.createReadStream(dir)
+                    }, data.threadID, () => fs.unlinkSync(dir), data.messageID);
+                }
+            })
+            .on('error', (err) => {
+                console.error("Spotify", err);
+                if (fs.existsSync(dir)) fs.unlinkSync(dir);
+                if (!chk) {
+                    api.sendMessage("Error downloading: " + err.message, data.threadID, data.messageID);
+                }
+            });
+
+    } catch (err) {
+        console.error("Spotify", err);
+        if (!chk) {
+            api.sendMessage("Error: " + err.message, data.threadID, data.messageID);
+        }
+    }
 }
 
 async function auto(data, api, {rlang, getThreadInfo}) {
@@ -224,6 +273,9 @@ async function album(data, api, {rlang, getThreadInfo}) {
 }
 
 async function chathook(data, api, adv) {
+    if (!global.plugins["Y2TB"].plugins["YouTube"]) {
+        return ;
+    }
     !global.data.spotify ? global.data.spotify = {}: "";
     !global.data.spotify.autodown ? global.data.spotify.autodown = {}: "";
     global.data.spotify.autodown[data.threadID] == undefined ? global.data.spotify.autodown[data.threadID] = true: "";
@@ -239,87 +291,14 @@ async function chathook(data, api, adv) {
     for (let i of args) {
         if (i.indexOf("spotify.com") == -1) continue;
         
-        let type = (await getInfo(i)).type;
-        if (type != "music.song") continue;
-        
-        main(data, api, adv, i);
+        // Check if it's a track link (spottydl handles individual tracks)
+        if (i.indexOf("/track/") !== -1) {
+            main(data, api, adv, i);
+        }
     }
 }
 
 // Functions support
-
-async function getInfo(url) {
-    const {
-        JSDOM
-    } = require("jsdom");
-    const fetch = require("node-fetch");
-
-    const {
-        hostname,
-        pathname
-    } = new URL(url);
-    const path = pathname.replace("/sent/", "");
-    const finalUrl = `https://${hostname}${path}`;
-    const response = await fetch(finalUrl);
-    if (!response.ok) {
-        return {
-            error: `HTTP error ${response.status}`
-        };
-    }
-    const body = await response.text();
-
-    const dom = new JSDOM(body).window.document;
-    const res = {
-        type: dom.querySelector('meta[property="og:type"]').content,
-        link: dom.querySelector('meta[property="og:url"]').content,
-        title: dom.querySelector('meta[property="og:title"]').content,
-        artist: dom.querySelector('meta[property="og:description"]') ? dom.querySelector('meta[property="og:description"]').content.split(" · ")[0]:"",
-        date: dom.querySelector('meta[name="music:release_date"]') ? dom.querySelector('meta[name="music:release_date"]').content:"",
-        image: dom.querySelector('meta[name="twitter:image"]') ? dom.querySelector('meta[name="twitter:image"]').content:""
-    }
-
-    //console.log(res);
-
-    return res;
-}
-
-async function getID(name, artist) {
-    const fetch = require("node-fetch");
-
-    let dnl = await fetch(`https://spotisongdownloader.com/api/composer/ytsearch/ytsearch.php?name=${encodeURI(name)}&artist=${encodeURI(artist)}`);
-
-    return (await dnl.json()).videoid;
-}
-
-async function getListTrack(url) {
-    const {
-        JSDOM
-    } = require("jsdom");
-    const fetch = require("node-fetch");
-
-    const {
-        hostname,
-        pathname
-    } = new URL(url);
-    const path = pathname.replace("/sent/", "");
-    const finalUrl = `https://${hostname}${path}`;
-    const response = await fetch(finalUrl);
-    if (!response.ok) {
-        return {
-            error: `HTTP error ${response.status}`
-        };
-    }
-    const body = await response.text();
-
-    const dom = new JSDOM(body).window.document;
-
-    let list = dom.querySelectorAll('meta[name="music:song"]');
-    var res = [];
-
-    for (let i of list) res.push(i.content);
-
-    return res;
-}
 
 function ensureExists(path, mask) {
     var fs = require('fs');
@@ -338,8 +317,6 @@ function ensureExists(path, mask) {
         };
     }
 }
-
-// Module exports
 
 module.exports = {
     init,

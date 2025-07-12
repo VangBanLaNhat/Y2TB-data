@@ -164,7 +164,7 @@ async function main(data, api, adv, chk, isAlbum) {
     }
 
     // Use the same config as Youtube plugin for ytdl agent
-    const youtubeConfig = global.pluginPl["YouTube"];
+    const youtubeConfig = global.configPl["YouTube"];
     
     let name = new Date().getTime() + data.messageID + ".mp3";
 

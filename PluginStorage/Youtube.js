@@ -312,9 +312,7 @@ async function ytmp3(data, api, adv) {
             method: "GET",
             responseType: "stream"
         }));
-        res += `${y}. ${x.title} (${x.duration}):
-${x.url}
-`;
+        res += `${y}. ${x.title} (${x.duration}):${x.url}`;
         y++;
         listURL.push(x.url);
     });

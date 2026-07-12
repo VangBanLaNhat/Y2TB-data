@@ -241,5 +241,23 @@
     "vi": "Chat với ChatGPT",
     "en": "Chat with ChatGPT",
     "ver": "0.0.1"
+  },
+  {
+    "file": "Hunt.js",
+    "obb": "Hunt.zip",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Săn thú, nuôi pet và kiếm tiền bằng Economy",
+    "en": "Hunt pets and earn money with Economy",
+    "ver": "0.0.1"
+  },
+  {
+    "file": "NotifyTag.js",
+    "obb": "NotifyTag.zip",
+    "username": "HerokeyVN",
+    "author": "HerokeyVN",
+    "vi": "Đăng ký và tag nhanh nhóm thành viên theo chủ đề thông báo",
+    "en": "Register and quickly tag notification members by topic",
+    "ver": "0.0.1"
   }
 ]
